@@ -1,0 +1,13 @@
+<schema>
+	<element tablename="sys_user_role">
+		<field name="objid" primary="true" prefix="USRROL"/>
+		<field name="role" required="true"/>
+		<field name="userid"  required="true"/>
+		<field name="username"  required="true"/>		
+		<field name="org_objid" />
+		<field name="org_name" />
+		<field name="securitygroup_objid" />
+		<field name="exclude" />
+		<field name="uid" />
+	</element>	
+</schema>	

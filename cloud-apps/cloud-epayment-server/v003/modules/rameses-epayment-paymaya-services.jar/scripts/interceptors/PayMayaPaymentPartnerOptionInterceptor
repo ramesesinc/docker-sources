@@ -1,0 +1,129 @@
+import com.rameses.annotations.*
+import com.rameses.services.extended.*
+import com.rameses.osiris3.server.JsonUtil
+import com.rameses.http.BasicHttpClient
+
+//***********************
+// PayMaya services
+//***********************
+class PayMayaPaymentPartnerOptionInterceptor {
+
+	@DataContext('paymentorder')
+	def em_po
+
+	@DataContext('payment_partner')
+	def em_paymentpartner;
+
+
+	@Before(pattern="CloudPaymentService.postPartnerPayment", eval="#{args[0].statusid == 'paymayasuccess' }")
+	public void beforePostPartnerPayment(evt) { 
+		def args = evt.args[0];
+
+		def partner = em_paymentpartner.find([objid: 'PAYMAYA']).first();
+
+		def pmt = getPaymentDetail(partner, args)
+		args.paypartnerid = partner.objid; 
+		args.paymentrefid = pmt.requestReferenceNumber; 
+	}
+	
+	@After(pattern="CloudPaymentService.getPaymentPartnerOption", eval="#{result.paypartnerid.toLowerCase() == 'paymaya' }")
+	public void buildPaymentPartnerOption(evt) { 
+		def po = evt.args[0].paymentorder
+		def partner = evt.result.paypartner
+
+		def params = [:]
+		params.requestReferenceNumber = po.objid
+		params.totalAmount = getTotalAmount(po)
+		params.buyer = getBuyerInfo(po)
+		params.items = getItems(po)
+		params.redirectUrl = getRedirectUrl(partner, po)
+		params.metadata = [:]
+		partner.params = params 
+		checkOut(partner, po)
+	}
+
+	@After( pattern="CloudPaymentService.getPostPaymentParams", eval="#{args[0]?.paypartnerid.toString().toLowerCase() == 'paymaya'}") 
+	public void buildPostPaymentParams( evt ) {
+		def params = evt.args[0] 
+		def pmt = evt.result
+		def paypartner = pmt.paypartner
+		def po = em_po.find([ objid: params.paymentrefid ]).first(); 
+
+		pmt.paypartnerid = paypartner.objid
+		pmt.traceid = po.checkoutid
+		pmt.tracedate = po.txndate
+		pmt.amount = po.amount
+		pmt.paymentrefid = params.paymentrefid
+	} 	
+
+	void checkOut(partner, po) {
+		def urlPath = partner.actionurl
+		def jsonData = JsonUtil.toString(partner.params)
+
+		def http = new BasicHttpClient()
+		def retval = http.post(urlPath, jsonData, partner.info.headerpost)
+		if (retval.responsecode == 200) {
+			partner.checkout = JsonUtil.toMap(retval.data)
+			em_po.find([objid: po.objid]).update([checkoutid: partner.checkout.checkoutId])
+		} else {
+			partner.error = JsonUtil.toMap(retval.error)
+		}
+	}
+
+	def getPaymentDetail(partner, args) {
+		def po = em_po.select("checkoutid").find([ objid: args.paymentrefid ]).first()
+		def urlPath = partner.actionurl + "/" + po.checkoutid
+		return [requestReferenceNumber: args.paymentrefid];
+		//TODO: 
+		// def http = new BasicHttpClient()
+		// def retval = http.get(urlPath, null, partner.info.headerget)
+		// println "retval => " + retval;
+		// if (retval.responsecode == 200) {
+		// 	return retval.data
+		// } else {
+		// 	throw new Exception(retval.error)
+		// }
+	}
+
+	def getTotalAmount(po) {
+		def amount = po.amount
+		def webfee = (po.webfee ? po.webfee : 0.00)
+		def totalAmount = [
+			currency: 'PHP',
+			value: (amount + webfee),
+			details: [po: amount, webfee: webfee, subtotal: (amount+webfee)]
+		]
+		return totalAmount
+	}
+
+	def getBuyerInfo(po) {
+		return [
+			name: po.paidby,
+			email: ( po.paidbyemail ? po.paidbyemail : ''),
+		]
+	}
+
+	def getItems(po) {
+		def item = [
+			name: po.txntypename,
+			description: po.txntypename,
+			quantity: '1',
+			txnno: po.objid,
+			amount: [value: po.amount],
+			totalAmount: [value: po.amount, details: [subtotal: po.amount]]
+		]
+		return [item]
+	}
+
+	def getRedirectUrl(partner, po) {
+		def success = (partner.info?.testsuccessurl ? partner.info?.testsuccessurl : partner.info?.successurl) + '?paymentrefid=' + po.objid
+		def failure = (partner.info?.testerrorurl ? partner.info?.testerrorurl : partner.info?.errorurl) + '?paymentrefid=' + po.objid
+		def cancel = (partner.info?.testcancelurl ? partner.info?.testcancelurl : partner.info?.cancelurl) + '?paymentrefid=' + po.objid
+		return [
+			success: success,
+			failure: failure,
+			cancel: cancel,
+		]
+	}
+
+}

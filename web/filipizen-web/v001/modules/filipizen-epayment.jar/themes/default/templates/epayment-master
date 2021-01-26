@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" itemscope="" itemtype="http://schema.org/">
+  <head>
+    <title> ${MODULE.title? MODULE.title: PROJECT.title} ${PAGE.title ? (' - '+ PAGE.title) : ''} </title> 
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=IE7" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="title" content="${PROJECT.title}" />
+    <meta itemprop="name" content="${PROJECT.title}" />
+    <meta property="og:title" content="${PROJECT.title}" />
+    <meta name="Description" content="${PROJECT.description}" />
+    <meta itemprop="description" content="${PROJECT.description}" />
+    <meta property="og:description" content="${PROJECT.description}" />
+    <meta name="keywords" content="${PROJECT.keywords}"/>
+    <meta name="copyright" content="${PROJECT.copyright}" />
+    <link rel="shortcut icon" type="image/png" href="/res/favicon.png"/>
+    <link rel="shortcut icon" type="image/png" href="http://www.filipizen.com/res/favicon.png"/>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+    @stdlib()
+    @css("bootstrap-services.min")
+    @css("font-awesome.min")
+    <link href="/res/epayment/master.css?ver=1" type="text/css" rel="stylesheet" />    
+    <link href="/res/epayment/data-entry.css?ver=1" type="text/css" rel="stylesheet" />
+    @page-imports()  
+
+</head>
+
+
+<!-- master-main -->
+<body id="home-page">
+    
+<nav class="navbar-inverse">
+  <div class="container">
+    <a class="navbar-brand" href="/partners"><img src="/res/logo-filipizen-topnav.svg"></a>
+      <div id="toolbar">
+        <div class="toolbar-menu">
+    
+            <ul id="toolbar-user">
+              <!--<li><a href="/register">Sign up</a></li>-->
+              <!--li><a href="/userpanel" title="Log in">Log in</a></li-->
+            </ul>
+          
+        </div>
+      </div>
+  </div>
+</nav>  
+
+<div class="container">
+  ${_content}
+</div>
+
+<%
+def stryear = new java.sql.Date( System.currentTimeMillis()).toString().split('-')[0]; 
+%>
+<div class="footer">
+  <footer class="container">
+    <ul class="links footer-links">
+      <li><a href="#">&copy; ${stryear} </a></li>
+      <li><a href="#">Sitemap</a> | </li>
+      <li><a href="#">Privacy</a> | </li>
+      <li><a href="#">Legal</a> | </li>
+      <li><a href="#">Feedback</a></li>
+    </ul>
+  </footer>
+</div> 
+ 
+
+</body>
+
+<script src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/res/dropzone/dropzone.js"></script>
+<script src="/js/custom.js"></script>
+<script type="text/javascript" src="/res/dropzone/bootstrap.min.js"></script>
+<script type="text/javascript" src="/res/js/filipizen-util.js"></script>
+<!--<script src='/js/reCaptcha.js'></script>-->
+</html>

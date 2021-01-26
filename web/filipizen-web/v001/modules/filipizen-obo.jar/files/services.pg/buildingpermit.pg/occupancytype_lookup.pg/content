@@ -1,0 +1,123 @@
+<script>
+  \$put("occupancytype_lookup", new function() {
+      var self = this;
+
+      this.group;
+      this.division;
+      this.type;
+      this.handler;
+
+      var listSvc = Service.lookup("OboMiscListService", "obo");
+
+      this.propertyChangeListener = {
+        'group' : function(o) {
+          \$('#group button').html(o.description +' <span class="caret"></span>');
+          \$('#division button').html( 'Select Division <span class="caret"></span>');
+          \$('#type button').html( 'Select Type <span class="caret"></span>');
+          self.division = null;
+          self.type = null;
+        },
+        'division' : function(o) {
+          \$('#division button').html(o.description +'- <span class="caret"></span>');
+          \$('#type button').html( 'Select Type <span class="caret"></span>');
+          self.type = null;
+        },
+        'type' : function(o) {
+          \$('#type button').html(o.description +'- <span class="caret"></span>');
+        }        
+      }
+
+      var groupList;
+      this.getGroupList = function() {
+        if(!groupList) {
+          groupList = listSvc.getOccupancyTypeGroups();
+        }  
+        \$("#group ul").removeAttr("style");       
+        return groupList;
+      }
+
+      this.getDivisionList = function() {
+        var list = [];
+        if( this.group != null ) {
+          list = listSvc.getOccupancyTypeDivisions( {groupid: this.group.objid} );
+        }
+        \$("#division ul").removeAttr("style"); 
+        return list;
+      }
+
+      this.getOccupancyTypeList = function() {
+        var list = [];
+        if( this.division != null ) {
+          list = listSvc.getOccupancyTypes( {divisionid: this.division.objid} ); 
+        }
+        \$("#type ul").removeAttr("style");         
+        return list;
+      }
+
+      this.select = function() {
+        if(!self.type) throw new Error("Please select an occupancy type");
+        var result = {}
+        result.group = self.group;
+        result.division = self.division;
+        result.title = self.type.title;
+        result.objid = self.type.objid;
+        self.handler( result );  
+        return "_close";
+      }
+
+  });
+ 
+</script>
+
+<style>
+  .dropdown-menu>li>a {word-wrap: break-word;white-space: normal;width: 400px; border-bottom:1px solid lightgrey;text-transform:capitalize;}
+  .dropdown-menu{max-width: 400px;}
+  .dropdown-toggle{white-space: normal;width: 650px;text-align:left}
+  .caret{float:right;valign:middle}
+  .ui-dialog-content{overflow:visible !important}
+  .ui-dialog{overflow:visible !important}
+</style>
+
+<div style="padding-bottom:20px;">
+  <div>
+     <div>Group</div>
+     <div class="dropdown" id="group">
+      <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Select Group <span class="caret"></span></button>
+      <ul class="dropdown-menu"  r:context="occupancytype_lookup" r:items="getGroupList()" r:name="group" r:varName="item" aria-hidden="true">
+        <li><a href="#">#{item.description}</a></li>
+      </ul>
+    </div>
+
+    <br> 
+    <div>Division</div>
+
+    <div class="dropdown" id="division">
+      <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" >Select Division <span class="caret"></span></button>
+      <ul class="dropdown-menu" r:context="occupancytype_lookup" r:items="getDivisionList()" r:depends="group" r:name="division" r:varName="item">
+        <li><a href="#">#{item.description}</a></li>
+      </ul>
+    </div>
+
+
+    <br> 
+    <div>Type</div>
+    <div class="dropdown" id="type">
+      <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Select Occupancy Type <span class="caret"></span></button>
+      <ul class="dropdown-menu" r:context="occupancytype_lookup" r:items="getOccupancyTypeList()" r:depends="division" r:name="type" r:varName="item">
+        <li><a href="#">#{item.description}</a></li>
+      </ul>
+    </div>
+
+
+  </div>
+
+  <div style="padding-top:20px;txt-align:right;">
+    <input type="submit" r:context="occupancytype_lookup" r:name="_close" value="Close" r:immediate="true"/>
+    <input type="submit" r:context="occupancytype_lookup" r:name="select" value="OK"/>
+  </div>
+</div>  
+
+<script>
+\$("ul").removeAttr("style");
+</script>
+

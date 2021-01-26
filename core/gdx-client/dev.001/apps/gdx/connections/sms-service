@@ -1,0 +1,4 @@
+provider=script
+app.host=107.21.113.74
+app.context=sms
+app.cluster=osiris3

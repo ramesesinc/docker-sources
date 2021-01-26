@@ -1,0 +1,43 @@
+<%
+def err = [:]; 
+%>
+
+<h1><b>Test Payment Only</b></h1>
+
+<table cellpadding="2" cellspacing="0" border="0">
+<% PARAMS.each { k,v-> %> 
+<tr>
+	<td><b>${k}</b></td>
+	<td>${v}</td>
+</tr>
+<% } %> 
+</table>
+
+<% if ( err?.code ) { %>
+	<form id="postform" method="POST" action="/payoptions/landbankerror">
+		<input type="hidden" name="Status" value="06"/> 
+		<input type="hidden" name="MerchantRefNo" value="${PARAMS.MerchantRefNo}"/> 
+		<input type="submit" value="Submit"/> 
+	</form> 
+
+<% } else { %> 
+<%
+def encstr = com.rameses.util.Encoder.MD5.encode( new java.rmi.server.UID().toString()); 
+def refno = "LBP"+ encstr.hashCode(); 
+def refdate = new java.sql.Timestamp( System.currentTimeMillis());  
+%>
+	<form id="postform" method="POST" action="/payoptions/landbanksuccess">
+		<input type="hidden" name="Status" value="00"/> 
+		<input type="hidden" name="MerchantCode" value="${PARAMS.MerchantCode}"/> 
+		<input type="hidden" name="MerchantRefNo" value="${PARAMS.MerchantRefNo}"/> 
+		<input type="hidden" name="Particulars" value="${PARAMS.Particulars}"/> 
+		<input type="hidden" name="PayorName" value="${PARAMS.PayorName}"/> 
+		<input type="hidden" name="PayorEmail" value="${PARAMS.PayorEmail}"/> 
+		<input type="hidden" name="Amount" value="${PARAMS.Amount}"/> 
+		<input type="hidden" name="EppRefNo" value="${refno}"/> 
+		<input type="hidden" name="Datestamp" value="${refdate}"/> 
+		<input type="hidden" name="PaymentOption" value="LANDBANK"/> 
+		<input type="submit" value="Submit"/> 
+	</form> 
+<% } %> 
+

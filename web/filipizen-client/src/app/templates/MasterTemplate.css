@@ -1,0 +1,67 @@
+.template {
+  display: flex;
+  flex-flow: column;
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+.template .row.header {
+  flex: 0 1 auto;
+}
+
+.template .content {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.template .content .panel {
+  display: flex;
+  flex-flow: row wrap;
+  flex: 1 1 auto;
+}
+
+.template .content .panel .main {
+  flex: 2 0px;
+  background-color: whitesmoke;
+}
+
+.template .content .panel .aside {
+  flex: 1 0px;
+}
+
+.template .row .footer {
+  position: absolute;
+  bottom: 0;
+}
+
+.aside-left {
+  background-color: whitesmoke;
+  position: fixed;
+}
+
+.aside-right {
+  background-color: whitesmoke;
+}
+
+@media only screen and (max-width: 800px) {
+  .aside-right {
+    display: none;
+  }
+  .main{
+    width: 960px;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .aside-left {
+    display: none;
+  }
+   .aside-right {
+    display: none;
+  }
+  .main{
+    width: 960;
+  }
+}

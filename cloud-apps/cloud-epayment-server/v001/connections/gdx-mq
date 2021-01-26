@@ -1,0 +1,8 @@
+provider=rabbitmq
+host=${rabbit_mq_ip}
+user=ramesesinc
+pwd=!ramesesinc#
+exchange=gdx
+type=direct
+heartbeat=10
+poolSize=1

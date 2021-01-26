@@ -1,0 +1,8 @@
+
+POST http://192.168.1.9:5000/filipizen/aws HTTP/1.1
+content-type: application/json
+
+{
+    "bucketName": "filipizen-bpls",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}

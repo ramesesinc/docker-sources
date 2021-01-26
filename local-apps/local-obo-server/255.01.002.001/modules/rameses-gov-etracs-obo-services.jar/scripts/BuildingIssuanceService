@@ -1,0 +1,44 @@
+import com.rameses.annotations.*;
+
+class BuildingIssuanceService {
+	
+	@Service("DateService")
+	def dateSvc;
+
+
+	@DataContext("building_issuance")
+	def issEm;
+
+	@DataContext("building_application_subdoc")
+	def subdocEm;
+
+
+	@Env
+	def env;
+
+	@ProxyMethod
+	public void issueControl( def p ) {
+		if( !p.objid ) throw new Exception("objid is required");
+		if( !p.controlno ) throw new Exception("controlno is required");
+
+		def iss = subdocEm.find( [objid: p.objid] ).first();
+		if(!iss) throw new Exception("Issuance does not exist");
+		if(iss.issuanceid) throw new Exception("This has already been issued");
+
+		def u = [:];
+		u.state = 1;
+		u.subdocid = p.objid;
+		u.issuedby = [ objid: env.USERID, name: env.FULLNAME ];
+		u.dtissued = dateSvc.getServerDate();
+		u.controlno = p.controlno;
+		u.remarks = p.remarks;
+		u.expirydate = p.expirydate;
+		u.template = iss.doctype.template;
+		issEm.create( u );
+		subdocEm.find( [objid: p.objid] ).update( [issuanceid: u.objid ] );
+	}	
+	
+
+
+
+}

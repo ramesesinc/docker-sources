@@ -1,0 +1,168 @@
+<table>
+		<tr>
+			<td>
+				<p class="title"><b>Box 7 (To be accomplished by the processing and evaluation division)</b></p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr class="first-td">
+						<td><p class="underline civilothers"></p> LENGTH (In Meters)</td>
+						<td><p class="underline civilothers"></p> HEIGHT (In Meters)</td>
+						<td><p class="underline civilothers"></p> AREA (In Square Meters)</td>
+					</tr>
+					<tr style="height:60px;">
+						<td colspan="3" align="center"><b>TYPE OF SIDEWALK MATERIALS:</b></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox"> Concrete Slab</td>
+						<td colspan="2"><input type="checkbox"> Others (Specify) <p class="underline civilothers"></p></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox"> Concrete Slab and Bricks</td>
+						<td colspan="2"><input type="checkbox"> <p class="underline others"></p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p class="title"><b>Box 8</b></p>
+				<table class="boxpermit" align="center" width="100%">
+					<tbody>
+						<tr class="trborder first-td last-td">
+							<td colspan="6" align="center"><p class="allcaps-bold">Progress Flow</p></td>
+						</tr>
+					</tbody>
+						<tr class="trborder allcaps">
+							<td class="tdborder" rowspan="2"></td>
+							<td align="center" class="tdborder" colspan="2">in</td>
+							<td align="center" class="tdborder" colspan="2">out</td>
+							<td align="center" class="tdborder" rowspan="2">Processed by:</td>
+						</tr>
+						<tr class="trborder allcaps">
+							<td align="center" class="tdborder">Date</td>
+							<td align="center" class="tdborder">Time</td>
+							<td align="center" class="tdborder">Date</td>
+							<td align="center" class="tdborder">Time</td>
+						</tr>
+						<tr class="trborder ">
+							<td>RECEIVING AND RECORDING</td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+						</tr>
+							<tr class="trborder">
+							<td>LINE AND GRADE (GEODETIC)</td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+						</tr>
+						<tr class="trborder">
+							<td>CIVIL/STRUCTURAL</td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+						</tr>
+						<tr class="trborder">
+							<td>Others (Specify)</td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+						</tr>
+						<tr class="trborder">
+							<td colspan="6" align="center"><b>ASSESSED FEES</b></td>
+						</tr>
+						<tr class="trborder">
+							<td class="tdborder"></td>
+							<td align="center" class="tdborder"><b>Amount Due</b></td>
+							<td align="center" class="tdborder" colspan="2"><b>O.R Number</b></td>
+							<td align="center" class="tdborder"><b>Date Paid</b></td>
+							<td align="center" class="tdborder"><b>Processed By</b></td>
+						</tr>
+						<tr class="trborder">
+							<td class="tdborder">LINE AND GRADE (GEODETIC)</td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder" colspan="2"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+						</tr>
+						<tr class="trborder">
+							<td class="tdborder">SIDEWALK</td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder" colspan="2"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+						</tr>
+						<tr class="trborder">
+							<td class="tdborder">OTHERS (Specify)</td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder" colspan="2"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+						</tr>
+						<tr class="trborder">
+							<td class="tdborder" style="height:20px"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder" colspan="2"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+						</tr>
+						<tr class="trborder">
+							<td class="tdborder" align="right"><b>TOTAL</b></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder" colspan="2"></td>
+							<td align="center" class="tdborder"></td>
+							<td align="center" class="tdborder"></td>
+						</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p class="title"><b>Box 9 (To be accomplished by the Building official)</b></p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr style="height:80px;">
+						<td align="left"><b>Action Taken</b></td>
+					</tr>
+					<tr>
+						<td style="padding-left:30px">Permit is hereby issued/granted to ________________________________________________________________________________
+				with postal address at ________________________________________________________________________________________________
+				for the construction/repair of ______________________________________ ( ) square meters of sidewalk at the premises of
+				_____________________________________________________________ at ___________________________________________________
+				pursuant to pertinent provisions of the "National Building Code" (PD 1096) and its Implementing Rules and Regulations and to the following
+				conditions:<br><br></td>
+					</tr>
+					<tr>
+						<td>
+							<ol>
+								<li>That the owner and contractor shall be jointly responsible for the safety, protection, security and convenience of the general public and his/her personnel, third parties, the works, equipment and the like.</li>
+								<li>That the lines and grades indicated in the attached sketch and established by this Office shall be strictly followed.</li>
+								<li>That the sidewalk and all accessories thereto such as driveways, curbs, gutters and the like shall be constructed in conformity with the design and specifications of the proper authorities and subject to the approval of the Building Official. The radius of curves of sidewalks in street intersections shall not be less than the width of the wider sidewalk at said intersections.</li>
+								<li>That the catch basins or inlets which may be affected by the project shall be re-adjusted and/or relocated by the proper authority at the expense of the owner/applicant of the project.</li>
+								<li>Absolutely no letterings, signs or markings of any kind except those duly authorized for official purposes only shall be placed, printed on or embedded in the pavements of public streets and sidewalks.</li>
+								<li>That the works shall be done under the supervision of a representative from this Office.<br>IMPORTANT: Notify this Office at least twenty four (24) hours before pouring of concrete.</li>
+								<li>That this permit shall not serve as an exemption from securing permits/written clearances from various government authorities exercising regulatory function affecting buildings and other related structures.</li>
+							</ol>
+						</td>
+					</tr>
+					<tr style="height:80px;">
+						<td><p class="allcaps-bold">Permit Issued by:</p></td>
+					</tr>
+					<tr class="last-td">
+						<td align="center">
+							<p class="underline bldgofficial"></p><br>
+							<p class="allcaps-bold">Local building official</p><br>
+							<p>(Signature over Printed Name)</p><br>
+							<p>Date</p><p class="underline bldgofficial-date"></p>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>

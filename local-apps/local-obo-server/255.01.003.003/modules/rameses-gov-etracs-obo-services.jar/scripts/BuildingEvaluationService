@@ -1,0 +1,48 @@
+import com.rameses.annotations.*;
+
+class BuildingEvaluationService {
+	
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("WorkflowTaskService")
+	def wfSvc;
+
+	@DataContext("vw_building_application")
+	def vwAppEm;
+
+	@DataContext("building_evaluation")
+	def evalEm;
+
+	@Env
+	def env;
+
+	//this is when creating an evaluation on the fly example hot works for BFP that was missed during application
+	@ProxyMethod
+	public def create(def o ) {
+		if(!o.appno) throw new Exception("appno is required");
+
+		def app = vwAppEm.find( [appno: o.appno ]).first();
+
+		if(!app) throw new Exception("Application not found");
+		if( app.task.state.toLowerCase() != 'trade-evaluation' ) 
+			throw new Exception("Please ensure that current state must be in trade-evaluation");
+		
+		//check first if current state is trade-evaluation
+		o.appid = app.objid;
+		o.dtfiled = dateSvc.getServerDate();
+
+		o = evalEm.create( o )
+
+		//fire the workflow...
+		def f = [:];
+		f.processname = 'building_evaluation';
+		f.refid = o.objid;
+		f.startdate = o.dtfiled;
+		f.info = [:];
+		wfSvc.start( f );
+
+	} 
+
+	
+}

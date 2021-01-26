@@ -1,0 +1,23 @@
+version: "3"
+services:
+
+  jasper-node-server:
+    image: ramesesinc/jasper-node-server:0.0.1
+    container_name: jasper-node-server
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
+    environment:
+      TZ: "Asia/Manila"
+    env_file:
+      - ../env.conf
+    ports:
+      - "5005:5000"
+    volumes:
+      . ./_custom/env.conf:/apps/server/_custom/env.conf
+      - ./connections:/apps/server/connections
+      - ./output:/apps/server/reports
+      

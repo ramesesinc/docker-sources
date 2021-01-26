@@ -1,0 +1,21 @@
+{
+  "name": "notification-server",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "1.19.0",
+    "cors": "2.8.5",
+    "debug": "^4.1.1",
+    "express": "4.17.1",
+    "node-fetch": "2.6.0",
+    "pug": "2.0.4",
+    "redis": "2.8.0",
+    "socket.io": "2.2.0"
+  }
+}

@@ -1,0 +1,3 @@
+provider=email
+mail.smtp.host=${mail.smtp.host}
+mail.from=${mail.from}

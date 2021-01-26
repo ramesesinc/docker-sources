@@ -1,0 +1,18 @@
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 269
+ETag: W/"10d-5jRzEAFkZAsms6TZfL8CG/LV4tI"
+Date: Mon, 21 Dec 2020 05:06:35 GMT
+Connection: close
+
+{
+  "status": "OK",
+  "data": {
+    "ETag": "\"b10a8db164e0754105b7a99be72e3fe5\"",
+    "Location": "https://filipizen-bpls-1d23c9ca-e4b8-483c-8f6b-4ef3149a3c52.s3.amazonaws.com/hello.txt",
+    "key": "hello.txt",
+    "Key": "hello.txt",
+    "Bucket": "filipizen-bpls-1d23c9ca-e4b8-483c-8f6b-4ef3149a3c52"
+  }
+}

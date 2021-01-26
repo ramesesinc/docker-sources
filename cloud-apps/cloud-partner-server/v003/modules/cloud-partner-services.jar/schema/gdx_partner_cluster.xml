@@ -1,0 +1,7 @@
+<schema>
+	<element tablename="partner_cluster">
+		<field name="objid" primary="true"/>
+		<field name="name" required="true"/>
+		<field name="title" required="true"/>
+	</element>
+</schema>

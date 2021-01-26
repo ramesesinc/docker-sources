@@ -1,0 +1,90 @@
+import com.rameses.annotations.*; 
+import java.rmi.server.*;
+
+class BuildingApplicationTransmittalService {
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("ControlnoGeneratorService")
+	def controlNoSvc;
+
+	@DataContext("building_application_requirement")
+	def reqEm;
+
+	@DataContext("building_evaluation_finding")
+	def findingEm;
+
+	@DataContext("building_application_transmittal")
+	def transmittalEm;
+
+	@Service("Var")
+	def sysvar;
+
+	@Env
+	def env;
+
+	@ProxyMethod
+	public void validateForRevision( def o ) {
+		
+		if(!o.appid) throw new Exception("appid is required in BuildingApplicationTransmittal.validateForRevision");
+		if(!o.type) throw new Exception("Please include type if requirement or finding in BuildingApplicationTransmittal.validateForRevision")
+		if( o.type == "requirement" ) {
+			//validate first if there are existing open items that need to be transmitted
+			def c = reqEm.select("c:{COUNT(*)}").find([appid:o.appid]).where("state = 0").val();
+			if( c>0) throw new Exception("All requirements must be checked first");			
+
+			c = reqEm.select("c:{COUNT(*)}").find([appid:o.appid]).where("supersederid IS NULL AND state = 2 AND transmittalid IS NULL").val();
+			if( c<=0) throw new Exception("There must be at least one requirement that needs to be revised");			
+		}
+		else {
+			def c = findingEm.select("c:{COUNT(*)}").find([appid:o.appid]).where("supersederid IS NULL AND state=2 AND transmittalid IS NULL").val();
+			if( c<=0) throw new Exception("There must be at least one finding that needs to be transmitted");			
+		}
+	}
+
+	@ProxyMethod
+	public def create( def o ) {
+		if(!o.taskid) throw new Exception("taskid is required in BuildingApplicationTransmittal.create");
+		if(!o.appid) throw new Exception("appid is required in BuildingApplicationTransmittal.create");
+		if(!o.type) throw new Exception("Please include type if requirement or finding in BuildingApplicationTransmittal.create")
+
+		def varname = "building_application_" + o.type +  "_transmittal";
+		def pattern = sysvar.get(  varname );
+		if(!pattern) throw new Exception("Please define " + varname + " entry in sys_var. Ex. BP-RT-[yyyyMM]-[%05d]");
+
+		def t = [:];
+		t.objid = controlNoSvc.getNextNo( pattern );
+		t.appid = o.appid;
+		t.type = o.type;
+		t.createdby = [objid: env.USERID, name: env.FULLNAME ];
+		t.dtcreated = dateSvc.getServerDate();
+		t.taskid = o.taskid;
+		t.state = 0;
+		transmittalEm.create( t );
+		//update all open 
+		if(o.type == "requirement") {
+			reqEm.find([appid: o.appid]).where("supersederid IS NULL AND state=2 AND transmittalid IS NULL").update( [transmittalid: t.objid] );
+		}
+		else {
+			findingEm.find([appid: o.appid]).where("supersederid IS NULL AND state=2 AND transmittalid IS NULL").update( [transmittalid: t.objid] );
+		}
+		return t;	
+	}
+	
+	//just include this but it will be called from the admin side.
+	@ProxyMethod
+	public def remove( def o ) {
+		if(!o.transmittalid) throw new Exception("Please include transmittalid");
+		if(!o.type) throw new Exception("type is required in BuildingApplicationTransmittal.removeCheckList");
+		if( o.type == "requirement" ) {
+			reqEm.find([transmittalid: o.transmittalid ]).update( [transmittalid: "{NULL}"] );
+		}
+		else {
+			findingEm.find([transmittalid: o.transmittalid ]).update( [transmittalid: "{NULL}"] );
+		}
+		transmittalEm.find( [objid: o.transmittalid ]).delete();
+	}	
+
+
+}	

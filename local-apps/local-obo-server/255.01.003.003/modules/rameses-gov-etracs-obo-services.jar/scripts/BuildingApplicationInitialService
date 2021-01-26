@@ -1,0 +1,147 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import obo.facts.*;
+import java.text.*;
+import treasury.utils.*;
+import treasury.facts.*;
+
+class BuildingApplicationInitialService {
+	
+	@DataContext("building_application")
+	def appEm;
+
+	@DataContext("vw_building_application")
+	def vwAppEm;
+
+	@DataContext("building_application_entity")
+	def entityEm;
+
+	@DataContext("building_application_subdoc")
+	def subdocEm;
+
+	@DataContext("building_application_rpu")
+	def rpuEm;
+
+	@DataContext("building_application_info")
+	def appInfoEm;
+
+	@DataContext("building_application_professional")
+	def professionalEm;
+
+	@DataContext("building_application_requirement")
+	def reqEm;
+
+	@DataContext("obo_requirement_type")
+	def reqTypeEm;
+
+	@Service("OboConstructionCostRuleService")
+	def costSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("WorkflowTaskService")
+	def wfSvc;
+
+	@Service(value="obo/OnlineBuildingPermitDownloadService", connection="cloud-server")
+    def cloudBldgSvc;
+
+    @Env
+    def env;
+
+    @ProxyMethod
+    public def getApplication( def o  ) {
+    	//check first if the application already exists
+    	def app = vwAppEm.find( [trackingno: o.appid ]).first();
+    	if(app) throw new Exception("Application already exists. It is currently at " + app.task?.state );
+		return cloudBldgSvc.getDownloadInfo( [appid: o.appid, orgcode: env.ORGID ] );
+    }
+
+	@ProxyMethod
+	public def create( def app ) {
+
+		def u = [:]
+		u.applicantid = app.remove("applicantid");
+		u.contractorid = app.remove("contractorid");
+
+		def newapp = appEm.create( app );
+		app.entities.each {
+			it.appid = newapp.objid;
+			entityEm.create( it );
+		}
+		app.rpus.each {
+			it.appid = newapp.objid;
+			it.owner = [objid: it.ownerid ];
+			rpuEm.create( it );
+		}
+		app.professionals.each {
+			it.appid = newapp.objid;
+			it.entity = [objid: it.entityid ];
+			professionalEm.create( it );
+		}
+		
+		app.accessories.each {
+			it.appid = newapp.objid;
+			it.state = 0;
+			it.doctype = [ objid: 'ACCESSORIES' ];
+			it.occupancytypeid = (it.occupancytypeid!=null)?it.occupancytypeid:'';	
+			it.amount = 0;		
+			subdocEm.create( it );
+		}
+
+		app.ancillaries.each {
+			it.appid = newapp.objid;
+			it.doctype = [ objid: it.permittypeid.toUpperCase() ];
+			it.amount = 0;
+			it.state = 0;
+			it.occupancytypeid = '';
+			subdocEm.create( it );
+		}
+		app.infos.each {
+			it.appid = newapp.objid;
+			it.type = [name: it.name ];
+			appInfoEm.create( it );
+		}
+		appEm.find( [objid: newapp.objid ] ).update( u );
+
+		//immediatly accept and fire the workflow
+		app = newapp;
+
+		//calculate the cost first before receiving
+		def dt = dateSvc.getServerDate();
+		def param = [:];
+		param.app = [apptype:app.apptype, totalfloorarea:app.totalfloorarea];
+		param.occupancytype = app.occupancytype;
+
+		def cost = costSvc.calc( param );
+		u = [:];
+		u.fixedcost = cost;
+		appEm.find( [objid: app.objid ] ).update( u );
+
+		//update the requirements
+		def reqTypes = reqTypeEm.where("permittype = 'building_application' ").list();
+		reqTypes.each {
+			def r = [:];
+			r.appid = app.objid;
+			r.state = 0;
+			r.typeid = it.objid;
+			r.type = [objid: it.objid];
+			reqEm.create( r );
+		}
+
+		//fire the workflow to start the process
+		def p = [:];
+		p.processname = 'building_application';
+		p.refid = app.objid;
+		p.startdate = dt;
+		p.info = app;
+		p.assignee = [objid:env.USERID, name:env.FULLNAME];		
+		wfSvc.start(p);	
+		return newapp;
+	}
+
+
+
+	
+}

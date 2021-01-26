@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  cloud-fileserver:
+    image: ramesesinc/cloud-fileserver:beta
+    container_name: cloud-fileserver
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
+    ports:
+      - "7000:7000"
+    environment:
+      TZ: "Asia/Manila"
+    

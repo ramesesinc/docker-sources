@@ -1,0 +1,544 @@
+<%def app = PARAMS.app; %>
+
+<button onclick="window.print();return false;" class="btn-print">Print</button>
+<div class="page">
+	<h3>Republic of the Philippines</h3>
+	<h3>${app.org.formalname}</h3>
+	<h3>${app.org.province}</h3>
+	<br>
+	<h2 style="float:right"><b>Tracking No. : <label>1029289383</label></b></h2>
+	<h2>Office of the Building Official</h2>
+	<h1><b>Demolition Permit</b></h1>
+
+	<br><br>
+	<table align="center" width="100%" border="0">
+		<tr>
+			<td>Application No.
+				<table class="smallBox">
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>
+			</td>
+			<td>DP No
+				<table class="smallBox">
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>
+			</td>
+			<td>Building Permit no.
+				<table class="smallBox">
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>	
+			</td>
+		</tr>
+	</table>
+	<br>
+
+	<table align="center" width="100%">
+		<tr>
+			<td colspan="2">
+				<p class="title"><b>Box 1 (To be accomplished in print print by the owner/application)</b></p>
+				<table align="center" class="boxpermit" width="100%">
+					<tbody>
+						<tr>
+							<td width="15%">owner/Applicant</td>
+							<td colspan="2">last name</td>
+							<td colspan="3">firstname</td>
+							<td colspan="1">M.I</td>
+							<td colspan="2" class="tdborder">TIN</td>
+						</tr>
+						<tr class="trborder">
+							<td></td>
+							<td colspan="2"><label class="data">${app.owner.lastname} </label></td>
+							<td colspan="3"><label class="data">${app.owner.firstname}</label></td>
+							<td colspan="1"><label class="data">${app.owner.middleinitial}</label></td>
+							<td colspan="2" class="tdborder"><label class="data">${app.owner.tin}</label></td>
+						</tr>
+					</tbody>
+					<tbody>
+						<tr>
+							<td colspan="2">For construction Owned</td>
+							<td colspan="3" class="tdborder">form of ownership</td>
+							<td colspan="4" class="tdborder"> use or character of occupancy</td>
+						</tr>
+						<tr>
+							<td colspan="2"><label class="data">dd</label></td>
+							<td colspan="3" rowspan="2" class="tdborder"><label class="data">${app.owner.type}</label></td>
+							<td colspan="4" rowspan="2" class="tdborder"><label class="data">${app.occupancytype.objid} - ${app.occupancytype.description}</label></td>
+						</tr>
+						<tr class="trborder">
+							<td colspan="2">By an enterprise</td>
+						</tr>
+					</tbody>
+					<tbody>
+						<tr>
+							<td>address no.</td>
+							<td> street </td>
+							<td colspan="2">Barangay</td>
+							<td colspan="3">City/Municipality</td>
+							<td>Zip Code</td>
+							<td class="tdborder">Telephone No.</td>
+						</tr>
+						<tr class="trborder">
+							<td colspan="2">${app.owner.address.street}</td>
+							<td colspan="2">${app.owner.address.barangay.name}</td>
+							<td colspan="3"></td>
+							<td></td>
+							<td class="tdborder"></td>
+						</tr>
+					</tbody>
+					<tbody>
+						<tr>
+							<td colspan="2">Location of Construction:</td>
+							<td colspan="2">Lot No. <label class="underline">${app.location.lotno}</label></td>
+							<td  colspan="2">Blk No. <label class="underline">${app.location.blockno}</label></td>
+							<td colspan="2">TCT No.  <label class="underline">${app.location.tctno}</label></td>
+							<td >Tax Dec No. <label class="underline">${app.location.tdno}</label></td>
+						</tr>
+						<tr class="trborder trlocation">
+							<td colspan="3">Street <label class="underline">${app.location.street}</label></td>
+							<td colspan="3">Barangay <label class="underline">${app.location.barangay}</label></td>
+							<td colspan="3">City/Municipality <label class="underline">${app.org.formalname}</label></td>
+						</tr>
+					</tbody>
+					<tbody>
+						<tr>
+							<td colspan="9"><b>Scope of work</b></td>
+						</tr>
+						<tr>
+							<td colspan="4"><input type="checkbox"> Demolition<label class="underline"></label></td>
+							<td colspan="5"><input type="checkbox"> Other (specify)<label class="underline"></label></td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<p class="title"><b>Box 2 (To be accomplished by the design professional)</b></p>
+				<table class="boxpermit" align="center" width="100%">
+					<tbody>
+						<tr class="trborder">
+							<td colspan="4"><b>FULL-TIME INSPECTOR AND SUPERVISOR OF DEMOLITION WORKS</b></td>
+						</tr>
+						<tr class="trborder">
+							<td rowspan="4" width="50%">
+								<table width="100%">
+									<tr>
+										<td align="center" style="padding-top: 30px"><label class="underline">Elmo Nazareno</label><br>
+											<b>ARCHITECT/CIVIL ENGINEER</b><br>
+											(Signed and Sealed Over Printed Name)<br>
+											Date <label class="underline">06/11/2019</label>
+									    </td>
+									</tr>
+								</table>
+							</td>
+							<td width="25%" class="tdborder">Address <label></label></td>
+							<td width="25%">Tel. No. <label></label></td>
+						</tr>
+						<tr class="trborder">
+							<td class="tdborder">PRC No. <label></label></td>
+							<td class="tdborder">Validity <label></label></td>
+						</tr>
+						<tr class="trborder">
+							<td class="tdborder">PTR No. <label></label></td>
+							<td class="tdborder">Date Issued <label></label></td>
+						</tr>
+						<tr class="trborder">
+							<td class="tdborder">Issued at <label></label></td>
+							<td class="tdborder">TIN <label></label></td>
+						</tr>
+					</tbody>
+				</table> 
+			</td>
+		</tr>
+			<!-- second row -->
+		<tr>
+			<td>
+				<p class="title"><b>Box 3 (TO BE ACCOMPLISHED BY THE APPLICANT)</b></p>
+				<table  class="boxpermit" style="width:100%" height="100%">
+					<tbody>
+						<tr>
+							<td colspan="3" width="50%"><b>Applicant</b></td>
+							<td colspan="3" class="tdborder" width="50%">With my consent: <b>Lot Owner</b></td>
+						</tr>
+						<tr>
+							<td colspan="3" class="signature"><label class="data">${app.owner.firstname} ${app.owner.middlename.substring(0,1)}. ${app.owner.lastname}</label></td>
+							<td colspan="3" class="signature tdborder"><label class="data">${app.lotowner.firstname} ${app.lotowner.middlename.substring(0,1)}. ${app.lotowner.lastname}</label></td>
+						</tr>
+						<tr>
+							<td align="center" colspan="3"><p>(Signed Over Printed Name)</p></td>
+							<td align="center" colspan="3" class="tdborder"><p>(Signed Over Printed Name)</p></td>
+						</tr>
+						<tr class="trborder">
+							<td align="center" colspan="3">Date <label class="underline"></label></td>
+							<td align="center" colspan="3" class="tdborder">Date <label class="data"></label></td>
+						</tr>
+						<tr class="trborder">
+							<td colspan="3">Address: <label class="data"> ${app.owner.address.text}</label></td>
+							<td colspan="3" class="tdborder">Address : <label class="data"> ${app.lotowner.address.text}</label></td>
+						</tr>
+						<tr>
+							<td>C.T.C. No.</td>
+							<td class="tdborder">Date Issued</td>
+							<td class="tdborder">Place Issued</td>
+							<td class="tdborder">C.T.C. No.</td>
+							<td class="tdborder">Date Issued</td>
+							<td class="tdborder">Place Issued</td>
+						</tr>
+						<tr>
+							<td><label class="data"> ${app.owner.ctc.refno}</label></td>
+							<td class="tdborder"><label class="data"> ${app.owner.ctc.dtissued}</label></td>
+							<td class="tdborder"><label class="data"> ${app.owner.ctc.placeissued}</label></td>
+							<td class="tdborder"><label class="data"> ${app.lotowner.ctc.refno}</label></td>
+							<td class="tdborder"><label class="data"> ${app.lotowner.ctc.dtissued}</label></td>
+							<td class="tdborder"><label class="data"> ${app.lotowner.ctc.placeissued}</label></td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p><b>BOX 4</b></p>
+				<table class="boxpermit" width="100%">
+					<tr>
+						<td colspan="4">Republic of the Philippines ) S.S.</td>
+					</tr>
+					<tr>
+						<td colspan="4">City of Legazpi )</td>
+					</tr>
+					<tr>
+						<td align="center" colspan="4">Before me, at the City/Municipality of <label class="underline">Cebu</label> on <label class="underline">6/11/2019</label> personally appeared the following:</td>
+					</tr>
+					<tr>
+						<td colspan="4">
+							<table width="100%">
+								<tr>
+									<td width="5%"></td>
+									<td align="center">
+										<label class="underline">Elmo Nazareno</label>
+									</td>
+									<td align="center">
+										<label class="underline">0123456789</label>
+									</td>
+									<td align="center">
+										<label class="underline">6/11/2019</label>
+									</td>
+									<td align="center">
+										<label class="underline">Cebu City</label>
+									</td>
+									<td width="5%"></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td align="center">Applicant</td>
+									<td align="center">C.T.C No.</td>
+									<td align="center">Date Issued</td>
+									<td align="center">Place Issued</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td align="center" width="30%">
+										<label class="underline">Elmo Nazareno</label>
+									</td>
+									<td align="center" width="20%">
+										<label class="underline">0123456789</label>
+									</td>
+									<td align="center" width="20%">
+										<label class="underline">6/11/2019</label>
+									</td>
+									<td align="center" width="20%">
+										<label class="underline">Cebu City</label>
+									</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td align="center">
+										Licensed Architect or Civil Engineer
+									</td>
+									<td align="center">C.T.C No.</td>
+									<td align="center">Date Issued</td>
+									<td align="center">Place Issued</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td align="center">
+										(Full-Time Inspector and Supervisor of Demolition Works)
+									</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4" align="justify">whose signature appear hereinabove, known to me to be the same persons who executed this standard prescribed form and acknowledged to me that the same is their free and voluntary act and deed.</td>
+					</tr>
+					<tr>
+						<td colspan="4" style="padding-left: 50px">Witness my hand and seal on the date and place above written.</td>
+					</tr>
+					<tr>
+						<td>Doc. No.</td>
+						<td width="20%"><label class="underline">0123456789</label></td>
+						<td width="30%"></td>
+						<td rowspan="4" width="40%" align="center">
+							<label class="underline">Elmo Nazareno</label><br>
+							Notary Public (Until December<label class="underline"> 31 2019</label>)
+						</td>
+					</tr>
+					<tr>
+						<td>Page No.</td>
+						<td><label class="underline">0123456789</label></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Book No.</td>
+						<td><label class="underline">0123456789</label></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Series of</td>
+						<td><label class="underline">0123456789</label></td>
+						<td></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="page">
+	<table>
+		<tr>
+			<td width="100%">
+				<p class="title"><b>Box 5 (To be accomplished by the processing and evaluation division)</b></p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr>
+						<td width="50%">
+							Fee Paid <label class="underline"></label>
+						</td>
+						<!-- <td></td> -->
+						<td width="50%">
+							Official Receipt No. <label class="underline"></label>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Date Paid <label class="underline"></label>
+						</td>
+						<!-- <td></td> -->
+						<td>
+							Date Issued <label class="underline"></label>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p class="title"><b>Box 6</b></p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr style="height:80px;">
+						<td align="left"><b>Action Taken:</b></td>
+					</tr>
+					<tr>
+						<td>Permit is hereby issued/granted to demolish your <label class="underline"></label>subject to the following conditions:</td>
+					</tr>
+					<tr>
+						<td style="padding-left: 30px">
+							<table class="align-td-top align-text-justify" width="100%">
+								<tr>
+									<td>1.</td>
+									<td>The demolition shall be undertaken in accordance with Rule XI on protection and safety requirements for construction and demolition of building/structure of the Implementing Rules and Regulations of the National Building Code of the Philippines (P.D. 1096) and shall be under the direct responsibility of a full time supervising Architect or Civil Engineer in charge of demolition.</td>
+								</tr>
+								<tr>
+									<td>2.</td>
+									<td>The demolition shall be undertaken only after the building has been vacated and all utility lines such as electric, gas, telephone and water installations have been disconnected.</td>
+								</tr>
+								<tr>
+									<td>3.</td>
+									<td>The demolition work/s by this permit shall be completed within a period of <label></label>( ) days from starting date thereof.</td>
+								</tr>
+								<tr>
+									<td>4.</td>
+									<td>Demolition.</td>
+								</tr>
+								<tr>
+									<td colspan="2" style="padding-left: 60px">
+										<table width="100%">
+											<tr>
+												<td width="3%">a.</td>
+												<td>Precautions before demolition</td>
+											</tr>
+											<tr>
+												<td></td>
+												<td>
+													<table width="100%" class="align-text-justify">
+														<tr>
+															<td>i.</td>
+															<td>Before commencing the work of demolition of a building/structure, all gas, electric, water and other meters shall be removed and the supply lines disconnected, except such as are especially provided or required for use in connection with the work of demolition.</td>
+														</tr>
+														<tr>
+															<td>ii.</td>
+															<td>All fittings attached to the building and connected to any street lighting system, electrical supply or other utilities shall be removed.</td>
+														</tr>
+														<tr>
+															<td>iii.</td>
+															<td>All electric power shall be shutt off and electric service lines shall be cut and disconnected by the power company at or outside the property line.</td>
+														</tr>
+														<tr>
+															<td>iv.</td>
+															<td>All gas, water and other utility service lines shall be shut off and cut or capped, or otherwise controlled at or outside the building line. In each case, the utility company involved shall be notified in advance and its approval or cooperation obtained.</td>
+														</tr>
+														<tr>
+															<td>v.</td>
+															<td>No electric cable or other apparatus, other than those especially required for use in connection with the demolition work shall remain electrically charged during demolition operations. Whent it is necessary to maintain any power, water, gas, or other utility lines during the process of demolition, such lines shall be temporarily relocated and protected with substantial covering to the satisfaction of the utility company concerned.</td>
+														</tr>
+														<tr>
+															<td>vi.</td>
+															<td>All necessary steps shall be taken to prevent danger to persons arising from fire or explosion from leakage or accumulation of gas or vapor, and from flooding from uncapped water mains, sewers and/or culverts.</td>			
+														</tr>
+														<tr>
+															<td>vii.</td>
+															<td>All entrances/exits to and from the building shall be properly protected so as prevent any danger to persons engaged in the demolition work using such entrances/exits in the performance of their work.</td>
+														</tr>
+														<tr>
+															<td>viii.</td>
+															<td>Glazed sashes and glazed doors shall be removed before the start of demolition operations.</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>5.</td>
+									<td>At least five (5) days before actual demolition work is started, you are required to advise the Office of the Building Official in writing.</td>
+								</tr>
+								<tr>
+									<td>6.</td>
+									<td>Strict compliance with the above conditions is required subject to monitoring by this Office of the Building Official and revocation of this permit in case of violation.</td>
+								</tr>
+							</table>
+						</td>
+						<!-- <td class="" style="padding-left:30px" align="justify">1.The demolition shall be undertaken in accordance with Rule XI on protection and safety requirements for construction and demolition of building/structure of the Implementing Rules and Regulations of the National Building Code of the Philippines (P.D. 1096) and shall be under the direct responsibility of a full time supervising Architect or Civil Engineer in charge of demolition.<br><br>2. The demolition shall be undertaken only after the building has been vacated and all utility lines such as electric, gas, telephone and water installations have been disconnected.
+						<br><br>3. The demolition work/s by this permit shall be completed within a period of <label></label>( ) days from starting date hereof.
+						<br><br>4. Demolition.
+						<table width="100%">
+							<tr>
+								<td style="padding-left: 50px">
+									a. Precautions before demolition
+								</td>
+							</tr>
+							<tr>
+								<td>
+									i. Before commencing the work of demolition of a building/structure, all gas, electric, water and other meters shall be removed and the supply lines disconnected, except such as are especially provided or required for use in connection with the work of demolition.
+								</td>
+							</tr>
+						</table>
+						</td> -->
+					</tr>
+					<tr style="height:80px;">
+						<td><b>Permit Issued by:</b></td>
+					</tr>
+					<tr>
+						<td align="center"><b>Building official</b><br>(Signature over Printed Name)<br>Date <label class="underline"></label></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+</div>
+
+
+<style type="text/css">
+table {border-collapse: collapse;font-size: 12px; margin: 0; padding: 0;}
+* {box-sizing: border-box;-moz-box-sizing: border-box;}
+html, body {font-family: 'arial narrow';-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;-webkit-font-smoothing: antialiased;text-transform: uppercase;color: #000000;font-size: 14px;}
+h1{text-align: center;margin-top: 10px;font-size: 20pt;font-weight: 500;font-family: 'arial narrow'line-height: 35px;margin-bottom: 0px;color: #000000;}
+h2{text-align: center;font-size: 17pt}
+h3{text-align: center;text-transform: capitalize !important;margin: 0;font-weight: 600;font-family: 'arial narrow';font-size: 17px;line-height: 19px;}
+table tr td{height:23px;padding-left: 10px;padding-right: 10px;}
+table tr td input{margin-left: 40px !important;margin-bottom: 0px;}
+input[type="checkbox"]{outline: 1px solid #000;}
+p {margin: 0px;text-transform: capitalize;}
+.data{font-size: 10pt;font-weight: bold;}
+.btn-print{width: 70px;height: 40px;color: #ffffff;background: #009688;font-size: 14px;outline: none;}
+.boxpermit{border: 1px solid #000;}
+.wd{width: 692px;}
+.fwd{width: 1386px;}
+.wrap{margin-right: 60px !important;}
+.tbbody{margin-top: 10px;margin-bottom: 10px;}
+.trborder{border-bottom: 1px solid #000000;}
+.trlocation{height: 30px;}
+.tdborder{border-left: 1px solid #000;}
+.title{margin-top: 5px;margin-bottom: 5px;font-size: 10pt;}
+.underline {border-bottom: 1px solid #000000;font-weight: normal;margin-bottom: 0px; text-align: center;}
+.smallBox>tbody>tr>td{width: 23px;height: 23px;padding:0px;text-align: center;    border: solid 1px #000000}
+.nopaddingleft{padding-left: 0;}
+.nopaddingright{padding-right: 0;}
+.signature{padding:30px 70px 0px 70px;text-align: center}
+.signature label{width: 100%;border-bottom: 1px solid #000000;}
+.page {background: white;padding:10px 20px 0px 20px;width: 100%}
+.barcode{float:right;text-align:center;height: 20px; padding-right:100px;position: relative;width:20%;}
+.header {display: inline-block;margin:0 auto;width:60%;}
+.formno {float:left;width:20%;}
+.header-container{width:100%;text-align:center;}
+table .last-td:last-child td {padding-bottom:10px;}
+@page {	 margin: 0;}
+@media print {
+    .page {margin: 0;page-break-after: always;padding-top: 20px;}
+    .data{font-size: 10pt;font-weight: bold;}
+    .signature{padding: 30px 0px 0px 0px;}
+    h1{font-size: 16pt;}
+    h2{font-size: 12pt;}
+    h3{font-size: 10pt;}
+    button{display: none}
+    table tr td input {margin-left: 10px !important;margin-bottom: 0px;}
+    .title{font-size: 10pt;}
+    .wd{width: 552px;margin-right: 20px;}
+}
+
+.text-transform-none {text-transform: none !important;}
+.align-td-top tr td { vertical-align: top !important; }
+.align-text-justify tr td { text-align: justify !important; }
+
+</style>
+
+
+

@@ -1,0 +1,80 @@
+<%
+def res = [:]; 
+try {
+	def p = [:];
+	p.refno = PARAMS.refno;
+ 	p.receiptno = PARAMS.receiptno;
+
+	def svc = SERVICE.lookup("CloudPaymentService", "epayment");
+	def rct = svc.getReceiptInfo( p );
+	res.partnerid = rct.partnerid;
+	res.receiptno = rct.receiptno;
+
+	def partnerSvc = SERVICE.lookup("CloudPartnerService", "partner");
+	res.agency = partnerSvc.findById([ id: res.partnerid ]); 
+	if ( res.agency ) res.agency.remove('logo'); 
+
+} 
+catch(Throwable t) {
+	def cause = t; 
+	while ( cause != null ) {
+		if ( cause.message ) {
+			break;  
+		} else {
+			cause = cause.cause; 	
+		}
+	}
+	res.errmsg = (cause ? cause.message : t.message); 
+}
+%>
+
+<% if ( res.errmsg ) { %>
+	
+<pre>${res.errmsg}</pre>
+
+<% } else { %>
+
+
+<script>
+\$register( {id:'eor51', context: 'eor51', page:"/epayment/receipttemplates/eor51" } );
+\$register( {id:'eor56', context: 'eor56', page:"/epayment/receipttemplates/eor56" } );
+
+\$put("eor", new function() {
+	var self = this;
+	this.error;
+	this.receipt;
+	this.agency = { title: '${res.agency?.title}', group: {title:'${res.agency?.group?.title}' } };
+
+	this.loadReceipt = function( handler ) {
+		var svc = Service.lookup("${res.partnerid}:EPaymentService");
+		svc.getReceipt( {receiptno: "${res.receiptno}"}, function(s,o) {
+			if( s.status =="ERROR") {
+				self.error = "Receipt does not exist";
+			}
+			else {
+				self.error = null;
+				self.receipt = o;
+				handler(self.receipt);
+			}
+		});
+	};
+
+	this.onload = function() {
+		this.loadReceipt( function(rct) {
+			if ( rct.formno == null || rct.formno=='' ) rct.formno = '51';
+			else if ( (typeof rct.formno) != 'string' ) rct.formno = '51'; 
+			
+			window.location.hash = "eor"+rct.formno;
+		});
+	};
+
+});
+</script>
+
+<div r:context="eor" r:visibleWhen="#{error!=null}" style="display:none;">
+	<label r:context="eor">#{error}</label>
+</div>
+
+<div id="content"></div>
+
+<% } %> 

@@ -1,0 +1,8 @@
+Steps
+==================
+1. Mount a local ftp directory to node-jasper-server
+2. Build report, save report as file to node public directory 
+   and return fileid 
+3. Serve reports on url "serveripaddress:port/reports/:fileid 
+
+

@@ -1,0 +1,13 @@
+<schema>
+	<element tablename="building_application_transmittal">
+		<field name="objid" primary="true" visible="true"/>
+		<field name="appid" required="true" />
+		<field name="state" required="true" type="integer" />		
+		<field name="type" required="true" />
+		<field name="taskid" required="true" />
+		<field name="dtcreated" required="true" />
+		<field name="createdby_objid" required="true" />
+		<field name="createdby_name" required="true" />
+	</element>
+</schema>
+

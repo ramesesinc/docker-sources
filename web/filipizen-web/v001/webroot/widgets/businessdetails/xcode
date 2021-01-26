@@ -1,0 +1,49 @@
+                       
+                                      
+    <%OPTIONS.items.each{o->%>                   
+		<div class="row">
+          <div class="col-md-12">
+          	<div class="row">
+          		<div class="col-md-5">
+			        <form action="#" method="post" id="paymentOption">
+			            <div class="row">
+			              <label class="col-md-4 col-xs-5 "><STRONG>BIN</STRONG><span class="pull-right">:</span></label>
+			              <div class="col-sm-8 nopadleft">
+			                 ${o.business?.bin}
+			              </div>
+			            </div>
+			            <div class="row">
+			              <label class="col-md-4 col-xs-5  "><STRONG>Owner</STRONG> <span class="pull-right">:</span></label>
+			              <div class="col-sm-8 nopadleft">
+			                ${o.business?.owner}
+			              </div>
+			            </div>
+			            <div class="row">
+			              <label class="col-md-4 col-xs-5  "><STRONG>Business Address</STRONG> <span class="pull-right">:</span></label>
+			              <div class="col-sm-8 nopadleft">
+			                ${o.business?.address.bldgno} ${o.business?.address.bldgname} ${o.business?.address.unitno} ${o.business?.address.street} ${o.business?.address.barangay.name} ${o.business?.address.city}
+			              </div>
+			            </div>
+			        </form>
+			  </div>
+			  <div class="col-md-6">
+			    <form action="#" method="post" id="paymentOption">
+			            <div class="row">
+			              <label class="col-md-5 col-xs-5 "><STRONG>Last Year Renewed</STRONG><span class="pull-right">:</span></label>
+			              <div class="col-sm-7 nopadleft">
+			                  
+			              </div>
+			            </div>
+			            <div class="row">
+			              <label class="col-md-5 col-xs-5  "><STRONG>Expiry date</STRONG> <span class="pull-right">:</span></label>
+			              <div class="col-sm-7 nopadleft">
+			               
+			              </div>
+			            </div>
+			        </form>
+			  </div>
+          	</div>
+        </div>
+      </div>
+    
+    <%}%>

@@ -1,0 +1,46 @@
+<%
+	def partnerSvc = SERVICE.lookup( "CloudPartnerService", "partner" );
+	def agency = partnerSvc.findById([ id: PARAMS.orgcode ]);
+%>
+
+<style>
+.caption-class { font-weight: bolder; width:200px; }
+.output-class { }
+</style>
+
+<div style="padding-top:10px">
+	<h2 style="color:red;">Payment Success</h2>
+	<div>
+		<label class="caption-class">Agency Code</label>
+		<label class="output-class">${agency.title}, ${agency.group.title}</label>
+	</div>
+	<div>
+		<label class="caption-class">Payment Order Ref No</label>
+		<label class="output-class">${PARAMS.paymentrefid}</label>
+	</div>
+	<div>
+		<label class="caption-class">Particulars</label>
+		<label class="output-class">${PARAMS.particulars}</label>
+	</div>
+	<div>
+		<label class="caption-class">Partner Bank</label>
+		<label class="output-class">${PARAMS.paypartnercode}</label>
+	</div>
+	<div>
+		<label class="caption-class">Txn Ref No</label>
+		<label class="output-class">${PARAMS.traceid}</label>
+	</div>	
+	<div>
+		<label class="caption-class">Txn Date</label>
+		<label class="output-class">${PARAMS.tracedate}</label>
+	</div>		
+	<div>
+		<label class="caption-class">Amount</label>
+		<label class="output-class">${PARAMS.amount}</label>
+	</div>
+
+	<div>
+	Click <a href="/epayment/eor?refno=${PARAMS.paymentrefid}" target="eor-${PARAMS.paymentrefid}">/epayment/eor?refno=${PARAMS.paymentrefid}</a> to view the EOR.
+	</div>
+</div>
+

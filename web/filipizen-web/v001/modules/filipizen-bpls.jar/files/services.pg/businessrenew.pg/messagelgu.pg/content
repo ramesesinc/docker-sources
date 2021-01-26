@@ -1,0 +1,33 @@
+<script>
+\$put( "messagelgu",
+   new function() {
+    this.callbackHandler;
+    this.text;
+    this.submit = function() {
+    window.location = "/partners/${PARAMS.name}/services/business/businessrenew/messagesent";
+    if(this.callbackHandler) this.callbackHandler(this.text);
+    return "_close";
+    }
+
+    this.doClose = function(){
+      return "_close"
+    }
+
+   }
+ );  
+</script>
+
+  
+
+
+<textarea class="col-md-12" id="new_message" name="new_message" placeholder="Type in your message" rows="5"></textarea>
+<div style="padding-top:20px;">
+  <button class="btn btn-primary" r:context="messagelgu" r:name="submit">Send</button>
+  <input type="button" r:context="messagelgu" r:name="doClose" value="Cancel" class="btn btn-warning"/>   
+</div>
+
+
+ 
+
+
+

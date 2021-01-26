@@ -1,0 +1,12 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import obo.facts.*;
+import java.text.*;
+
+public class OnlineBuildingRequirementService  {
+
+	
+
+
+}

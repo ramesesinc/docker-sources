@@ -1,0 +1,86 @@
+<%
+def respcode = 0; 
+def respmsg  = 'ok'; 
+def data = null; 
+try { 
+    def svc = SERVICE.lookup('FilipizenPaymentService'); 
+    def resp = svc.verifyPaymentOrder( PARAMS ); 
+    if ( !resp ) throw new Exception('paymentrefid not found'); 
+
+    data = [
+        paymentrefid: resp.paymentrefid, orgcode: resp.orgcode, 
+        txntype: resp.txntype, txntypename: resp.txntypename, 
+        amount: resp.amount 
+    ]; 
+
+    respcode = 0; 
+    respmsg = ''; 
+} catch(Throwable t) { 
+    respcode = 1; 
+    respmsg = t.message; 
+    t.printStackTrace(); 
+} 
+
+def bcdata = null; 
+def qrdata = null; 
+if ( respcode == 0 ) {
+    def list = []; 
+    def YMD = new java.text.SimpleDateFormat('yyyy-MM-dd'); 
+    def YMDHMS = new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm:ss'); 
+    data.each{ k,v-> 
+        if ( v instanceof String ) { 
+            list << ('"'+ k +'":"'+ v +'"'); 
+        } else if ( v instanceof Number ) { 
+            list << ('"'+ k +'": '+ v ); 
+        } else if ( v instanceof Boolean ) { 
+            list << ('"'+ k +'": '+ v ); 
+        } else if ( v instanceof java.sql.Timestamp ) { 
+            list << ('"'+ k +'": "'+ YMDHMS.format(v) +'"'); 
+        } else if ( v instanceof java.util.Date ) { 
+            list << ('"'+ k +'": "'+ YMD.format(v) +'"'); 
+        } 
+    }
+
+    bcdata = data.paymentrefid.toString(); 
+    qrdata = "{}";
+    if ( list ) { 
+        qrdata = '{'+ list.join(', ') +'}'; 
+    } 
+
+    qrdata = new com.rameses.util.Base64Cipher().encode( qrdata.toString() ); 
+}
+%>
+
+<br/> 
+<div class="container">
+    <div class="row code-container">
+        <div class="col-md-12">
+            <% if ( !(respcode == 0)) { %> 
+                <h2> Payment Order transaction not found. Please check </h2> 
+            <% } %> 
+
+            <% if ( respcode == 0 ) { %>  
+
+            <div id="outPopUp">
+                <div class="cbarcode">
+                    <img id="barcode" class="img-responsive"/>
+                    <h4>${bcdata}</h4> 
+                </div>
+                <div class="qrcode">
+                    <img id='qrcode' src="https://api.qrserver.com/v1/create-qr-code/?data=${qrdata}&amp;size=250x250" width="250" height="250" class="img-responsive"/>
+                </div>
+            </div>  
+            <% } %> 
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+<% if ( respcode == 0 ) { %>  
+    \$(document).ready(function(){
+        \$("#barcode").JsBarcode("${bcdata}",{width:3,height:165});
+    });
+<% } %> 
+
+</script>

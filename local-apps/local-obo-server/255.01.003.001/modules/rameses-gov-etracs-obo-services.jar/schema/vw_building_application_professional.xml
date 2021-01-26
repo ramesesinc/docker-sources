@@ -1,0 +1,18 @@
+<schema>
+	<element tablename="vw_building_application_professional">
+		<field name="objid" primary="true" />
+		<field name="appid" />
+		<field name="entityid" />
+		<field name="profession" />
+		
+		<field name="name" />
+		<field name="lastname" />
+		<field name="firstname" />
+		<field name="middlename" />
+		<field name="address_text" />
+		<field name="tin" />
+		
+		<complex name="ptr" serializer="default"/>
+		<complex name="prc" serializer="default"/>
+	</element>
+</schema>

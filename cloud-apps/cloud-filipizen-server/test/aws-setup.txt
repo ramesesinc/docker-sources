@@ -1,0 +1,33 @@
+Setup Credentials:
+
+Thee shared credentials file on Linux, Unix, and macOS: ~/.aws/credentials
+
+  1. Create ~/.aws/credentials file
+  2. Add settings
+
+      [default]
+      aws_access_key_id = <YOUR_ACCESS_KEY_ID>
+      aws_secret_access_key = <YOUR_SECRET_ACCESS_KEY>
+      region = us-east-1
+
+3. Edit nginx (cloud) add setting:
+
+    location /filipizen/attachment/upload {
+        include conf.d/proxy.conf;
+        proxy_pass http://${app_server_ip}:5000/filipizen/attachment/upload;
+    }
+
+    location /filipizen/attachment/download {
+        include conf.d/proxy.conf;
+        proxy_pass http://${app_server_ip}:5000/filipizen/attachment/download$is_args$args;
+    }
+
+    location /filipizen/attachment/delete {
+        include conf.d/proxy.conf;
+        proxy_pass http://${app_server_ip}:5000/filipizen/attachment/delete$is_args$args;
+    }
+
+    location /filipizen/attachment/list {
+        include conf.d/proxy.conf;
+        proxy_pass http://${app_server_ip}:5000/filipizen/attachment/list$is_args$args;
+    }

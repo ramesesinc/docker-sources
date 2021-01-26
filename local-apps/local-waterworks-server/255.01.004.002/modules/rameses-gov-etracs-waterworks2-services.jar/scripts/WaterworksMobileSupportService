@@ -1,0 +1,104 @@
+import com.rameses.annotations.*;
+import java.rmi.server.*;
+import com.rameses.util.*;
+import com.rameses.functions.*;
+import java.text.*;
+
+class WaterworksMobileSupporService {
+
+	@Service("WaterworksBillingRuleService")
+	def ruleSvc;
+
+	@ActiveDB("wm_mobile_reading")
+	def mobileEm;
+
+	@DataContext("waterworks_consumption")
+	def consumptionEm;
+
+	@DataContext("waterworks_stubout")
+	def stuboutEm;
+
+	@DataContext("waterworks_account_info")
+	def acctInfoEm;
+
+	@DataContext("waterworks_bill")
+	def billEm;
+
+	@DataContext("waterworks_batch_billing")
+	def batchBillingEm;
+
+	@DataContext("waterworks_billitem")
+	def billItemEm;
+
+	@ProxyMethod
+	public def getBatch( def o ) {
+		if( !o.readerid ) {
+			return [ status: 'ERR', message: "Please pass readerid" ];
+		};
+		if( !o.batchid ) {
+			return [ status: 'ERR', message: "Please pass batchid" ];
+		};
+		def batch = mobileEm.findBatch( [batchid: o.batchid ] );
+		if(!batch) {
+			return [ status: 'ERR', message: "Batch not found" ];
+		}
+		if( batch.mobilereading != 1 ) {
+			return [ status: 'ERR', message: "Batch is not yet available for download" ];
+		}	
+		if(batch.readerid != o.readerid) {
+			return [ status: 'ERR', message: "This batch is not for this reader" ];
+		}
+		batch.stubouts = mobileEm.getStubouts( [batchid: batch.objid] );
+		def tc = mobileEm.findBatchCount( [batchid: batch.objid]  );
+
+		batch.recordcount = tc.count;
+		return [status: 'OK', data: batch];
+	}
+
+	@ProxyMethod
+	public def getBatchItems( def o ) {
+		if(!o.batchid ) return [ status: 'ERR', message: "batchid is required in getBatchItems" ];
+		if(!o.start ) return [ status: 'ERR', message: "start is required in getBatchItems" ];
+		if(!o.limit ) return [ status: 'ERR', message: "limit is required in getBatchItems" ];
+
+		def list = mobileEm.getItems( o );
+		if(!list) return [ status: 'ERR', message: "No list items found" ];
+		list.each { bill->
+			bill.billitems = billItemEm.find( [billid: bill.objid] ).list().collect{  bi->
+				[itemid:bi.item.objid, itemtitle:bi.item.title, amount: bi.amount, year: bi.year, month: bi.month];
+			};	
+		}
+		return [status: 'OK', data: list ];
+	}
+
+	@ProxyMethod
+	public def startUploadBatch( def o ) {
+		if(!o.data ) return [ status: 'ERR', message: "data is required in startUploadBatch" ];
+		o.data.stubouts {
+			stuboutEm.find( [objid: it.stuboutid ] ).update( [reading: it.reading] );
+		}
+	}
+
+	@ProxyMethod
+	public def uploadReadings( def o ) {
+		if(!o.data ) return [ status: 'ERR', message: "data is required in uploadReadings" ];
+		o.data.each {
+			def bill = billEm.find([objid: it.objid]).first();
+			consumptionEm.find( [objid: bill.consumptionid ] ).update( [reading: it.reading] );
+			def a = [:];
+			if( it.lng ) a.lng = it.lng;
+			if( it.lat ) a.lat = it.lat;
+			if(a) {
+				acctInfoEm.find( [objid: bill.acctinfoid ] ).update( a );
+			}	
+		}
+	}
+
+	@ProxyMethod
+	public def closeUploadBatch( def o ) {
+		if(!o.data ) return [ status: 'ERR', message: "data is required in closeUploadBatch" ];
+		batchBillingEm.find( [objid: data.objid ] ).update([mobilereading: 0]);
+	}
+
+
+}

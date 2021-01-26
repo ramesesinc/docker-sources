@@ -1,0 +1,98 @@
+'<table>
+		<tr>
+			<td>
+				<p class="title">Box 7 (To be accomplished by the processing and evaluation division)</p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr class="trborder" style="height:40px;">
+						<td class="allcaps">Received by:</td>
+						<td class="tdborder allcaps">Date:</td>
+					</tr>
+					<tr style="height:60px;">
+						<td colspan="2" align="center"><p class="allcaps-bold">FIVE (5) SETS OF SANITARY DOCUMENTS</p></td>
+					</tr>
+					<tr>
+						<td><p class="allcaps"><input type="checkbox"> Sanitary Plans and Specifications</p></td>
+						<td><p class="allcaps"><input type="checkbox"> Cost Estimates</p></td>
+					</tr>
+					<tr class="last-td">
+						<td><p class="allcaps"><input type="checkbox"> Bill of Materials</p></td>
+						<td><p class="allcaps"><input type="checkbox"> Others</p> (Specify) <p class="underline civilothers"></p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p class="title">Box 8</p>
+				<table class="boxpermit" align="center" width="100%">
+					<tbody>
+						<tr class="trborder first-td last-td">
+							<td colspan="6" align="center"><p class="allcaps-bold">Progress Flow</p></td>
+						</tr>
+					</tbody>
+					<tr class="trborder allcaps">
+						<td class="tdborder" rowspan="2"></td>
+						<td align="center" class="tdborder" colspan="2">in</td>
+						<td align="center" class="tdborder" colspan="2">out</td>
+						<td align="center" class="tdborder" rowspan="2">Processed by:</td>
+					</tr>
+					<tr class="trborder allcaps">
+						<td align="center" class="tdborder">Date</td>
+						<td align="center" class="tdborder">Time</td>
+						<td align="center" class="tdborder">Date</td>
+						<td align="center" class="tdborder">Time</td>
+					</tr>
+					<tr class="trborder">
+						<td><p class="allcaps">Sanitary</p></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+					</tr>
+					<tr>
+						<td><p class="allcaps">Others</p> (Specify)</td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p class="title">Box 9</p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr style="height:80px;">
+						<td align="left"><p class="allcaps-bold">Action Taken:</p></td>
+					</tr>
+					<tr>
+						<td><p class="allcaps-bold">Permit is hereby issued subject to the following:</p></td>
+					</tr>
+					<tr>
+						<td>
+							<ol>
+								<li>That the proposed sanitary works shall be in accordance with the sanitary plans filed with this Office and in conformity with tha latest Code on Sanitation of the Philippines, the National Building Code and its IRR.</li>
+								<li>That prior to any commencement of sanitary works, a duly accomplished prescribed <b>"Notice of Construction"</b> shall be submitted to the Office of the Building  Official.</li>
+								<li>That upon completion of sanitary works, the licensed supervisor/in-charge shall submit the entry to the logbook duly signed and sealed to the Building Official including as-built plans and other documents, and shall also accomplish the Certificate of Completion stating that the sanitary works conform to the provision of the Code on Sanitation, the National Building Code and its IRR.</li>
+								<li>That this permit is null and void unless accompanied by the building permit.</li>
+							</ol>
+						</td>
+					</tr>
+					<tr style="height:80px;">
+						<td><p class="allcaps-bold">Permit Issued by:</p></td>
+					</tr>
+					<tr>
+						<td align="center">
+							<p class="underline bldgofficial"></p><br>
+							<p class="allcaps-bold">Local building official</p><br>
+							<p>(Signature over Printed Name)</p><br>
+							<p>Date</p><p class="underline bldgofficial-date"></p>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>

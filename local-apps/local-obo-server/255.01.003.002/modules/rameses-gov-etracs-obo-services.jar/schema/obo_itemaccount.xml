@@ -1,0 +1,17 @@
+<schema>
+	<element tablename="obo_itemaccount">
+		<field name="objid" primary="true" visible="true" caption="ID"/>
+		<field name="title" searchable="true"/>
+		<field name="item_objid" />
+		<field name="item_code" />
+		<field name="item_title" />
+		<field name="item_fund_objid" />
+		<field name="item_fund_title" />
+		<field name="sortorder" />	
+
+		<complex name="reporttags" ref="obo_itemaccount_report_tag" jointype="one-to-many"> 
+			<key field="objid" target="itemid" />
+		</complex>	
+		
+	</element>
+</schema>	

@@ -1,0 +1,9 @@
+AWS DATA {
+  AcceptRanges: 'bytes',
+  LastModified: 2020-12-22T05:03:17.000Z,
+  ContentLength: 90479,
+  ETag: '"540351745043415aa3f0847c7db640c8"',
+  ContentType: 'application/octet-stream',
+  Metadata: {},
+  Body: <Buffer>
+}

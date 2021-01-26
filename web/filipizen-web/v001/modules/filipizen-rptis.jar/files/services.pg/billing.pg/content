@@ -1,0 +1,169 @@
+
+<link href="/res/rptis/rptbilling.css" type="text/css" rel="stylesheet" />
+<style>
+	.year {
+		padding-top:10px;width:80px;height:25px;padding:0px;cellpadding-right:5px;
+	}
+	.tdno {
+		font-size:1.5rem;
+		font-weight:bold;
+	}
+</style>
+<script>
+	\$register( {id:'selectyearqtr', context:'selectyearqtr', page: '/rptis/fragments/selectyearqtr'});
+
+	\$put( "billing", new function() {
+
+		var self = this;
+		this.error;
+		this.mode;
+		this.bill;
+		this.refno;
+		this.year;
+		this.qtr;
+		this.barcode;
+		this.payorderdetails;
+		this.show_owner_name = true;
+    	this.show_owner_address = true;
+		this.orgcode = "${PARAMS.info.id}";    	
+		this.lgu = {title:"${PARAMS.info.title}", group: "${PARAMS.info.group.title}"};
+		this.hasparam = false;
+		this.txntype = "rptcol";
+
+		var svc;
+
+		this.loadBill = function() {
+			if(!svc) svc = Service.lookup(self.orgcode + ":EPaymentService");
+
+			var params = {refno : this.refno, txntype: this.txntype };
+			if(this.qtr) params.billtoqtr = this.qtr;
+		    if(this.year) params.billtoyear = this.year;
+			return svc.getBilling( params, function(s,o) {
+				if( s.status == "ERROR" ) {
+					var fullypaid = false;
+					fullypaid = s.msg.match(/fully|unpaid/) != null;
+					if (fullypaid) {
+						self.mode = "initial-advance";
+						self.error = null;
+					} else {
+						self.error = s.msg;
+					}
+				}
+				else {
+					self.error = null;
+					self.mode = "viewbill";
+					self.payorderdetails = o;
+					self.bill = o.info;
+					self.bill.amount = o.amount;
+					self.barcode = "56001:"+self.bill.billno; 					
+				}
+				self._controller.refresh();					
+			});
+		}
+
+		this.viewInitial = function() {
+			self.mode = "initial";
+		}
+
+		this.showPayOption = function() {
+			var m = {};
+			m.handler = function(o) {
+				self.year = o.year;
+				self.qtr = o.qtr;
+				self.loadBill();
+			};
+			m.fromyear = self.bill.fromyear;
+			m.toyear = self.bill.toyear;
+			m.fromqtr = self.bill.fromqtr;
+			return new PopupOpener( "selectyearqtr", m , {title: 'Pay Option'})
+		}
+
+		this.onload = function() {
+			this.refno = WindowUtil.getParameter("refno");
+			this.qtr = WindowUtil.getParameter("qtr");
+    		this.year = WindowUtil.getParameter("year");
+			if(this.refno) {
+				this.hasparam = true;
+				this.loadBill(); 
+			}
+			else {
+				this.mode = "initial";
+			}	
+		}
+
+		this.printBill = function() {
+			window.print();	
+		}
+
+		this.createPaymentOrder = function() {
+		    var pp = {};
+		    pp.refno = this.refno;
+		    pp.orgcode = self.orgcode;
+		    pp.origin = "filipizen";
+		    pp.txntype = this.txntype;
+		    if(this.qtr) pp.billtoqtr = this.qtr;
+		    if(this.year) pp.billtoyear = this.year;
+		    return svc.createPaymentOrder( pp, function(s,o) {
+		        if( s.status == "ERROR" ) {
+		          alert("error " + s.msg );
+		        }
+		        else {
+		          var refno = o.objid;
+		          WindowUtil.load( "/epayment/paymentorder", {refno: refno});          
+		        }  
+		    });
+		}
+
+	})
+</script>
+<script src="/res/partner/JsBarcode.code128.min.js"></script>
+
+
+<div r:context="billing" r:visibleWhen="#{error!=null}">
+  <label r:context="billing" style="color:red;">#{error}</label>
+</div>
+
+<div r:context="billing" r:visibleWhen="#{mode == 'initial'}" style="display:none;">
+	<div class="form">
+	  @wx:text(caption:'Specify Tax Decalartion No', context:'billing', name:'refno', inputClass:'searchtext')
+	</div>
+	@wx:button( caption:'Submit', context:'billing', name:'loadBill')
+</div>
+
+<div r:context="billing" r:visibleWhen="#{mode == 'initial-advance'}" style="display:none;">
+	<div class="form">
+	  <div style="font-size:1.5rem;padding-bottom:15px;">
+	  The associated ledger is fully paid for the current year.<br/> 
+	  To pay in advance, specify the Year to pay and click on Submit.
+	  </div>
+	  <div>
+	  	@wx:label(caption:'Tax Declaration No.', context:'billing', expr:'#{refno}', inputClass:'tdno')
+	  	@wx:integer(caption:'Year to Pay', context:'billing', name:'year', inputClass:'year')
+	  </div>
+	</div>
+	@wx:button( caption:'Submit', context:'billing', name:'loadBill')
+</div>
+
+
+<div r:context="billing" r:visibleWhen="#{mode == 'viewbill'}" style="display:none;">
+	<div class="print">
+		<div class="form">
+			@wx:label( caption:'Bill No', context:'billing', expr:'#{bill.billno}' )	
+			@wx:label( caption:'Bill Date', context:'billing', expr:'#{bill.billdate}' )	
+			@wx:label( caption:'TD No', context:'billing', expr:'#{bill.tdno}' )	
+			@wx:label( caption:'Full PIN', context:'billing', expr:'#{bill.fullpin}' )	
+			@wx:label( caption:'Owner', context:'billing', expr:'#{bill.taxpayer.name }' )	
+			@wx:label( caption:'Owner Address', context:'billing', expr:'#{bill.taxpayer.address }', visibleWhen:'#{show_owner_address == true }' )	
+			@wx:label( caption:'Bill Period', context:'billing', expr:'#{bill.billperiod }' )	
+			@wx:label( caption:'Amt Due', context:'billing', expr:'#{bill.amount.formatDecimal&#40;&#41;}' )	
+		</div>
+	 </div>		
+	@wx:button( caption: 'Back', context:'billing', name: 'viewInitial', visibleWhen:'#{hasparam == false}' )
+	@wx:button( caption: 'Print Bill', context:'billing', name: 'printBill', visibleWhen:'#{ bill.amount > 0}' )
+	@wx:button( caption: 'Pay Option', context:'billing', name: 'showPayOption' )
+	@wx:button( caption: 'Proceed for Payment', context:'billing', name: 'createPaymentOrder', visibleWhen:'#{ bill.amount > 0}' )
+</div>
+
+
+
+

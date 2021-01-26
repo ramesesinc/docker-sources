@@ -1,0 +1,34 @@
+<%
+def params = [:];
+def errmsg = null; 
+try {
+	//get the partner so we can go back to the payment order page
+	def svc = SERVICE.lookup( "CloudPaymentService", "epayment" );
+	def po = svc.getPaymentOrder([ refno: PARAMS.MerchantRefNo ]);
+	def partnerSvc = SERVICE.lookup( "CloudPartnerService", "partner" );
+	def agency = partnerSvc.findById([ id: po?.orgcode.toString() ]);
+
+	params.paymentrefid = PARAMS.MerchantRefNo; 
+	params.message = (PARAMS.message ? PARAMS.message : '');
+	params.paymentpartnercode = 'LBP'; 
+	params.orgcode =  po?.orgcode; 
+	params.agencylink =  agency?.group?.name +'_' + agency?.name;
+	params.agencytitle =  agency?.title +', '+ agency?.group?.title; 
+
+	if( PARAMS.Status ) params.errcode = PARAMS.Status;
+	else if ( PARAMS.status ) params.errcode = PARAMS.status; 
+} 
+catch(Throwable t) {
+	params.message = t.message; 
+}
+%>
+
+<form id="postform" method="POST" action="/epayment/payerror">
+<%params.each{ k,v-> %>
+	<input type="hidden" name="${k}" value="${v}"/>
+<%}%>
+</form>
+
+<script> 
+\$('#postform').submit();     
+</script>

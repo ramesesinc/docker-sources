@@ -1,0 +1,13 @@
+Bai dili nako ma test ang output kay di ko kamao mogamit sa Base64 ni worgie. Anyways, pwede cguro nimo ma test:
+
+1. Unzip the file.
+2. Run the build.sh 
+3. Run docker-compose up.
+4. Access url as follows: http://localhost:8088/osiris3/json/enterprise/JasperReportService.generateReport?param=1
+
+You can edit the file at = jasper-report-services.jar/scripts/JasperReportService
+
+Jasper report is located at reports/obo/sample1.jasper. tapad ang jrxml source. 
+
+Pwede nimo ma test return encode bytes as base64 then e decode sa node then write sa iya response para mo display sa browser.
+

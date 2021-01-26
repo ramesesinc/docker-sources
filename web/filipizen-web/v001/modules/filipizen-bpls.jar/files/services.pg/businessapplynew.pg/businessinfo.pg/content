@@ -1,0 +1,129 @@
+<%
+   def selectedbusiness = [];
+    selectedbusiness << [title:"A", selectname:"ACCOUNTING & AUDITING", no:1];
+    selectedbusiness << [title:"A", selectname:"AERIAL SPRAYING", no:2];
+    selectedbusiness << [title:"A", selectname:"AUTO REPAIR & ELECTRICAL SHOP", no:3];
+
+  def groups = selectedbusiness.collect{ it.title }.findAll{( it )}.unique().sort{ it }  
+
+%>
+<section id="services" class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+              <div class="container">
+                  <br>
+                  <br>
+                  <div class="stepwizard">
+                      <div class="stepwizard-row setup-panel">
+                        <div class="stepwizard-step">
+                          <a href="#step-1" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                          <p>Step 1</p>
+                        </div>
+                        <div class="stepwizard-step">
+                          <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                          <p>Step 2</p>
+                        </div>
+                        <div class="stepwizard-step">
+                          <a href="#step-3" type="button" class="btn btn-primary btn-circle">3</a>
+                          <p>Step 3</p>
+                        </div>
+                        <div class="stepwizard-step">
+                          <a href="#step-4" type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                          <p>Step 4</p>
+                        </div>
+                      </div>
+                  </div>
+                  <br>
+                  <br>
+                  <form role="form" action="" method="post">
+                    <div class="row setup-content" id="step-2">
+                  
+                          <h1> Business Information</h1>
+                          <hr>
+                            <h4>Please Complete the following Business Information</h4>
+                            <hr>
+                            <div class="general-box">
+                              <div class="col-md-4">
+                                No. of Male Employees
+                              </div>
+                              <div class="col-md-4">
+                                <input type="text" class="business-input" placeholder="" />
+                              </div>  
+                            </div>
+                            <div class="general-box">
+                              <div class="col-md-4">
+                                No. of Female Employees
+                              </div>
+                              <div class="col-md-4">
+                                <input type="text" class="business-input" placeholder="" />
+                              </div>  
+                            </div>
+                            <div class="general-box">
+                              <div class="col-md-4">
+                                Asset Size
+                              </div>
+                              <div class="col-md-4">
+                                <input type="text" class="business-input" placeholder="" />
+                              </div>  
+                            </div>
+                            <div class="general-box">
+                              <div class="col-md-4">
+                                Business Area
+                              </div>
+                              <div class="col-md-4">
+                                <input type="text" class="business-input" placeholder="" />
+                              </div>  
+                            </div>
+                            <hr>
+                            <div class="container">
+                              <div class="row">
+                                  <div class="col-md-9">
+                                    <%
+                                      groups.each{ k -> 
+                                         def v = selectedbusiness.findAll{( it.title==k )}.sort{ it.title }
+                                      %>  
+                                    <%v.each{o->%>
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                              <div class="row">
+                                                  <div class="col-md-12">
+                                                      <h4><strong>${o.selectname}</strong></h4>
+                                                  </div>
+                                              </div>
+                                              <div class="row post-content">
+                                                  <div class="col-md-9">
+                                                     <div class="col-md-12">
+                                                        <div class="general-box">
+                                                          <div class="col-md-4">
+                                                            Capital
+                                                          </div>
+                                                          <div class="col-md-4">
+                                                            <input type="text" class="business-input" placeholder=""/>
+                                                          </div>  
+                                                        </div>
+                                                      </div> 
+                                                  </div>
+                                              </div>
+                                          </div>
+                                        </div>
+                                        <%}%>  
+                                    <%}%>   
+                                  </div>
+                              </div>
+                          </div>    
+                    </div>
+                </form>
+              </div>
+            </div>
+        </div>
+        <div style="margin-bottom:100px;">
+          <a href="/partners/${PARAMS.name}/services/business/businessapplynew/selectedlinebusiness" class="btn btn-next nextBtn btn-lg pull-left">Back</a>
+        <a href="/partners/${PARAMS.name}/services/business/businessapplynew/businessaddress" class="btn btn-next nextBtn btn-lg pull-left">Next</a>
+        </div>
+        
+    </div>
+</section>
+
+
+

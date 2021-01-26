@@ -1,0 +1,27 @@
+<schema>
+	<element tablename="waterworks_batch_billing">
+		<field name="objid" primary="true" caption="Control No" visible="true"/>
+		
+		<field name="state" required="true"/>
+		
+		<complex name="subarea" ref="waterworks_subarea" jointype="many-to-one" includefields="code,area.objid,area.code" required="true">
+			<key field="subareaid" target="objid" />
+		</complex> 
+
+		<field name="reader_objid" />
+		<field name="reader_name" caption="Reader" />
+		<field name="readingdate" caption="ReadingDate"/>
+		<field name="mobilereading" type="integer"/>
+
+		<complex name="period" ref="waterworks_billing_period" jointype="many-to-one" required="true">
+			<key field="periodid" target="objid"/>
+		</complex>
+
+		<field name="taskid" />
+		<complex name="task" ref="waterworks_batch_billing_task" jointype="many-to-one" required="false">
+			<key field="taskid" target="taskid" />
+		</complex>
+		
+	</element>
+</schema>
+

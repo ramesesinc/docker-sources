@@ -1,0 +1,108 @@
+<%def app = PARAMS.app; %>
+<table  width="100%" class="tblscope">
+	<tr class="first-td">
+		<td colspan="9"><p class="allcaps-bold">Scope of work</p></td>
+	</tr>
+	<tr>
+		<td colspan="3"><p class="allcaps"><input type="checkbox"> New Construction</p></td>
+		<td colspan="4"><p class="allcaps"><input type="checkbox"> Renovation</p></td>
+		<td colspan="2"><p class="allcaps"><input type="checkbox"> Demolition</p></td>
+	</tr>
+	<tr>
+		<td colspan="3"><p class="allcaps"><input type="checkbox"> Erection</p></td>
+		<td colspan="4"><p class="allcaps"><input type="checkbox"> Conversion</p></td>
+		<td colspan="2"><p class="allcaps"><input type="checkbox"> Ancillary Buildings/Structure</p></td>
+	</tr>
+	<tr>
+		<td colspan="3"><p class="allcaps"><input type="checkbox"> Addition</p></td>
+		<td colspan="4"><p class="allcaps"><input type="checkbox"> Repair</p></td>
+		<td colspan="2"><p class="allcaps"><input type="checkbox"> Other (specify)</p> <p class="underline civilothers"></p></td>
+	</tr>
+	<tr class="trborder last-td">
+		<td colspan="3"><p class="allcaps"><input type="checkbox"> Alteration</p></td>
+		<td colspan="4"><p class="allcaps"><input type="checkbox"> Moving</p> <p class="underline moving"></p></td>
+		<td colspan="2"><p class="allcaps"><input type="checkbox"> <p class="underline others"></p></td>
+	</tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" width="100%">
+	<tbody>
+		<tr>
+			<td colspan="2" class="tdinside">
+				<p class="title">Box 2 (To be accomplished by the design professional)</p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr>
+						<td colspan="9"><p class="allcaps-bold">USE OR CHARACTER OF OCCUPANCY</p></td>
+					</tr>
+					<tr class="allcaps">
+						<td colspan="3"><p class="allcaps">A. Type of Display - </p></td>
+						<td colspan="2">1. <input type="checkbox" <%if(app.telecom_system !=null){%>checked<%}%>> Single Face</td>
+						<td colspan="2">2. <input type="checkbox" <%if(app.telecom_system !=null){%>checked<%}%>> Double Face</td>
+						<td colspan="2">3. <input type="checkbox" <%if(app.telecom_system !=null){%>checked<%}%>> Multi-Media</td>
+					</tr>
+					<tr class="allcaps">
+						<td colspan="3">1. <input type="checkbox" <%if(app.neon!=null){%>checked<%}%>> Neon</td>
+						<td colspan="2">2. <input type="checkbox" <%if(app.illuminated !=null){%>checked<%}%>> Illuminated</td>
+						<td colspan="2">3. <input type="checkbox" <%if(app.painted_on !=null){%>checked<%}%>> Painted-on </td>
+						<td colspan="2">4. <input type="checkbox" <%if(app.other !=null){%>checked<%}%>> Other </td>
+					</tr>
+					<tr class="allcaps">
+						<td colspan="9"><p class="allcaps-bold">B. Type of Installation</p></td>
+					</tr>
+					<tr class="allcaps">
+						<td colspan="5">1. <input type="checkbox" <%if(app.telecom_system !=null){%>checked<%}%>> Business Sign, Wall Type </td>
+						<td colspan="2">4. <input type="checkbox" <%if(app.telecom_system !=null){%>checked<%}%>> Business Sign, Temporary </td>
+						<td colspan="2">7. <input type="checkbox" <%if(app.telecom_system !=null){%>checked<%}%>> Advertising Sign, Wall Type</td>
+					</tr>
+					<tr class="allcaps">
+						<td colspan="5">2. <input type="checkbox" <%if(app.telecom_system !=null){%>checked<%}%>> Business Sign, Projecting Type </td>
+						<td colspan="2">5. <input type="checkbox" <%if(app.telecom_system !=null){%>checked<%}%>> Advertising Sign, Ground Type  </td>
+						<td colspan="2">8. <input type="checkbox" <%if(app.telecom_system !=null){%>checked<%}%>> Advertising Sign, Other</td>
+					</tr>
+					<tr class="allcaps">
+						<td colspan="5">3. <input type="checkbox" <%if(app.telecom_system !=null){%>checked<%}%>> Business Sign, Ground Type </td>
+						<td colspan="4">5. <input type="checkbox" <%if(app.telecom_system !=null){%>checked<%}%>> Advertising Sign, Wall Type </td>
+					</tr>
+					<tr class="last-td">
+						<td colspan="3"><b>C. Display Size/Face:  </b></td>
+						<td colspan="2"> L (m) = <p class="underline civilothers"></p></td>
+						<td colspan="2"> W (m) = <p class="underline civilothers"></p></td>
+						<td colspan="2"> At (m2) = <p class="underline civilothers"></p></td>
+					</tr>
+				</table> 
+			</td>
+		</tr>
+		<tr>
+			<td class="tdinside">
+				<p class="title">Box 3</p>
+				@obo:print_professional_box( title: 'Design Professional, Plans and Specifications', professional: app.designprofessional, role:'ARCHITECT AND/OR CIVIL ENGINEER' )
+			</td>
+			<td class="tdinside">
+				<p class="title">Box 4</p>
+				@obo:print_professional_box( title: 'FULL-TIME INSPECTOR AND SUPERVISOR OF CONSTRUCTION WORKS', professional: app.supervisor, role: 'ARCHITECT AND/OR CIVIL ENGINEER' )
+			</td>
+		</tr>
+		<!-- second row. 283 -->
+		<tr>
+			<td class="tdinside" colspan="2">
+				<p class="title">Box 5</p>
+				@obo:print_owner_single_box( title: '<b>BUILDING OWNER</b>', owner: app.owner )
+			</td>
+		</tr>
+		<tr>
+			<td class="tdinside">
+				<p class="title">Box 6</p>
+				@obo:print_owner_box( title: '<b>BUILDING OWNER</b>', owner: app?.owner )
+			</td>
+			<td class="tdinside">
+				<p class="title">Box 7</p>
+				@obo:print_owner_box( title: 'WITH MY CONSENT: <b>LOT OWNER</b>', owner: app?.location?.owner )
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+

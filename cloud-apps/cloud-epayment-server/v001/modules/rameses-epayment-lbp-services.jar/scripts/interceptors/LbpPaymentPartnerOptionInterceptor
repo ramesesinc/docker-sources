@@ -1,0 +1,63 @@
+import com.rameses.annotations.*;
+
+//***********************
+// Landbank services
+//***********************
+class LbpPaymentPartnerOptionInterceptor {
+	
+	def formatter = new java.text.DecimalFormat('0.00');
+
+
+	@After(pattern="CloudPaymentService.getPaymentPartnerOption", eval="#{result.paypartnerid.toLowerCase() == 'lbp' }")
+	public void buildPaymentPartnerOption(evt) { 
+		def po = evt.args[0].paymentorder; 
+		def partner = evt.result.paypartner; 
+
+		def amount = po.amount; 
+		def webfee = (po.webfee ? po.webfee : 0.00); 
+		def samt = (po.amount ? formatter.format( po.amount ) : "");
+
+		def params = [:];
+		params.MerchantCode = partner.info?.merchantcode; 
+		params.MerchantRefNo = po.objid; 
+		params.Particulars = "Transaction_type=${po.txntypename};Name of Payor=${po.paidby.replaceAll('&','and')};Tax Reference Number=${po.objid};"; 
+		params.Amount = samt;
+		params.PayorName = po.paidby;
+		params.PayorEmail = ( po.paidbyemail ? po.paidbyemail : '');
+		params.ReturnURLOK = ( partner.info?.testsuccessurl ? partner.info?.testsuccessurl : partner.info?.successurl ); 
+		params.ReturnURLError = ( partner.info?.testerrorurl ? partner.info?.testerrorurl : partner.info?.errorurl ); 
+
+		def secval = partner.info?.merchantcode + po.objid + samt.replace('.','');
+    	params.Hash = com.rameses.util.Encoder.MD5.encode(secval).toLowerCase();
+		partner.params = params; 
+	}
+
+	@After( pattern="CloudPaymentService.getPostPaymentParams", eval="#{args[0]?.paypartnerid.toString().toLowerCase() == 'lbp'}") 
+	public void buildPostPaymentParams( evt ) {
+		def params = evt.args[0]; 
+		def pmt = evt.result;
+
+		pmt.paypartnerid = 'LBP'; 
+		pmt.traceid = params.EppRefNo;
+		pmt.tracedate = params.Datestamp;
+		pmt.amount = params.Amount;
+
+		def particulars = splitParticulars( params.Particulars ); 
+		if ( particulars ) {
+			pmt.paymentrefid = particulars['Tax Reference Number'];
+		}
+	} 	
+
+	def splitParticulars( value ) { 
+		if ( value == null || value.toString().trim().length() == 0 ) return null;
+		
+		def data = [:];
+		value.split(';').each{ 
+		    def d = it.split('=');
+		    if ( d.length >= 2 ) {
+		    	data[d[0]] = d[1];	
+		    }
+		}
+		return data;
+	}
+}

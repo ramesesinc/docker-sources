@@ -1,0 +1,15 @@
+filipizen:
+	- update rameses-remote-proxy.js
+
+nginx:
+	- update "proxy.conf"
+
+
+partner activate/deactivate:
+		GdxNotification.register('activate', (data) => {
+			console.log('activate => ' + data);
+		});
+
+		GdxNotification.register('deactivate', (data) => {
+			console.log('deactivate => ' + data);
+		});

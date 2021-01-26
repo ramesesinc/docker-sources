@@ -1,0 +1,23 @@
+[v1.03]
+
+- rameses-gdx-coordinator.jar
+    * Remove service registration and directly route calls to module "gdx/services"
+
+
+[2020-10-13 14:32:00]
+
+Update Libraries
+
+- db-dialect.jar
+- rameses-common2.jar
+- rameses-main-bootloader.jar
+- rameses-osiris3-core2.jar
+- rameses-osiris3-serve.jar
+
+
+[2020-09-15 10:18:00]
+
+Updated Libraries 
+
+-  rameses-common2.jar
+-  rameses-osiris3-core2.jar

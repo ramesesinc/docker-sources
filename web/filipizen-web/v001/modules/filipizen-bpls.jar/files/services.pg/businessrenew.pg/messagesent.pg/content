@@ -1,0 +1,24 @@
+<script>
+\$put( "messagesent",
+   new function() {
+    this.sent = function() {
+    window.location = "/partners/${PARAMS.name}/services";
+    }
+   }
+ );  
+</script>
+
+
+
+<div class="container">
+	<div class="row text-center">
+        <div class="col-sm-6 col-sm-offset-3">
+	        <br><br> <h1 style="color:#0fad00">Request Successfully Submited!</h1>
+	        <p style="font-size:18px;color:#5C5C5C;">Please refer to your tracking number.</p>
+	        <p style="font-size:60px;"> 023481310</p>
+	        <br><br>
+	         <button r:context="messagesent" r:name="sent" > <i class="fa fa-angle-double-left"> </i> back to services 
+ 			</button>
+        </div>
+	</div>
+</div>

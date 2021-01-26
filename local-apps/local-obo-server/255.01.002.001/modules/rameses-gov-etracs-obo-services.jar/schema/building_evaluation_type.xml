@@ -1,0 +1,18 @@
+<schema>
+	<element tablename="building_evaluation_type">
+		<field name="objid" primary="true" visible="true"/>
+		<field name="title" />
+		<field name="type" />
+		<field name="org_objid" />
+		<field name="org_name" />
+		<field name="sortindex" />
+		<field name="role" />
+		<field name="activationstate" />
+		<field name="required" />
+
+		<!-- two actions: send-for-release and end -->
+		<field name="postpaymentaction" />
+
+	</element>
+</schema>	
+

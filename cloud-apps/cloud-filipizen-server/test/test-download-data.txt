@@ -1,0 +1,7 @@
+AWS DATA {
+  ETag: '"93efe6c0f21613e33c1ab2cc4ad16939"',
+  Location: 'https://uploads-89aec797-f5e4-4778-b4a0-3a324906ef50.s3.us-west-2.amazonaws.com/SSS/bp-01.png',
+  key: 'SSS/bp-01.png',
+  Key: 'SSS/bp-01.png',
+  Bucket: 'uploads-89aec797-f5e4-4778-b4a0-3a324906ef50'
+}

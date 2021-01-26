@@ -1,0 +1,433 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import obo.facts.*;
+import java.text.*;
+
+public class OnlineBuildingPermitService  {
+
+	@DataContext("online_building_permit")
+	def appEm;
+
+	@DataContext("online_building_permit_entity")
+	def entityEm;
+
+	@DataContext("online_building_permit_accessory")
+	def accessoryEm;
+
+	@DataContext("online_building_permit_ancillary")
+	def ancillaryEm;
+
+	@DataContext("online_building_permit_rpu")
+	def rpuEm;
+
+	@DataContext("online_building_permit_info")
+	def appInfoEm;
+
+	@DataContext("online_building_permit_professional")
+	def professionalEm;
+
+	@DataContext("vw_online_building_permit_professional")
+	def vwProfessionalEm;
+
+	@DataContext("obo_variable")
+	def varEm;
+
+	@Service("DateService")
+	def dateSvc;
+
+	def validateAncillary = { o->
+		def c = ancillaryEm.find( [appid : o.appid ] ).where( "designprofessionalid IS NULL" ).select("c:{COUNT(*)}").val();
+		if( c > 0 ) throw new Exception("Please specify all design professionals for all ancillary permits");
+		c = ancillaryEm.find( [appid : o.appid ] ).where( "supervisorid IS NULL" ).select("c:{COUNT(*)}").val();
+		if( c > 0 ) throw new Exception("Please specify all supervisor professionals for all ancillary permits");		
+	}
+
+	def validateRpu = { o->
+		def c = rpuEm.find( [appid: o.appid ] ).select("c:{COUNT(*)}").val();
+		if( c == 0 ) throw new Exception("Please specify at least one real property unit"); 
+	}
+
+	@ProxyMethod
+	public def moveNextStep( def o ) {
+		/* 
+		steps as follows:
+		0=initial
+		1=applicant
+		2=location
+		3=rpu
+		4=professional
+		5=project
+		6=accessories
+		7=ancillarylist
+		8=confirm
+		9=success
+		*/
+
+		if(!o.appid) throw new Exception("appid is required in determining the next step");
+		def app = appEm.find( [objid: o.appid] ).first();
+		def step = app.step;
+
+		//validation 
+		if( step == 7 ) validateAncillary( o );
+		if( step == 3 ) validateRpu( o );
+
+		def nextStep = step + 1;
+		if( nextStep >= 9 ) {
+			if( app.occupancytypeid == null) {
+				throw new Exception("Please go back to Project Details and specify the occupancy type");
+			}
+			validateRpu(o);
+		} 
+
+		//compare next step if less than existing then you can update otherwise stay the same
+		if(app.step < nextStep ) {
+			appEm.find( [objid: o.appid] ).update([step: nextStep]);			
+		}
+		else {
+			nextStep = app.step;
+		}
+		return [step:nextStep];
+	}
+
+	@ProxyMethod
+	public def create(def o) {
+		def kg = new KeyGen();
+		o.objid = kg.generateAlphanumKey(o.orgcode+"-",8);
+		o.dtfiled = dateSvc.getServerDate();
+		o.step = 1;
+		def app = appEm.create( o );
+		/*
+		def emailSvc = dynamicSvc.lookup(o.orgcode+":EmailService");
+		app.tokenid = "MYTOKEN " + new UID();
+		emailSvc.send( app );
+		*/
+		return app;
+	}
+
+	def formatAddress( def addr ) {
+		def lst = [];
+		lst << [addr.unitno, addr.bldgno, addr.bldgname ].findAll{it!=null}.join(" ");
+		lst << [addr.street, addr.subdivision ].findAll{it!=null}.join(",");
+		lst << [addr.barangay?.name, addr.citymunicipality, addr.province ].findAll{it!=null}.join(",");
+		return lst.findAll{it}.join(",");		
+	}
+
+	def formatPersonalName( def v ) {
+		return v.lastname + ", " + v.firstname + " " + ((v.middlename!=null)?v.middlename.substring(0,1)+'.': '');
+	}
+
+	//reusable method of saving entity
+	def saveEntity(def o) {
+		if(o.resident==null) o.resident = 0;
+		if( !o.entitytype ) o.entitytype = 'INDIVIDUAL';
+		if( o.entitytype == 'INDIVIDUAL' ) o.name = formatPersonalName(o);
+
+		if(!o.objid) {
+			def v = [appid: o.appid];
+			v.putAll(o);
+			v.address.text = formatAddress(o.address);
+			return entityEm.create(v);
+		}
+		else {
+			o.address.text = formatAddress(o.address);
+			return entityEm.find( [objid: o.objid] ).update( o );
+		}
+	}
+
+	@ProxyMethod
+	public def findCurrentInfo( def o ) {
+		appEm.find( [objid: o.appid ] ).select("orgcode,step").first();
+	}
+
+	//STEP 1
+	@ProxyMethod
+	public def saveApplicant(def o) {
+		def applicant = saveEntity(o);
+		appEm.find([objid:o.appid]).update([applicantid: applicant.objid]);
+	}
+
+	@ProxyMethod 
+	public def getApplicant(def o) {
+		def app = appEm.select("applicantid").find( [objid: o.appid ] ).first();
+		if(!app.applicantid) return null;
+		return entityEm.find( [objid: app.applicantid ] ).first();		
+	}
+
+	//STEP 2.
+	@ProxyMethod
+	public def getLocation(def o) {
+		return appEm.select("location.*").find( [objid: o.appid ]).first()?.location;
+	}
+
+	@ProxyMethod
+	public void saveLocation(def o) {
+		def appid = o.remove("appid");
+		def u = [location:o];
+		appEm.find( [objid: appid ]).update( u );
+	}
+
+	//STEP 3.
+	@ProxyMethod
+	public def getRpus(def o ) {
+		return rpuEm.find( [appid: o.appid ] ).list();
+	}
+
+	@ProxyMethod
+	public def saveRpu(def o) {
+		def lotowner = o.remove("owner");
+		lotowner.appid = o.appid;
+		lotowner.entityid = lotowner.remove("objid");
+		def entityOwner = saveEntity(lotowner);
+		o.ownerid = entityOwner.objid;
+		o.owner = [objid: o.ownerid ];
+		if(o.objid) {
+			def oo = rpuEm.find([objid: o.objid]).select('objid').first(); 
+			if ( oo?.objid ) {
+				return rpuEm.find([objid: o.objid]).update( o );	
+			}
+			o.remove('objid'); 
+		}
+
+		return rpuEm.create( o );
+	}
+
+	@ProxyMethod
+	public void removeRpu( def o ) {
+		def rpu = rpuEm.find( [objid: o.objid ] ).first();
+		def ownerid = rpu.ownerid;
+		rpuEm.find( [objid: o.objid ] ).update( [ownerid: '{NULL}' ] );
+		entityEm.find([objid: ownerid]).delete();
+		rpuEm.find( [objid: o.objid ] ).delete();
+	}
+
+	//STEP 4.
+	@ProxyMethod 
+	public def saveProfessional(def o) {
+		o.entity.appid = o.appid;
+		o.entity = saveEntity(o.entity);
+		o.entityid = o.entity.objid; 
+		if(o.objid) {
+			return professionalEm.find( [objid: o.objid]).update( o );
+		}
+		else {
+			return professionalEm.create( o );
+		}
+	}
+
+	@ProxyMethod 
+	public def getProfessional(def o) {
+		return professionalEm.find( [objid: o.objid]).first();
+	}
+
+	@ProxyMethod
+	public void removeProfessional( def o) {
+		professionalEm.find( [objid: o.objid]).delete();
+
+		//check first the main app if entity is neither a lot owner or applicant before deleting
+		def entityid = o.entity.objid;
+		boolean b = appEm.find( [applicantid: entityid] ).exists();
+		if(b) return;
+		b = rpuEm.find( [ownerid: entityid] ).exists();
+		if(b) return;
+		entityEm.find( [objid: entityid ]).delete();
+	}
+
+	@ProxyMethod
+	public def getProfessionalList( def o ) {
+		return professionalEm.select("objid,entity.objid,entity.name,entity.address.text,profession,prc.*").find([appid: o.appid]).list();
+	}
+
+	@ProxyMethod
+	public def getLookupProfessionalList( def o ) {
+		return vwProfessionalEm.find([appid: o.appid]).list();
+	}
+
+	//STEP 5.
+	@ProxyMethod
+	public def updateProjectInfo( def o  ) {
+		o.occupancytypeid = o.occupancytype?.objid;
+		if( !o.occupancytypeid ) throw new Exception("Please specify an occupancy type");
+		appEm.find( [objid: o.appid] ).update( o );
+
+		//check if occupancy type is an accessory, then automatically add an entry the accessory table
+		def oldaccessoryid = appEm.find( [objid: o.appid] ).select("accessoryid").val();
+		if( oldaccessoryid ) {
+			if( oldaccessoryid != o.occupancytype.objid ) {
+				appEm.find( [objid: o.appid] ).update( [accessoryid: "{NULL}" ] );
+				removeAccessory(oldaccessoryid, null, null );			
+				oldaccessoryid = null;
+			}
+		}
+
+		//if oldaccessoryid is null, that means it is replaced by a new accessory
+		if( o.occupancytype.group.objid == 'J' && oldaccessoryid == null ) {
+			def m = addAccessory( o.appid, o.occupancytype.objid );
+			appEm.find( [objid: o.appid] ).update( [accessoryid: m.objid ] );			
+		}
+	}
+
+	@ProxyMethod
+	public def getProjectInfo( def o  ) {
+		def proj = appEm.find( [objid: o.appid] ).first();
+		return proj;
+	}
+
+	//on creating the accessory, automatically add the associated variables
+	def addAccessory( def appid, typeid ) {
+		def m = [:];
+		m.appid = appid;
+		m.type = [objid: typeid];			
+		m = accessoryEm.create( m );
+		varEm.find([typeid: typeid]).list().each {
+			def vinfo = [:];
+			vinfo.appid = appid;
+			vinfo.parentid = m.objid;
+			vinfo.name = it.objid;
+			vinfo.type = [name :it.objid];
+			appInfoEm.create( vinfo );
+		};
+		return m;
+	}
+
+	def removeAccessory( def objid, def appid, typeid ) {
+		if( objid == null ) {
+			objid = accessoryEm.find( [appid: appid ] ).where("type.objid = :type", [type: typeid ] ).select("objid").val();
+		}
+		//delete first if there are infos for this accessory
+		appInfoEm.find([parentid: objid]).delete();
+		accessoryEm.find( [objid: objid ]).delete();
+	}
+
+	//STEP 6. ACCESSORY
+	@ProxyMethod
+	public def saveAccessories(  def o ) {
+		if(!o.appid) throw new Exception("appid is required for saveAccessories");	
+		o.items?.each {
+			it = it.toUpperCase();
+			if(!accessoryEm.find( [appid: o.appid ] ).where("type.objid = :type", [type: it ] ).exists()) {
+				addAccessory( o.appid, it );
+			}
+		}
+		o.deleted?.each {
+			removeAccessory( null, o.appid, it );
+		}
+	}
+
+	@ProxyMethod
+	public def saveAccessoryInfos( def o ) {
+		if(!o.appid) throw new Exception("updateAccessories error. appid is required");
+		o.infos.each {
+			def info = appInfoEm.find( [appid: o.appid, name: it.name ] ).first();
+			def u = [:];
+			if( info.type.datatype == 'decimal') u.decimalvalue = it.value;
+			else if( info.type.datatype == 'integer') u.intvalue = it.value;
+			else if( info.type.datatype == 'boolean') u.booleanvalue = true;
+			else if( info.type.datatype == 'date') u.datevalue = it.value;
+			else u.stringvalue = it.value;
+			appInfoEm.find( [objid: info.objid ] ).update( u );
+		};
+	}
+
+	@ProxyMethod
+	public def getAccessories( def o ) {
+		def app = appEm.find( [objid: o.appid ] ).first();
+		def list = accessoryEm.find( [appid: o.appid ] ).list();
+		list.each {
+			it.app = [occupancytypeid: app.occupancytypeid, accessoryid: app.accessoryid ];
+			it.infos = getAppInfos([parentid: it.objid]);
+		}
+		return list;
+	}
+
+	//STEP 7. ANCILLARY
+	@ProxyMethod
+	public def saveAncillaryPermits( def o ) {
+		o.permits.each { k,v->
+			def z = ancillaryEm.find( [appid:o.appid, permittypeid:k ] ).select("objid").val();
+			if( !z && v.toInteger() == 1 ) {
+				def m = [appid: o.appid, permittypeid: k, state: 'PENDING' ];
+				m.type = [objid: k];
+				m.worktypes = [];
+				m = ancillaryEm.create( m );	
+			} 
+			else if( z && v.toInteger() == 0 ) {
+				def x = ancillaryEm.find( [appid: o.appid, permittypeid: k] ).first();
+				ancillaryEm.find( [objid:x.objid] ).delete()	
+			}
+		}		
+		return null;
+	}
+
+	@ProxyMethod
+	public def getAncillaryPermits( def o ) {
+		return ancillaryEm.find( [appid: o.appid] ).orderBy("type.sortorder").list();	
+	}
+
+	@ProxyMethod
+	public def getAncillaryPermit( def o ) {
+		if(!o.objid) throw new Exception("getAncillary error. objid is required");
+		
+		def m = ancillaryEm.find( [objid: o.objid] ).first();
+		m.infos = getAppInfos( [parentid: o.objid ] );
+		return m;	
+	}
+
+	@ProxyMethod
+	public void saveAncillaryPermit( def o ) {
+		if(!o.objid) throw new Exception("updateAncillary error. objid is required");
+		//if(!o.infos) throw new Exception("updateAncillary error. infos is required");
+		o.designprofessionalid = o.designprofessional?.objid;
+		o.supervisorid = o.supervisor?.objid;
+		if(!o.worktypes) o.worktypes = [];		
+		ancillaryEm.find( [objid: o.objid ] ).update( o );
+		saveAppInfos( [parentid: o.objid, infos: o.infos, appid: o.appid ] );
+	}
+
+	//UTILITY METHODS FOR APP INFOS
+	private void saveAppInfos( o ) {
+		if(!o.parentid) throw new Exception("saveAppInfos error. parentid is required");
+		//if(!o.infos) throw new Exception("saveAppInfos error. infos is required");
+
+		//clear first existing infos.
+		appInfoEm.find([parentid: o.parentid]).delete();
+		o.infos.each { info->
+			def m = [parentid: o.parentid, name: info.name, appid: o.appid];
+			m.type = [objid: info.name];
+			if( info.datatype == 'decimal') m.decimalvalue = info.value;
+			else if( info.datatype == 'integer') m.intvalue = info.value;
+			else if( info.datatype == 'boolean') m.booleanvalue = true;
+			else if( info.datatype == 'date') m.datevalue = info.value;
+			else m.stringvalue = info.value;
+			appInfoEm.create( m );
+		}
+	}
+
+	private def getAppInfos( o ) {
+		def list = [];
+		def tmpList = appInfoEm.find( [parentid: o.parentid] ).list();
+		tmpList.each { info->
+			def m = [name:info.name, datatype:info.type.datatype, caption: info.type.caption, unit: info.type.unit ];
+			if( m.datatype == 'decimal') m.value = info.decimalvalue;
+			else if( m.datatype == 'integer') m.value = info.intvalue;
+			else if( m.datatype == 'boolean') m.value = true;
+			else if( m.datatype == 'date') m.value = info.datevalue;
+			else m.value = info.stringvalue;
+			list << m;
+		}
+		return list;
+	}
+
+	@ProxyMethod
+	public def getApplication(def o ) {
+		def app = appEm.find([objid: o.appid ] ).first();
+		if(o.loadall == true ) {
+			app.rpus = rpuEm.find( [appid: o.appid] ).list();	
+			app.ancillaries = ancillaryEm.find([appid: o.appid]).list();
+		}
+		return app;
+	}
+
+
+
+}

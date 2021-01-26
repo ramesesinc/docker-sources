@@ -1,0 +1,23 @@
+import com.rameses.annotations.*; 
+
+class WaterworksOnlineBillingService {
+	
+	@Service(value="WaterworksRegularBillingPaymentService", connection="waterworks")
+	def billingSvc;
+
+	@Service(value="QueryService", connection="waterworks")
+	def querySvc;
+
+	@ProxyMethod 
+	public def getBilling( param ) {
+		def bill = billingSvc.getBilling([ id: param.refno ]);
+
+		def m = [_schemaname:"vw_waterworks_bill"];
+		m.findBy = [ objid: bill.billid ];
+		
+		def b = querySvc.findFirst( m );
+		if ( b )  bill.putAll( b );
+
+		return bill;
+	} 
+}

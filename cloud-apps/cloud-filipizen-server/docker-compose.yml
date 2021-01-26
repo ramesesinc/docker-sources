@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  cloud-filipizen-server:
+    image: ramesesinc/cloud-filipizen-server:beta
+    container_name: cloud-filipizen-server
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
+    ports:
+      - "5010:5000"
+    environment:
+      TZ: "Asia/Manila"
+    volumes:
+      - ./_res:/apps/server/_res
+      - ./assets:/apps/server/public/assets
+      - ./connections:/apps/server/connections
+      - /home/rameses/RAMESES/docker-sources/web/filipizen-client:/apps/server/client
+      

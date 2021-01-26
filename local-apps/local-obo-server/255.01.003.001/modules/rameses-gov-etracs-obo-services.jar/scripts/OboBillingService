@@ -1,0 +1,48 @@
+import com.rameses.annotations.*; 
+
+class OboBillingService {
+
+	@DataContext(dynamic=true)
+	def dynaDb;
+
+	@Service("NumberService")
+	def numSvc;
+
+	@ProxyMethod
+	public def getBillItems( o ) { 
+		if(!o.txntype ) throw new Exception("txntype is required is OboBillingService.getBillItems");
+		if(!o.refno ) throw new Exception("txntype is required is OboBillingService.getBillItems");
+
+		def appdb = dynaDb.lookup('vw_'+ o.txntype.toString()); 
+		def app = appdb.find([ appno: o.refno ]).first(); 
+		if ( !app ) 
+			throw new Exception("ref no" + o.refno + " not found");
+
+		def appFeeEm = dynaDb.lookup(o.txntype.toString() +'_fee'); 
+		def fees = 	appFeeEm.find([ appid: app.objid ]).orderBy("item.sortorder").where("amount - amtpaid > 0").list().collect{ 
+			[ item: it.item.item, amount: it.amount, refid: it.objid ]
+		} 
+
+		if ( !fees ) throw new Exception("There are no items for payment");
+
+		def p = [:];
+		p.txntype = o.txntype;
+		p.permittype = ( p.txntype == 'building_application') ? 'Building Permit' : 'Occupancy Permit';
+
+		p.items = fees; 
+		p.amount = p.items.sum{( it.amount ? it.amount : 0.0 )} 
+		if ( p.amount == null ) p.amount = 0.0; 
+
+		p.objid = app.objid;
+		p.appno = app.appno;
+		p.apptype = app.apptype;
+		p.title = app.title;
+		p.address = app.location?.lotno + ' ' + app.location?.barangay;
+		p.applicant = app.applicant;
+ 		p.mobileno = app.contact?.mobileno;
+		p.email = app.contact?.email;
+		p.task = app.task;
+		return p; 
+	} 
+ 
+}

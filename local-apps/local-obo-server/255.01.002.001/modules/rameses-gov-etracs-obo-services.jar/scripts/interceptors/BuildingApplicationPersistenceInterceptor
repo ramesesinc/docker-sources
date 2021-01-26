@@ -1,0 +1,99 @@
+import com.rameses.annotations.*;
+
+class BuildingApplicationPersistenceInterceptor {
+	
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("building_application_requirement")
+	def reqEm;
+
+	@DataContext("building_evaluation_finding")
+	def findingEm;
+
+	@DataContext("building_application_transmittal")
+	def transmittalEm;
+
+	@DataContext("building_application_rpu")
+	def rpuEm;
+
+	@DataContext("building_application_subdoc")
+	def ancillaryEm;
+
+	@DataContext("vw_building_application")
+	def vwAppEm;
+
+	@DataContext("building_evaluation_type")
+	def beType;
+
+	@DataContext("building_application_fee")
+	def feeEm;
+
+	@DataContext("building_application_payment")
+	def pmtEm;
+
+
+	@Env
+	def env;
+
+	//REQUIREMENTS
+	@Before(pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'building_application_requirement' }") 
+	public void onSaveRequirement( def evt ) {
+		def o = evt.args[0];
+		o.reviewer = [objid: env.USERID, name: env.FULLNAME ];
+		o.dtreviewed = dateSvc.getServerDate();
+	} 
+	
+	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'building_application_requirement' }") 
+	public void afterCreateReq( def evt ) {
+		def o = evt.args[0];
+		def z = evt.result;
+		if(o.previd ) {
+			reqEm.find( [objid: o.previd] ).update( [supersederid: z.objid ] );
+		}	
+	} 
+
+	//FINDINGS
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'building_evaluation_finding' }") 
+	public void beforeSaveFinding( def evt ) {
+		def o = evt.args[0];
+		o.createdby = [objid: env.USERID, name: env.FULLNAME ];
+		o.dtcreated = dateSvc.getServerDate();
+	} 
+
+	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'building_evaluation_finding' }") 
+	public void afterUpdateFinding( def evt ) {
+		def o = evt.args[0];
+		def z = evt.result;
+		if(o.previd ) {
+			findingEm.find( [objid: o.previd] ).update( [supersederid: z.objid ] );
+		}	
+	} 
+
+	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'vw_building_application' }")
+	public void afterOpenApplication(def evt) {
+		def p = evt.args[0];
+		def a = evt.result;
+
+		//lookup if there is existing transmittal
+		if( a.task.state.matches(".*(verification|revision)") ) {
+			def t = transmittalEm.find( [taskid: a.taskid ]).first();
+			if( t ) {
+				a.transmittalid = t.objid;
+			}
+		}
+
+		//test if there are rpt docs already generated. 
+		def c = rpuEm.find( [appid: a.objid ]).where(" (taxclearanceid IS NULL OR truecopycertid IS NULL) ").exists();
+		if( !c ) {
+			a.rptvalidated = true;
+		}
+
+		//auto compute fees after opening:
+		a.amount = feeEm.find([appid:a.objid]).select("c:{SUM(amount)}").val();
+
+		a.payment = pmtEm.find([appid: a.objid ]).where("voided=0").first();
+	}
+
+
+}

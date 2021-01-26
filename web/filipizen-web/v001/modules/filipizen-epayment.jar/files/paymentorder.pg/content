@@ -1,0 +1,121 @@
+<%
+  def svc = SERVICE.lookup("CloudPaymentService", "epayment"); 
+  def po = svc.getPaymentOrder( [refno: PARAMS.refno ] );
+  if(!po) throw new Exception("Payment order not found"); 
+  def payOptions = svc.getPaymentPartnerOptions( [partnerid: po.orgcode ] ); 
+  payOptions.each {
+    it.action = '/epayment/sendtopartner';
+    if (it.paypartner.requirecheckout) {
+      it.action = '/epayment/checkout';
+    }
+  }
+  def partnerSvc = SERVICE.lookup("CloudPartnerService", "partner") 
+  def partner = partnerSvc.findById( [ id: po.orgcode] ); 
+%>
+<style>
+  .caption-class {width:150px;}
+  .output-decimal { text-align:right; width:120px; background-color:#DCDCDC; padding-right:2px;}
+  .pay-button {background:transparent;border:4px;}
+</style>
+
+<script>
+  \$put( "paymodel", new function() {
+      var self = this;
+      this.agree = false;
+      this.err = null;
+      this.info = {};
+      this.svc;
+      this.mode = "view";
+
+      this.onload = function() {
+        self.svc = Service.lookup("CloudPaymentService", "epayment");
+        this.info = self.svc.getPaymentOrder( {refno: "${PARAMS.refno}"});
+        if(!this.info) {
+          this.err = "Payment Order not found. Please check if this payment order has already been paid or is cancelled";
+        }
+        else if(this.info.paid == true ) {
+          this.err = "This payment Order is already paid";        
+        }
+      }
+
+      this.cancelPaymentOrder = function() {
+        if( !confirm("You are about to cancel this payment order. Proceed?")) return;
+        self.svc.cancelPaymentOrder( {refno: self.info.objid, orgcode:'${po.orgcode}' } );
+        self.mode = 'cancelled';  
+      }
+
+  });
+
+  function validateSubmit() {
+    var f = \$get("paymodel").code.agree; 
+    if(!f) {
+      alert("Please read and agree first")
+      return false;
+    }
+    else {
+      return true;
+    }
+
+
+  }
+</script>
+
+  <div style="padding-top:20px" r:context="paymodel" r:visibleWhen="#{err != null }" style="display:none !important;">
+    <label r:context="paymodel" style="color:red">#{err}</label>
+  </div>
+
+  <div r:context="paymodel" r:visibleWhen="#{err == null && mode == 'view'}" style="display:none;"> 
+    <br>
+    <h2>Order of Payment</h2>
+    <div class="form">
+      <div>
+        <label class="caption-class">Agency</label> 
+        <label class="output-class">${partner?.title}, ${partner?.group?.title}</label>
+      </div>
+      @wx:label(caption:'Reference No', context:'paymodel', expr: '#{info.objid}' )
+      @wx:label(caption:'Txn Type', context:'paymodel', expr:'#{ info.txntypename }' )
+      @wx:label(caption:'Particulars', context:'paymodel', expr:'#{ info.particulars }' )
+
+      @wx:label(caption:'Paid By', context:'paymodel', expr:'#{info.paidby}' )
+    </div>
+      
+    <div>  
+      @wx:label(caption:'Amount', context:'paymodel', expr:'#{info.amount.formatDecimal&#40;&#41;}', outputClass:'output-decimal' )
+      @wx:label(caption:'Web Service Fee', context:'paymodel', expr:'#{info.webfee.formatDecimal&#40;&#41;}', outputClass:'output-decimal' )
+      @wx:label(caption:'Sub Total', context:'paymodel', expr:'#{info.total.formatDecimal&#40;&#41;}', outputClass:'output-decimal' )
+      <div style="padding-top:10px;">
+        <label r:context="paymodel">  
+          <font color="red">Note:</font> &nbsp;<font color="blue"><i>Pay on or before #{ info.expirydate }</i></font>
+        </label>
+      </div>
+    </div>
+    <div style="padding-top:20px;">
+        <input type="checkbox" name="checkbox" r:context="paymodel" r:name="agree"/> 
+        &nbsp; I acknowledge and agree to the <a href="#" class="terms">Terms and Conditions</a> of this e-payment facility.
+    </div>
+
+    <div> 
+    @wx:button(caption:'Cancel', context:'paymodel', name:'cancelPaymentOrder' )
+    </div>
+
+    <div style="padding-top:20px;">
+      <p>Select a payment partner</p>
+      <%payOptions.each{ o-> %>
+          <div style="display:inline-block">
+            <form action="${o.action}" method="POST"> 
+              <input type="hidden" name="refno" value="${PARAMS.refno}" />
+              <input type="hidden" name="payoption" value="${o.objid}" />
+              <button type="submit" id="pay-button-${o.paypartnerid.toLowerCase()}" onclick="return validateSubmit()" class="pay-button">
+                  <img src="/res/epayment/partners/${o.paypartnerid.toLowerCase()}/icon.png" width="180">
+               </button>
+            </form>   
+          </div>
+      <%}%>
+    </div>
+  </div>
+
+  <div r:context="paymodel" r:visibleWhen="#{mode == 'cancelled'}" style="display:none;"> 
+    <br>
+    <h2>Order of Payment cancelled.</h2>
+    Click <a href="/partners/${partner.group.name}_${partner.name}/services">here</a> to go back to services
+  </div>

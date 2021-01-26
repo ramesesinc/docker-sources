@@ -1,0 +1,12 @@
+<schema>
+	<element tablename="online_building_permit_accessory">
+		<field name="objid" primary="true" prefix="OBOBPACC"/>
+		<field name="appid" required="true"/>
+
+		<complex name="type" ref="vw_obo_occupancy_type" jointype="many-to-one">
+			<key field="occupancytypeid" target="objid" />
+		</complex>  
+		
+	</element>
+</schema>
+

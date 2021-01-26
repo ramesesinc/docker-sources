@@ -1,0 +1,11 @@
+<schema>
+	<element tablename="vw_obo_occupancy_type">
+		<field name="objid"  primary="true"/>
+		<field name="divisionid" />
+		<field name="title" />
+		<field name="division_objid" />
+		<field name="division_title" />
+		<field name="group_objid" />
+		<field name="group_title" />
+	</element>
+</schema>	

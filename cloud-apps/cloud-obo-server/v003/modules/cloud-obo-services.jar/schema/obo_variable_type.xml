@@ -1,0 +1,13 @@
+<schema>
+
+	<element tablename="obo_variable_type">
+		<field name="objid" primary="true" caption="Name" visible="true"/>
+		<field name="title" caption="Title" searchable="true"/>
+		<field name="sortindex" datatype="integer"/>
+
+		<!-- if this is accessory then  value = 1 -->
+		<field name="accessory" datatype="integer"/>
+	</element>
+
+</schema>
+		

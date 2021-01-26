@@ -1,0 +1,14 @@
+#----------------------------------------
+# CLOUD GDX
+#----------------------------------------
+provider=coordinator
+host=${cloud-server}:3000
+channel=${channel}
+timeout=60000
+
+#----------------------------------------
+# LOCAL GDX
+#----------------------------------------
+app.host=localhost:8571
+app.cluster=osiris3
+app.context=gdx

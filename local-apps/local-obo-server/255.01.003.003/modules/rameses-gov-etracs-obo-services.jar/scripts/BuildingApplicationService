@@ -1,0 +1,92 @@
+import com.rameses.annotations.*;
+
+class BuildingApplicationService {
+	
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("ControlnoGeneratorService")
+	def controlNoSvc;
+
+	@Service("Var")
+	def sysvar;
+
+	@DataContext("building_application")
+	def appEm;
+
+	@DataContext("building_permit")
+	def permitEm;
+
+	@DataContext("building_doc_type")
+	def docTypeEm;
+
+	@DataContext("building_application_subdoc")
+	def subdocEm;
+
+	@DataContext("building_issuance")
+	def issEm;
+
+	@Env
+	def env;
+
+	@ProxyMethod
+	public def generateAppNo(def o ) {
+		if(!o.appid) throw new Exception("Please specify an appid in OboApplicationService.accept");
+		def appid = o.appid;
+
+
+		def pattern = sysvar.get( "building_application_appno" );
+		if(!pattern) throw new Exception("Please define building_application_appno entry in sys_var. Ex. BP-[yyyyMM]-[%05d]");
+
+		def u = [:];
+		u.appdate = dateSvc.getServerDate();
+		u.appno = controlNoSvc.getNextNo( pattern );
+		appEm.find( [objid: appid ] ).update( u );
+		return u;
+	} 
+
+	
+	@ProxyMethod
+	public void issuePermitNo( def p ) {
+		def app = appEm.find( [objid: p.objid] ).first();
+		if(!app) throw new Exception("Application does not exist");
+		if(app.permitid) throw new Exception("Permit for this application has already been issued");
+
+		def doctype = docTypeEm.find( [objid: "building_permit"] ).first();
+		if(!doctype) throw new Exception("doc type building_permit does not exist!");
+		String pattern = doctype.controlnopattern;
+		if(!pattern) throw new Exception("Please specify a controlno pattern in doc type building_permit");
+
+		String permitno = controlNoSvc.getNextNo( pattern );
+		
+		def u = [:];
+		u.state = 0;
+		u.issuedby = [ objid: env.USERID, name: env.FULLNAME ];
+		u.dtissued = dateSvc.getServerDate();
+		u.permitno = permitno;
+		u.remarks = p.remarks;
+		u.expirydate = p.expirydate;
+		u.template = doctype.template;
+		u.appid = app.objid;
+		permitEm.create( u );
+
+		//insert also issuances for all sudocs dependent on the building permit
+		def subList = subdocEm.getSubdocsToIssue( [appid: app.objid ] );
+		subList.each {
+			def ipattern = it.controlnopattern.replace( "[BPNO]", permitno );
+			def uu = [:];
+			uu.state = 1;
+			uu.subdocid = it.objid;
+			uu.issuedby = [ objid: env.USERID, name: env.FULLNAME ];
+			uu.dtissued = dateSvc.getServerDate();
+			uu.controlno = controlNoSvc.getNextNo( ipattern );
+			uu.expirydate = p.expirydate;
+			uu.template = it.template;
+			uu = issEm.create( uu );
+			subdocEm.find( [objid: it.objid] ).update( [issuanceid: uu.objid ] );			
+		}
+
+		appEm.find( [objid: app.objid] ).update( [permitid: u.objid ] );
+	}
+
+}

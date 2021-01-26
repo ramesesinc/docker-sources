@@ -1,0 +1,84 @@
+
+ <section id="services" class="section">
+    <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+             <div class="container">
+                <br>
+                <br>
+                <div class="stepwizard">
+                    <div class="stepwizard-row setup-panel">
+                      <div class="stepwizard-step">
+                        <a href="#step-1" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                        <p>Step 1</p>
+                      </div>
+                      <div class="stepwizard-step">
+                        <a href="/partners/${PARAMS.name}/services/business/businessapplynew/businessaddress" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                        <p>Step 2</p>
+                      </div>
+                      <div class="stepwizard-step">
+                        <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                        <p>Step 3</p>
+                      </div>
+                      <div class="stepwizard-step">
+                        <a href="#step-4" type="button" class="btn btn-primary btn-circle">4</a>
+                        <p>Step 4</p>
+                      </div>
+                    </div>
+                </div>
+                <br>
+                <br>
+                  <form role="form" action="" method="post">
+                    <div class="row setup-content" id="step-2">
+                      <div class="col-md-12">
+                        <div class="col-md-11">
+                          <h1> Business Address</h1>
+                            <hr>
+                          <div class="radio radio-primary">
+                              <input type="radio" name="radio1" id="radio1" value="option1">
+                              <label for="radio1">
+                                  Do you own the property?
+                              </label>
+                          </div>
+                          <!--<div id='show-me' style='display:none'>
+                            <div class="general-box">
+                              <div class="col-md-2">
+                                Barangay
+                              </div>
+                              <div class="col-md-4">
+                                <input type="text" class="" placeholder="" />
+                              </div>  
+                            </div>
+                            <div class="general-box">
+                              <div class="col-md-2">
+                                Address
+                              </div>
+                              <div class="col-md-4">
+                                <input type="text" class="" placeholder="" />
+                              </div>  
+                            </div>
+                          </div> -->
+                          <div class="radio radio-primary">
+                              <input type="radio" name="radio1" id="radio2" value="option2">
+                              <label for="radio2">
+                                  Are you renting the space
+                              </label>
+                          </div>
+                          <div class="radio radio-primary">
+                              <input type="radio" name="radio1" id="radio3" value="option3">
+                              <label for="radio3">
+                                 In Market or Government Property
+                              </label>
+                          </div>
+                          <hr>
+                        <a href="/partners/${PARAMS.name}/services/business/businessapplynew/businessinfo" class="btn btn-next nextBtn btn-lg pull-left">Back</a>
+                         <a href="/partners/${PARAMS.name}/services/business/businessapplynew/businessmap" class="btn btn-next nextBtn btn-lg pull-left">Next</a>
+                        </div>
+                      </div>
+                    </div>
+                </form>
+            </div>
+          </div>
+        </div>
+    </div>
+ </section>

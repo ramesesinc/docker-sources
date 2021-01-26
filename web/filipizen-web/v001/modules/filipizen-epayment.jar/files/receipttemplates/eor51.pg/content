@@ -1,0 +1,109 @@
+<script>
+\$put("eor51", new function() {
+	var self = this;
+	var root = \$get("eor").code; 
+	this.agency = root.agency;
+	this.receipt = root.receipt;
+
+	this.onload = function() {
+		if(this.receipt == null ) {
+			root.loadReceipt(function(v) {
+				self.receipt = v;
+				self._controller.refresh();	
+			});
+		}
+	}
+
+});
+</script>
+ 
+
+<div r:context="eor51">
+	<div class="box-eor">
+		<div class="col-md-12" style="border:1px solid lightgrey;padding-top:30px;">
+		    <div class="row">
+		        <div class="receiptinfo col-md-7">
+		            EOR No.: 
+		            <h1 class="eorno"><label r:context="eor51">#{receipt.receiptno}</label></h1>
+		            <strong>Paid By : </strong> <label r:context="eor51">#{receipt.paidby}</label><br />
+		            <strong>Address: </strong><label r:context="eor51">#{receipt.paidbyaddress}</label><br />
+		            <strong>Particulars: </strong> <label r:context="eor51">#{receipt.remarks}</label><br />
+		            <strong>Agency: </strong> <label r:context="eor51">#{agency.title}, #{agency.group.title}</label>
+		        </div>
+		        <div class="qrdata col-md-5">
+		        	<img id='qrcode' src="https://api.qrserver.com/v1/create-qr-code/?data=${PARAMS.receiptno}&amp;size=250x250" width="150" height="150" class="img-responsive"/>					
+		            <div id="output"></div>
+		        </div>
+		    </div>
+		    <hr>
+		    <div class="row">
+		        <div class="col-lg-6 col-md-6 col-sm-6">
+		            <strong>PAYMENT DETAILS :</strong>
+		        </div>
+		    </div>
+		    <hr>
+		    <div class="row">
+		        <div class="col-lg-12 col-md-12 col-sm-12">
+		            <div class="table-responsive">
+		                <table class="table table-bordered" r:context="eor51" r:items="receipt.items" r:varName="item">
+		                    <thead>
+			                    <tr>
+			                        <th class="text-left" style="padding-left:15px;">Account</th>
+			                        <th class="text-right" style="padding-right:15px;" maxWidth="100">Amount</th>
+			                    </tr>
+		                    </thead>
+		                    <tbody>
+			                    <tr> 
+			                        <td class="text-left" style="padding-left:15px;"> #{item.item.title} #{item.remarks}</td> 
+			                        <td class="text-right" style="padding-right:15px;"> #{ item.amount.formatDecimal() } </td> 
+			                    </tr> 
+		                    </tbody>
+		                </table>
+		            </div>
+		            
+		            <hr>
+		            <div>
+		                <h4>  TOTAL : Php  <label r:context="eor51">#{ receipt.amount.formatDecimal() }</label></h4>
+		            </div>
+
+		            <hr>
+		            <div>
+		                <h4>  Amount in words : <label r:context="eor51">#{receipt.amountinwords}</label> </h4>
+		            </div>
+
+		            <hr>
+		        </div>
+		    </div>
+
+		    <div class="row">
+		        <div class="col-lg-12 col-md-12 col-sm-12">
+		            <strong>Bank : </strong>  <label r:context="eor51">#{receipt.partner.name}</label>
+		            <br />
+		            <strong>Txn No.: </strong> <label r:context="eor51">#{receipt.traceid}</label> 
+		            <br />
+		            <strong>Txn Date: </strong> <label r:context="eor51">#{receipt.tracedate}</label>
+		        </div>
+		    </div>
+		    <hr>
+		    
+		</div>
+	</div>
+	<div style="margin:30px 0px 0px 200px">
+		<div class="row">
+	        <div class="col-lg-12 col-md-12 col-sm-12">
+	            <button onclick="location.href='javascript:window.print()';" href="" class="btn btn-primary btn-sm btn-eor" >Print EOR</button> &nbsp; &nbsp; &nbsp;
+	            <!-- <button id="export" class="btn btn-info btn-sm btn-eor">Download In Pdf</button> -->
+	        </div>
+	    </div>
+    </div>
+    <hr class="hr-bottom">
+</div>
+
+<style>
+	@media print {
+         .navbar-inverse{display:none}
+         .footer{display:none}
+         #Header, #Footer { display: none ! important; }
+         @page {size: auto;margin: 0mm;}
+      }
+</style>

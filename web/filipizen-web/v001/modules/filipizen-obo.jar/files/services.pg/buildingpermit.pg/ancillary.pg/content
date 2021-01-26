@@ -1,0 +1,173 @@
+ <%
+	def svc = SERVICE.lookup("OboMiscListService", "obo");
+	def items = svc.getItems( [type: PARAMS.reftype] );
+	def grps = items.groupBy{ it.category };
+
+	def workTypes = svc.getWorkTypes( [typeid: PARAMS.reftype ] );
+
+	def grpList = [];
+	grps.each { k,v->
+		grpList << [key: (k==null? '' : k), value: v];
+	}
+	grpList = grpList.sort{ it.key }
+%>
+
+
+<script>
+\$put("ancillary", new function() {
+	
+	var self = this;
+	this.loaded = false;
+
+	this.map = {};
+	<%items.each{ i-> %>
+	this.map.${ i.objid.toLowerCase() } = { name: "${i.objid}", objid:"${i.objid}", checked: false, caption: "${i.caption}", datatype:"${i.datatype}", unit:"${i.unit}" };<%}%>
+
+	var svc = Service.lookup("OnlineBuildingPermitService", "obo");
+	this.permit;
+	this.worktypes = {};
+
+	this.onload = function() {
+		self.permit = svc.getAncillaryPermit( { objid: '${PARAMS.refid}' } );
+		for(var i = 0; i < self.permit.infos.length; i++) {
+			var p = self.permit.infos[ i ];
+			var id = p.name.toLowerCase();
+			this.map[ id ].checked = true;
+			this.map[ id ].value = p.value; 
+		};
+
+		<%if( workTypes ) {%>
+		if(self.permit.worktypes == null ) self.permit.worktypes = [];
+		for(var i = 0; i < self.permit.worktypes.length; i++) {
+          var p = self.permit.worktypes[ i ];
+          self.worktypes[ p ] = true;
+        };  
+		<%}%>
+
+		self.loaded = true;
+	}
+
+	this.saveAndComplete = function() {
+		var infos = [];
+		for( var prop in this.map ) {
+			if( this.map[prop].checked == true ) {
+				infos.push( this.map[prop] );
+			}
+		}
+		var m = { objid: '${PARAMS.refid}', state:'COMPLETED', infos: infos, appid: self.permit.appid };
+		m.designprofessional = self.permit.designprofessional;
+		m.supervisor = self.permit.supervisor;	
+
+		<%if( workTypes ) {%>
+		m.worktypes = [];
+ 		for( v in self.worktypes ) {
+          if( self.worktypes[v] == true ) {
+            m.worktypes.push( v );            
+          }
+        }
+        if(m.worktypes.length == 0) {
+          throw new Error("Please select at least one scope of work")
+        }  
+        <%}%>
+ 		svc.saveAncillaryPermit( m );
+		<%if( PARAMS.backtarget ) {%>
+		self.returnToMain();	
+		<%}%>
+	}
+
+	this.lookupProfessional = function( fldname ) {
+		var h = function(v) {
+		  	self.permit[fldname] = v;
+		}
+		return new PopupOpener( "professional_lookup", { appid: self.permit.appid, onselect: h }, 
+		  {width:'700', height:'300', title: 'Lookup Professional'}  );
+		
+	}
+
+	this.lookupDesignProfessional = function() {
+		return self.lookupProfessional( "designprofessional" )
+	}
+
+	this.lookupSupervisor = function() {
+		return self.lookupProfessional( "supervisor" )
+	}
+
+	<%if( PARAMS.backtarget ) {%>
+	this.returnToMain = function() {
+		window.location.href = "${PARAMS.backtarget}#ancillarylist";
+	}
+	<%}%>
+
+});
+
+\$register( {id:'professional_lookup',	page:"${PAGE.parentPath}/professional_lookup", context: 'professional_lookup' } );
+
+</script>
+
+<style>
+	.caption-class { width:300px; }
+</style>
+
+
+<div r:context="ancillary" r:visibleWhen="#{loaded == true}" style="display:none;">
+	<%if( PARAMS.backtarget ) {%>
+		<a href="#" r:context="ancillary" r:name="returnToMain"> << Back</a>
+	<%}%>
+	<h2>
+		<label r:context="ancillary">#{permit.type.title}</label>
+	</h2>
+
+		
+	<div class="form">
+		<div>
+			<label class="caption-class">Design Professional</label>
+			<label r:context="ancillary" style="width:210px">#{ permit.designprofessional.name }</label>
+			<button r:context="ancillary" r:name="lookupDesignProfessional">Lookup</button>
+		</div>
+			
+		<div>
+			<label  class="caption-class">Supervisor In Charge Professional</label>
+			<label r:context="ancillary" style="width:210px">#{ permit.supervisor.name }</label>
+			<button r:context="ancillary" r:name="lookupSupervisor">Lookup</button>
+		</div>
+	</div>
+
+	<%if( workTypes ) {%> 
+	<div style="padding-top:20px;padding-bottom:20px;">
+	<label class="caption-class">Scope of Work</label>
+	<div style="padding-left:30px">	
+	 	<%workTypes.each { o->%>
+        <input type="checkbox" r:context="ancillary" r:name="worktypes.${o.name}">&nbsp;${o.description}<br>   
+        <%}%>
+    </div>      
+	</div>
+	<%}%>
+
+	<div style="padding-top:20px;">
+	<label class="caption-class">Details</label>
+	<p>Please check applicable items and fill the required values and click Save and complete when done</p>
+	<%grpList.each{ o-> def g = o.key; def v = o.value; %>
+		<h2>${g==null?'':g}</h2>
+	 	<%v.each { i->%>
+	 		<div>
+			 		&nbsp;&nbsp;<input type="checkbox" r:context="ancillary" r:name="map.${ i.objid.toLowerCase() }.checked">
+			 		&nbsp;<label style="text-transform:capitalize;font-weight:normal">${i.caption.toLowerCase()}</label>
+			 		<span r:context="ancillary" r:visibleWhen="#{map.${ i.objid.toLowerCase() }.datatype != 'boolean'}">
+				 		<input type="text" r:context="ancillary" r:name="map.${ i.objid.toLowerCase() }.value"
+				 			r:datatype="${i.datatype}"
+				 			r:depends="map.${ i.objid.toLowerCase() }.checked" 
+				 			r:visibleWhen="#{map.${ i.objid.toLowerCase() }.checked == true}"
+				 			style="width:80px;background-color:lightyellow;">
+				 		<label r:context="ancillary"
+				 			r:depends="map.${ i.objid.toLowerCase() }.checked"  
+				 			r:visibleWhen="#{map.${ i.objid.toLowerCase() }.checked == true}">&nbsp;&nbsp;${i.unit}</label>	
+			 		</span>	
+				</div> 
+	 	<%}%>
+	<%}%>
+	</div>
+
+	<div style="padding-top:20px"></div>
+	@wx:button( caption:'Save And Complete', context:'ancillary', name:'saveAndComplete' )
+
+</div>

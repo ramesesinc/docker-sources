@@ -1,0 +1,9 @@
+provider=rabbitmq
+host=${cloud_server_ip}
+user=ramesesinc
+pwd=!ramesesinc#
+exchange=gdx
+queue=${channel}
+type=direct
+heartbeat=10
+poolSize=1

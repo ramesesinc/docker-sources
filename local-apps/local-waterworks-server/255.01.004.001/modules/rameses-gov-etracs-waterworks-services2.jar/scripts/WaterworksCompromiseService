@@ -1,0 +1,57 @@
+import com.rameses.annotations.*;
+import java.rmi.server.*;
+
+/*****
+* 
+*
+*****/
+class WaterworksCompromiseService {
+	
+	@DataContext("waterworks_promissory")
+	def promissoryEm;
+
+	@DataContext("waterworks_billitem")
+	def billItemEm;
+
+	@DataContext("waterworks_recurringfee")
+	def recurringFeeEm;
+
+
+	@ProxyMethod
+	public def post( def o ) {
+
+		def prom = promissoryEm.find( [objid: o.objid]).first();
+
+		//pay the billitems 
+		prom.items.each {
+			billItemEm.find( [objid: it.refid ] ).update( [amtpaid: "{amtpaid + :amt}", [amt: it.amount ] ] );
+		}
+
+		//insert promissory note into the recurring fee so it can be scheduled during billing
+		def m = [:];
+		m.acctid = prom.acctid;
+		m.system = 1;
+		m.type = "installment";
+		m.amount = prom.amount - prom.downpayment;
+		m.amtpaid = 0;
+		m.startyear = prom.startyear;
+		m.startmonth = prom.startmonth;
+		m.installmentamount = prom.installmentamount;
+		m.refid = prom.objid;
+		m.reftype = "promissory";
+		recurringFeeEm.create( m );	
+
+		prom.find( [objid: o.objid ] ).update( [state: "POSTED" ] );
+
+	}
+
+	@ProxyMethod
+	public def applyDefault( def o ) {
+		def 
+
+
+	}
+
+}
+
+

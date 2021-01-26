@@ -1,0 +1,195 @@
+<%
+   def contractor = [];
+    contractor << [title:"A", selectname:"ACCOUNTING & AUDITING", no:1];
+    contractor << [title:"A", selectname:"AERIAL SPRAYING", no:2];
+    contractor << [title:"A", selectname:"AUTO REPAIR & ELECTRICAL SHOP", no:3];
+    contractor << [title:"A", selectname:"ART AND SIGNS", no:4];
+    contractor << [title:"A", selectname:"AGRI-CROPS GRINDER", no:5];
+    contractor << [title:"A", selectname:"ADVERTISING AGENCY", no:6];
+    contractor << [title:"B", selectname:"BROKERAGE", no:7];
+    contractor << [title:"B", selectname:"BOOKING OFFICE (SECURITY TRAINING ACADEMY)", no:8];
+    contractor << [title:"B", selectname:"BOOKING OFFICE (AGRI-PRODUCTS)", no:9];
+    contractor << [title:"B", selectname:"BATTERY REPAIR SHOP", no:10];
+    contractor << [title:"B", selectname:"BARBERSHOP/BEAUTY PARLOR", no:11];
+    contractor << [title:"B", selectname:"BOOKING OFFICE (IMPORTER OF FISH)", no:12];
+    contractor << [title:"B", selectname:"BOOKING OFFICE (FUNERAL SERVICES)", no:13];
+    contractor << [title:"B", selectname:"BRAKE BONDING & CLUTCH RELINING", no:14];
+    contractor << [title:"B", selectname:"BOOKING/MARKETING OFFICE", no:15];
+    contractor << [title:"B", selectname:"BOOKING OFFICE (SPAREPARTS)", no:16];
+    contractor << [title:"B", selectname:"BLACKSMITH SHOP", no:17];
+    contractor << [title:"B", selectname:"BELT & BUCKLE SHOP", no:18];
+    contractor << [title:"B", selectname:"BOOK BINDERS", no:19];
+    contractor << [title:"B", selectname:"BOOKING OFFICE", no:20];
+    contractor << [title:"B", selectname:"BOOKKEEPING", no:21];
+    contractor << [title:"B", selectname:"BOOKING OFFICE (PRODUCTION OF PREPARED ANIMAL FEEDS)", no:22];
+    contractor << [title:"B", selectname:"BIRTHING/MATERNITY CLINIC", no:2];
+    contractor << [title:"B", selectname:"BOOKING OFFICE (IMPORTER - HARDWARE/CONSTRUCTION SUPPLIES)", no:23];
+    contractor << [title:"B", selectname:"BOOKING OFFICE (BANANA EXPORTER)", no:24];
+    contractor << [title:"B", selectname:"BARBER SHOP", no:25];
+    contractor << [title:"B", selectname:"BILLS PAYMENT (PAYMENT CENTER)", no:26];
+    contractor << [title:"C", selectname:"BOOKING OFFICE (IMPORTER OF FISH)", no:27];
+    contractor << [title:"C", selectname:"BOOKING OFFICE (FUNERAL SERVICES)", no:28];
+    contractor << [title:"C", selectname:"BRAKE BONDING & CLUTCH RELINING", no:29];
+    contractor << [title:"C", selectname:"BOOKING/MARKETING OFFICE", no:30];
+    contractor << [title:"C", selectname:"BOOKING OFFICE (SPAREPARTS)", no:31];
+    contractor << [title:"C", selectname:"BLACKSMITH SHOP", no:32];
+    contractor << [title:"C", selectname:"BELT & BUCKLE SHOP", no:33];
+    contractor << [title:"C", selectname:"BOOK BINDERS", no:34];
+    contractor << [title:"C", selectname:"BOOKING OFFICE", no:35];
+    contractor << [title:"C", selectname:"BOOKKEEPING", no:36];
+    contractor << [title:"C", selectname:"BOOKING OFFICE (PRODUCTION OF PREPARED ANIMAL FEEDS)", no:237];
+    contractor << [title:"C", selectname:"BIRTHING/MATERNITY CLINIC", no:38];
+    contractor << [title:"C", selectname:"BOOKING OFFICE (IMPORTER - HARDWARE/CONSTRUCTION SUPPLIES)", no:39];
+    contractor << [title:"C", selectname:"BOOKING OFFICE (BANANA EXPORTER)", no:40];
+    contractor << [title:"C", selectname:"BARBER SHOP", no:41];
+    contractor << [title:"C", selectname:"BILLS PAYMENT (PAYMENT CENTER)", no:42];
+    contractor << [title:"F", selectname:"BOOKING OFFICE (IMPORTER OF FISH)", no:43];
+    contractor << [title:"F", selectname:"BOOKING OFFICE (FUNERAL SERVICES)", no:44];
+    contractor << [title:"F", selectname:"BRAKE BONDING & CLUTCH RELINING", no:45];
+    contractor << [title:"F", selectname:"BOOKING/MARKETING OFFICE", no:46];
+    contractor << [title:"F", selectname:"BOOKING OFFICE (SPAREPARTS)", no:47];
+    contractor << [title:"F", selectname:"BLACKSMITH SHOP", no:48];
+    contractor << [title:"F", selectname:"BELT & BUCKLE SHOP", no:49];
+    contractor << [title:"F", selectname:"BOOK BINDERS", no:50];
+    contractor << [title:"F", selectname:"BOOKING OFFICE", no:51];
+    contractor << [title:"F", selectname:"BOOKKEEPING", no:52];
+    contractor << [title:"F", selectname:"BOOKING OFFICE (PRODUCTION OF PREPARED ANIMAL FEEDS)", no:53];
+    contractor << [title:"F", selectname:"BIRTHING/MATERNITY CLINIC", no:54];
+    contractor << [title:"F", selectname:"BOOKING OFFICE (IMPORTER - HARDWARE/CONSTRUCTION SUPPLIES)", no:55];
+    contractor << [title:"F", selectname:"BOOKING OFFICE (BANANA EXPORTER)", no:56];
+    contractor << [title:"F", selectname:"BARBER SHOP", no:57];
+    contractor << [title:"F", selectname:"BILLS PAYMENT (PAYMENT CENTER)", no:58];
+    contractor << [title:"G", selectname:"BROKERAGE", no:59];
+    contractor << [title:"G", selectname:"BOOKING OFFICE (SECURITY TRAINING ACADEMY)", no:60];
+    contractor << [title:"G", selectname:"BOOKING OFFICE (AGRI-PRODUCTS)", no:61];
+    contractor << [title:"G", selectname:"BATTERY REPAIR SHOP", no:62];
+    contractor << [title:"G", selectname:"BARBERSHOP/BEAUTY PARLOR", no:63];
+    contractor << [title:"G", selectname:"BOOKING OFFICE (IMPORTER OF FISH)", no:64];
+    contractor << [title:"G", selectname:"BOOKING OFFICE (FUNERAL SERVICES)", no:65];
+    contractor << [title:"G", selectname:"BRAKE BONDING & CLUTCH RELINING", no:66];
+    contractor << [title:"G", selectname:"BOOKING/MARKETING OFFICE", no:67];
+    contractor << [title:"G", selectname:"BOOKING OFFICE (SPAREPARTS)", no:68];
+    contractor << [title:"G", selectname:"BLACKSMITH SHOP", no:69];
+    contractor << [title:"G", selectname:"BELT & BUCKLE SHOP", no:70];
+    contractor << [title:"G", selectname:"BOOK BINDERS", no:71];
+    contractor << [title:"G", selectname:"BOOKING OFFICE", no:72];
+    contractor << [title:"G", selectname:"BOOKKEEPING", no:73];
+    contractor << [title:"G", selectname:"BOOKING OFFICE (PRODUCTION OF PREPARED ANIMAL FEEDS)", no:74];
+    contractor << [title:"G", selectname:"BIRTHING/MATERNITY CLINIC", no:75];
+
+
+  def groups = contractor.collect{ it.title }.findAll{( it )}.unique().sort{ it }  
+
+%>
+
+
+ <section id="services" class="section">
+    <div class="container">
+        <div class="row">
+                <div class="col-md-12">
+                        <br>
+                        <br>
+                        <div class="stepwizard">
+                            <div class="stepwizard-row setup-panel">
+                              <div class="stepwizard-step">
+                                <a href="#step-1" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                                <p>Step 1</p>
+                              </div>
+                              <div class="stepwizard-step">
+                                <a href="#step-2" type="button" class="btn btn-primary btn-circle">2</a>
+                                <p>Step 2</p>
+                              </div>
+                              <div class="stepwizard-step">
+                                <a href="/partners/${PARAMS.name}/services/business/applynew/lineofbusiness" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                                <p>Step 3</p>
+                              </div>
+                              <div class="stepwizard-step">
+                                <a href="#step-4" type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                                <p>Step 4</p>
+                              </div>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <form action="/partners/${PARAMS.name}/services/business/businessapplynew/selectedlinebusiness" method="get">
+                            <div class="setup-content" id="step-3">      
+                                  <h1> Select Line of Business</h1>
+                                  <hr>
+                                  <div>
+                                    <div class="radio radio-primary">
+                                        <input type="radio" name="radio1" id="radio1" value="option1"/>
+                                        <label for="radio1">
+                                            AMUSEMENT
+                                        </label>
+                                    </div>
+                                    <div class="radio radio-primary">
+                                        <input type="radio" name="radio1" id="radio2" value="option2"/>
+                                        <label for="radio2">
+                                            CONTRACTOR
+                                        </label>
+                                    </div>
+                                    <div class="radio radio-primary">
+                                        <input type="radio" name="radio1" id="radio3" value="option3"/>
+                                        <label for="radio3">
+                                            MANUFACTURER
+                                        </label>
+                                    </div>
+
+                                  </div>
+                                   <hr>
+                                   
+                                  <br>
+                                  <br>
+                                  <div id='show-me1' style='display:none'>
+                                    <h3> Select Type of Business</h3>
+                                    <div id="linebusiness">   
+                                        <%
+                                            groups.each{ k -> 
+                                           def v = contractor.findAll{( it.title==k )}.sort{ it.title }
+                                        %>  
+                                        <div class="box-linebusiness">                                              
+                                            <h4>${k}</h4>
+                                            <%v.each{o->%>
+                                                <p><input id="${o.no}" type="radio" name="radio4" value="${o.selectname}" onchange="selected()"/> <label id="lbl_${o.no}" for="${o.no}">${o.selectname}<br></label></p>
+                                            <%}%>
+                                        </div>         
+                                        <%}%> 
+                                    </div>
+                                  </div>
+                                 
+                                  <div id='show-me2' style='display:none'>
+                                    <h3> Select Business Type</h3>
+                                        <input type="radio" name="box" value="2000" id="101" onchange="selected()"> <label id="lbl_101" for="101">MANUFACTURER - GARMENTS<br></label>
+                                        <br>
+                                        <input id="102" type="radio" name="box" value="500" onchange="selected()"> <label id="lbl_102" for="102">MANUFACTURER - BAKERY<br></label>
+                                        <br>
+                                        <input type="radio" name="box" value="150" id="103" onchange="selected()"> <label id="lbl_103" for="103">MANUFACTURER - PLASTIC MANUFACTURING<br></label><br><br>
+                                  </div>
+                                   <div class="col-md-12" style="margin-bottom:100px;">
+                                        <a href="/partners/${PARAMS.name}/services/business/businessapplynew" class="btn btn-next nextBtn btn-lg pull-left">Back</a>
+                                       <button type="submit" class="btn btn-next btn-lg pull-left">Next</button>
+                                  </div>
+                              </div>
+                        </form>
+                    </div>
+                </div>
+        </div>
+    </div>
+ </section>
+
+<script type="text/javascript">
+    \$(document).ready(function () {
+        \$("input[name='radio1']").click(function () {
+          \$('#show-me').css('display', (\$(this).val() === 'option1') ? 'block':'none');
+      });
+         \$("input[name='radio1']").click(function () {
+          \$('#show-me1').css('display', (\$(this).val() === 'option2') ? 'block':'none');
+      });
+        \$("input[name='radio1']").click(function () {
+          \$('#show-me2').css('display', (\$(this).val() === 'option3') ? 'block':'none');
+      });
+    });
+</script>
+
+
+

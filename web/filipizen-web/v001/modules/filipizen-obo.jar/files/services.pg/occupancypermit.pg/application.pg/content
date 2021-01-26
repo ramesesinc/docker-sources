@@ -1,0 +1,198 @@
+<style>
+  .caption-class { width:150px; }
+  .caption-class2 { width:200px; }
+  .input-class { width:250px;}
+  .test { width:300px; border:1px solid lighjtgrey; }
+</style>
+
+
+<script>
+	\$put("application", new function() {
+		var self = this;
+		var app = \$get("app").code;
+
+		this.mode;
+		this.occupancy;
+
+	    this.onload = function() {
+			self.orgname = app.orgname;
+			self.occupancy = app.service.getApplication( {appid: app.appid} );
+			self.mode = "view-application";
+		}
+
+		this.edit = function() {
+		    self.mode = 'edit-application';
+		    self._controller.refresh();
+		}
+
+		this.update = function() {
+			app.service.update( self.occupancy );
+			self.mode = 'view-application';
+			self._controller.refresh();
+		}
+
+		this.next = function() {
+		    app.moveNextStep();
+		}
+
+	});
+</script>
+
+
+<div r:context="application" r:visibleWhen="#{mode=='view-application'}" style='display:none'>
+	<div style="padding-bottom:20px;">Please check building permit info if correct. Click next to continue</div>
+	<div class="form">
+	  @wx:label(caption:'Permit No', context:'application', expr:'#{occupancy.permit.permitno}', captionClass:'caption-class2')  
+	  @wx:label(caption:'Date Issued', context:'application', expr:'#{occupancy.permit.dtissued}', captionClass:'caption-class2')  
+	  @wx:label(caption:'Name of Owner', context:'application', expr:'#{occupancy.permit.applicant.name}', captionClass:'caption-class2')  	
+	  @wx:label(caption:'Address of Owner', context:'application', expr:'#{occupancy.permit.applicant.address.text}', captionClass:'caption-class2')  	
+
+	  <br />
+	  <h3>APPLICATION INFORMATION</h3>
+
+		@wx:label(caption:'Application Type', context:'application', expr:'#{occupancy.apptype}', captionClass:'caption-class2')  		  
+
+	  @wx:label(caption:'Name of Owner/Applicant', context:'application', expr:'#{occupancy.contact.name}', captionClass:'caption-class2')  	
+	  @wx:label(caption:'Address of Owner/Applicant', context:'application', expr:'#{occupancy.contact.address.text}', captionClass:'caption-class2')  	
+	  @wx:label(caption:'Email Address', context:'application', expr:'#{occupancy.contact.email}', captionClass:'caption-class2')  	
+	  @wx:label(caption:'Mobile No.', context:'application', expr:'#{occupancy.contact.mobileno}', captionClass:'caption-class2')  	
+	  
+	  <table border="1" cellpadding="3px" width="90%">
+	  	<thead>
+	  		<tr>
+	  			<td></td>
+	  			<td style="text-align:center;width:30%">PLANNED</td>
+	  			<td style="text-align:center;width:30%">ACTUAL</td>
+	  		</tr>
+	  	</thead>
+	  	<tbody>
+	  		<tr>
+	  			<td>Date of Start of Construction</td>
+	  			<td align="center"><label r:context="application">#{occupancy.bldgpermit.dtproposedconstruction}</label></td>
+	  			<td align="center"><label r:context="application">#{occupancy.dtactualstarted}</label></td>
+	  		</tr>
+	  		<tr>
+	  			<td>Date of Completion</td>
+	  			<td align="center"><label r:context="application">#{occupancy.bldgpermit.dtexpectedcompletion}</label></td>
+	  			<td align="center"><label r:context="application">#{occupancy.dtactualcompleted}</label></td>
+	  		</tr>
+	  		<tr>
+	  			<td>Total Floor Area (Square Meters)</td>
+	  			<td align="center"><label r:context="application">#{occupancy.bldgpermit.totalfloorarea}</label></td>
+	  			<td align="center"><label r:context="application">#{occupancy.totalfloorarea}</label></td>
+	  		</tr>
+	  		<tr>
+	  			<td>No. of Storey(s)</td>
+	  			<td align="center"><label r:context="application">#{occupancy.bldgpermit.numfloors}</label></td>
+	  			<td align="center"><label r:context="application">#{occupancy.numfloors}</label></td>
+	  		</tr>
+	  		<tr>
+	  			<td>No. of Units</td>
+	  			<td align="center"><label r:context="application">#{occupancy.bldgpermit.numunits}</label></td>
+	  			<td align="center"><label r:context="application">#{occupancy.numunits}</label></td>
+	  		</tr>
+	  	</tbody>
+	  </table>
+
+	<br />
+	<h3>SUMMARY OF ACTUAL COSTS</h3>
+  	<div>
+  		@wx:label(caption:'Total Cost of Material', context:'application', expr: '#{occupancy.totalmaterialcost}')
+  		@wx:label(caption:'Total Cost of Direct Labor', context:'application', expr: '#{occupancy.totaldirectlaborcost}')
+  		@wx:label(caption:'Total Cost of Equipment Utilization', context:'application', expr: '#{occupancy.totalequipmentcost}')
+  		@wx:label(caption:'Total Other Cost', context:'application', expr: '#{occupancy.totalothercost}')
+	</div>
+
+	<br />
+	<h3>INSTALLATION COSTS</h3>
+  	<div>
+  		@wx:label(caption:'Fire Alarm System', context:'application', expr: '#{occupancy.firealarmcost}')
+  		@wx:label(caption:'Automatic Sprinkler System', context:'application', expr: '#{occupancy.sprinklercost}')
+  		@wx:label(caption:'LPG Piping System', context:'application', expr: '#{occupancy.lpgpipingcost}')
+  		@wx:label(caption:'Fire Suppression Cost', context:'application', expr: '#{occupancy.firesuppcost}')
+	</div>
+  </div>  
+  <br />
+  @wx:button( context:'application', name:'edit', caption: 'Edit Application' )
+  @wx:button( context:'application', name:'next', caption: 'Next' )
+</div>
+
+
+
+<div r:context="application" r:visibleWhen="#{mode=='edit-application'}" style='display:none'>
+	<div style="padding-bottom:20px;">Please check building permit info if correct. Click next to continue</div>
+	<div class="form">
+	  @wx:label(caption:'Permit No', context:'application', expr:'#{occupancy.permit.permitno}', captionClass:'caption-class2')  
+	  @wx:label(caption:'Date Issued', context:'application', expr:'#{occupancy.permit.dtissued}', captionClass:'caption-class2')  
+	  @wx:label(caption:'Name of Owner', context:'application', expr:'#{occupancy.permit.applicant.name}', captionClass:'caption-class2')  	
+	  @wx:label(caption:'Address of Owner', context:'application', expr:'#{occupancy.permit.applicant.address.text}', captionClass:'caption-class2')  	
+
+	  <br />
+	  <h3>APPLICATION INFORMATION</h3>
+
+		@wx:label(caption:'Application Type', context:'application', expr:'#{occupancy.apptype}', captionClass:'caption-class2')  		  
+
+	  @wx:label(caption:'Name of Owner/Applicant', context:'application', expr:'#{occupancy.contact.name}', captionClass:'caption-class2')  	
+	  @wx:label(caption:'Address of Owner/Applicant', context:'application', expr:'#{occupancy.contact.address.text}', captionClass:'caption-class2')  	
+	  @wx:label(caption:'Email Address', context:'application', expr:'#{occupancy.contact.email}', captionClass:'caption-class2')  	
+	  @wx:label(caption:'Mobile No.', context:'application', expr:'#{occupancy.contact.mobileno}', captionClass:'caption-class2')  	
+	  
+	  <table border="1" cellpadding="0" width="90%">
+	  	<thead>
+	  		<tr>
+	  			<td></td>
+	  			<td style="text-align:center;width:30%">PLANNED</td>
+	  			<td style="text-align:center;width:30%">ACTUAL</td>
+	  		</tr>
+	  	</thead>
+	  	<tbody>
+	  		<tr>
+	  			<td>Date of Start of Construction</td>
+	  			<td align="center"><label r:context="application">#{occupancy.bldgpermit.dtproposedconstruction}</label></td>
+	  			<td>@wx:date(caption:'', context:"application", name: 'occupancy.dtactualstarted')</td>
+	  		</tr>
+	  		<tr>
+	  			<td>Date of Completion</td>
+	  			<td align="center"><label r:context="application">#{occupancy.bldgpermit.dtexpectedcompletion}</label></td>
+	  			<td>@wx:date(caption:'', context:"application", name: 'occupancy.dtactualcompleted')</td>
+	  		</tr>
+	  		<tr>
+	  			<td>Total Floor Area (Square Meters)</td>
+	  			<td align="center"><label r:context="application">#{occupancy.bldgpermit.totalfloorarea}</label></td>
+	  			<td>@wx:decimal(caption:'', context:"application", name: 'occupancy.totalfloorarea')</td>
+	  		</tr>
+	  		<tr>
+	  			<td>No. of Storey(s)</td>
+	  			<td align="center"><label r:context="application">#{occupancy.bldgpermit.numfloors}</label></td>
+	  			<td>@wx:integer(caption:'', context:"application", name: 'occupancy.numfloors')</td>
+	  		</tr>
+	  		<tr>
+	  			<td>No. of Units</td>
+	  			<td align="center"><label r:context="application">#{occupancy.bldgpermit.numunits}</label></td>
+	  			<td>@wx:integer(caption:'', context:"application", name: 'occupancy.numunits')</td>	  			
+	  		</tr>
+	  	</tbody>
+	  </table>
+
+	  <br />
+	  <h3>SUMMARY OF ACTUAL COSTS</h3>
+  	<div>
+  		@wx:decimal(caption:'Total Cost of Material', context:'application', name: 'occupancy.totalmaterialcost', required: true)
+  		@wx:decimal(caption:'Total Cost of Direct Labor', context:'application', name: 'occupancy.totaldirectlaborcost', required: true)
+  		@wx:decimal(caption:'Total Cost of Equipment Utilization', context:'application', name: 'occupancy.totalequipmentcost', required: true)
+  		@wx:decimal(caption:'Total Other Cost', context:'application', name: 'occupancy.totalothercost', required: true)
+	</div>
+
+	  <br />
+	  <h3>INSTALLATION COSTS</h3>
+  	<div>
+  		@wx:decimal(caption:'Fire Alarm System', context:'application', name: 'occupancy.firealarmcost', required: true)
+  		@wx:decimal(caption:'Automatic Sprinkler System', context:'application', name: 'occupancy.sprinklercost', required: true)
+  		@wx:decimal(caption:'LPG Piping System', context:'application', name: 'occupancy.lpgpipingcost', required: true)
+  		@wx:decimal(caption:'Fire Suppression System', context:'application', name: 'occupancy.firesuppcost', required: true)
+	</div>
+
+  </div>  
+  <br />
+  @wx:button( context:'application', name:'update', caption: 'Update' )
+</div>

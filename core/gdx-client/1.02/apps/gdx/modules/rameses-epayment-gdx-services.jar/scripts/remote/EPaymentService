@@ -1,0 +1,46 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class EPaymentService  {
+
+    @Service(value="EPaymentService", connection="epayment")
+    def localSvc;
+
+    @Service(value="epayment/CloudPaymentService", connection="cloud-server")
+    def cloudSvc;
+
+    @ProxyMethod
+    public def createPaymentOrder(def params) {
+        if(!params.refno) throw new Exception("Please indicate a billing refno");
+        if(!params.orgcode) throw new Exception("Please include orgcode"); 
+        if(!params.txntype) throw new Exception("Please include txntype"); 
+
+        try {
+            def data = params.info?.data; 
+            if ( params.refid == null ) params.refid = data?.refid; 
+            if ( params.payer == null ) params.payer = data?.payer; 
+            if ( params.txntypename == null ) params.txntypename = data.txntypename; 
+
+            def po = localSvc.createPaymentOrder( params );
+            po.orgcode = params.orgcode;
+            po.refno = params.refno;
+            po.origin = params.origin;
+
+            cloudSvc.createPaymentOrder( po );
+
+            //activate the state. activated means it is actually updated in the cloud.
+            localSvc.activatePaymentOrder( [objid:po.objid] );
+
+            return po;
+        }
+        catch(e) {
+            throw e;
+        }
+    }
+
+    
+
+}
+

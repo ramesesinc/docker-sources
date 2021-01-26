@@ -1,0 +1,53 @@
+import com.rameses.annotations.*; 
+
+class BuildingPermitFormReportInterceptor {
+	
+	@DataContext("vw_building_application")
+	def vwApp;
+
+	@DataContext("building_application_payment")
+	def pmtEm;
+
+	@DataContext("vw_building_application_subdoc")
+	def vwSubdocEm;
+
+
+	@After(pattern="FormReportService.getData", eval="#{args[0].reportid.matches('building_permit|building_permit_signboard')}")
+	public void getBuildingPermitReport( def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		def id = p.parameters.objid;
+
+
+		def app = vwApp.find( [objid: id ] ).first();	
+		app.name = app.applicant?.lastname + ", " + app.applicant?.firstname;
+		app.scopeofwork = app.worktypes?.join(",");
+
+		def subDocs = vwSubdocEm.find( [appid: app.objid ]  ).where("doctype.type IN ('ANCILLARY', 'CLEARANCE') AND NOT(issuanceid IS NULL)").orderBy("doctype.sortorder ASC").list();
+
+		app.profarchitect =	subDocs.find{ it.doctypeid.toLowerCase() == 'architectural' }?.designprofessional;	 
+		app.profcivil = subDocs.find{ it.doctypeid.toLowerCase() == 'civil_structural' }?.designprofessional;
+		app.profelectrical = subDocs.find{ it.doctypeid.toLowerCase() == 'electrical' }?.designprofessional;
+		app.profelectrical = subDocs.find{ it.doctypeid.toLowerCase() == 'electrical' }?.designprofessional;
+		app.profmechanical =  subDocs.find{ it.doctypeid.toLowerCase() == 'mechanical' }?.designprofessional;
+		app.profsanitary = subDocs.find{ it.doctypeid.toLowerCase() == 'sanitary' }?.designprofessional;
+		app.profplumbing = subDocs.find{ it.doctypeid.toLowerCase() == 'plumbing' }?.designprofessional;
+		app.profelectronic = subDocs.find{ it.doctypeid.toLowerCase() == 'electronic' }?.designprofessional;
+
+		app.issuances = subDocs.collect{ [controlno:it.controlno, dtissued: it.dtissued, type: it.doctype.title ] };
+
+		//load the fees
+		def fees = vwApp.getCategorizedFees( [appid: app.objid ] ).collect{
+			[type:it.tag.split(":")[1], amount: it.amount ]
+		}
+		
+		app.fees = fees;
+		def pmt = pmtEm.find( [appid: app.objid ]).where("voided = 0").first();
+		app.receiptno = pmt.refno;
+		app.receiptdate = pmt.refdate;
+		app.amount = pmt.amount;
+		result.data = app;
+	}	
+
+
+}

@@ -1,0 +1,93 @@
+<style>
+  .caption-class { width:150px; }
+  .caption-class2 { width:200px; }
+  .input-class { width:250px;}
+  h2{ font-weight:bolder;}
+</style>
+
+<script>
+	\$put("costing", new function() {
+		var self = this;
+
+		var app = \$get("app").code;
+		
+		this.permit;
+		this.materials = [];
+		this.labor = [];
+		this.others = [];
+
+		// this.onload = function() { 
+		// 	self.permit = app.service.getApplication( {appid: app.appid, include_costitems: true } );
+		// 	for( var i=0; i<self.permit.costitems.length;i++ ) {
+		// 		var v = self.permit.costitems[i];
+		// 		if( v.item.category == 'MATERIALS') {
+		// 			self.materials.push( v );
+		// 		}
+		// 		else if( v.item.category == 'LABOR') {
+		// 			self.labor.push( v );
+		// 		}
+		// 		else {
+		// 			self.others.push(v);
+		// 		}
+		// 	}
+		// }
+
+		// this.selectedItem;
+		// this.saveItems = function() {
+		// 	var m = {appid: self.permit.objid };
+		// 	m.costitems = self.permit.costitems;
+		// 	var res = app.service.updateCostItems( m );
+		// 	self.permit.costitems = res.items;
+		// 	self.permit.amount = res.amount;
+		// 	self._controller.refresh();
+		// }
+
+	});
+</script>	
+
+<div class="form">
+  @wx:label(caption:'App Type', context:'costing', expr:'#{permit.apptype}', captionClass:'caption-class2')    
+  @wx:label(caption:'Bldg Permit No', context:'costing', expr:'#{permit.bldgpermit.controlno}', captionClass:'caption-class2') 
+  @wx:label(caption:'Bldg Permit Issued', context:'costing', expr:'#{permit.bldgpermit.dtissued}', captionClass:'caption-class2')  
+  @wx:label(caption:'App Date', context:'costing', expr:'#{permit.dtfiled}', captionClass:'caption-class2')  	  
+  @wx:label(caption:'Applicant', context:'costing', expr:'#{permit.applicant.name}', captionClass:'caption-class2')  
+  @wx:label(caption:'Project Title', context:'costing', expr:'#{permit.title}', captionClass:'caption-class2')    
+  @wx:label(caption:'Location', context:'costing', expr:'Lot No &nbsp;#{permit.location.lotno} &nbsp;Block No:&nbsp; #{permit.location.blockno} &nbsp;Barangay:&nbsp;#{permit.location.barangay}', captionClass:'caption-class2')
+</div>  
+
+<h2>Total Cost of Materials</h2>
+<table r:context="costing" r:items="materials" r:varName="item" r:varStatus="stat" r:name="selectedItem" style="width:700px;">
+	<tbody>
+		<td>#{item.item.title}</td>			
+		<td>#{item.item.unit}</td>					
+		<td>
+			<input type="text" r:context="costing" r:datatype="decimal" r:name="materials[#{stat.index}].amount" />
+		</td>					
+	</tbody>
+</table>
+<br>
+<h2>Total Cost of Direct Labor</h2>
+<table r:context="costing" r:items="labor" r:varName="item" r:varStatus="stat" r:name="selectedItem"  style="width:585px;">
+	<tbody>
+		<td>#{item.item.remarks}</td>			
+		<td>
+			<input type="text" r:context="costing" r:datatype="decimal" r:name="labor[#{stat.index}].amount" />
+		</td>					
+	</tbody>
+</table>
+
+<br>
+<h2>Total Other Cost</h2>
+<table r:context="costing" r:items="others" r:varName="item" r:varStatus="stat" r:name="selectedItem"  style="width:600px;">
+	<tbody>
+		<td>#{item.item.remarks}</td>			
+		<td>
+			<input type="text" r:context="costing" r:datatype="decimal" r:name="others[#{stat.index}].amount" />
+		</td>					
+	</tbody>
+</table>
+<label style="text-align:right;width:585px;padding-top:20px;" r:context="costing">TOTAL COST: #{permit.amount}</label>
+
+<div style="padding-top:20px;">
+<button r:context="costing" r:name="saveItems">Calculate</button>
+</div>

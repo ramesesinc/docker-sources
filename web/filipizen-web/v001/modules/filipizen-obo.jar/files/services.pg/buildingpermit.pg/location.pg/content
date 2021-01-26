@@ -1,0 +1,84 @@
+<script type="text/javascript">
+\$put("location", new function(){
+	var self = this;
+  this.barangayList;
+  this.location;
+
+	var app = \$get("app").code;
+
+  this.appid = app.appid;
+
+  this.onload = function() {
+    self.location = app.service.getLocation({appid: self.appid });
+    if( self.location.barangay.objid != null ) {
+       self.mode = "view-location";
+    }
+    else {
+       self.editLocation();
+    }
+    app.updateStepNavbar();
+  }
+  
+  this.editLocation = function() {
+     self.mode = "edit-location"; 
+     if(!self.barangayList) {
+      var bsvc = Service.lookup("CloudPartnerService", "partner");
+      self.barangayList =  bsvc.getBarangayList( {orgcode: app.orgcode} );     
+     }
+  }
+
+  this.saveLocation = function() {
+    self.location.appid = app.appid;
+    app.service.saveLocation( self.location );
+    self.moveNextStep();    
+  }
+
+  this.moveNextStep = function() {
+      app.moveNextStep(  {appid: app.appid } );
+  }
+
+});
+</script>
+
+<style>
+  .form{width:100%; height:100%;padding-bottom:20px;}
+  .section{float:left;display:inline-block;}
+  .pl10 { padding-left:20px; }
+  .output-class { font-weight:normal;}
+  .input-class { font-weight:normal;}  
+  .caption-class {width:150px;}
+  .attachId { color:blue; }
+  .wStreet { width: 450px;}
+</style>
+
+<div r:context="location" r:visibleWhen="#{mode=='edit-location'}" style='display:none'>
+  <legend>Specify Location</legend>
+  <p>Fill in only fields that are applicable. Fields marked with * are required</p>
+  @wx:text( caption:'Lot No', context:'location', name:'location.lotno', required: false)
+  @wx:text( caption:'Block No', context:'location', name:'location.blockno', required: false)
+  @wx:text( caption:'Unit No', context:'location', name:'location.unitno', required: false)
+  @wx:text( caption:'Bldg No', context:'location', name:'location.bldgno', required: false)  
+  @wx:text( caption:'Bldg Name', context:'location', name:'location.bldgname', required: false, inputClass: "+wStreet")    
+  @wx:text( caption:'Street', context:'location', name:'location.street', required: false, inputClass: "+wStreet")
+  @wx:text( caption:'Subdivision', context:'location', name:'location.subdivision', required: false, inputClass: "+wStreet")
+  <div>
+  <label class="caption-class">Barangay: <font color="red">*</font></label>
+  <select r:context="location" r:name="location.barangay" r:compareKey="objid" r:items="barangayList" 
+    r:itemLabel="name" r:allowNull="true" r:required="true" r:emptyText="Select Barangay" style="width:40%; margin-right:-3px"></select>
+  </div>
+  <div style="padding-top:20px;"></div>
+  @wx:button( context:'location', name:'saveLocation', caption: 'Next')    
+</div>
+
+<div  r:context="location" r:visibleWhen="#{mode=='view-location'}" style='display:none'>
+  <legend>Project Location</legend>
+  @wx:label( caption:'Lot No', context:'location', expr:'#{location.lotno}')
+  @wx:label( caption:'Block No', context:'location', expr:'#{location.blockno}')
+  @wx:label( caption:'Unit No', context:'location', expr:'#{location.unitno}')
+  @wx:label( caption:'Bldg No', context:'location', expr:'#{location.bldgno}')
+  @wx:label( caption:'Bldg Name', context:'location', expr:'#{location.bldgname}')
+  @wx:label( caption:'Street', context:'location', expr:'#{location.street}')
+  @wx:label( caption:'Subdivision', context:'location', expr:'#{location.subdivision}')
+  @wx:label( caption:'Barangay', context:'location', expr:'#{location.barangay.name}')
+  @wx:button( context:'location', name:'editLocation', caption: 'Edit Info')
+</div>

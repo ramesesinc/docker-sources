@@ -1,0 +1,56 @@
+<schema>
+	<element tablename="online_building_permit">
+		<field name="objid" primary="true"/>
+		<field name="orgcode" required="true"/>
+		<field name="apptype" required="true"/>
+		<complex name="worktypes" type="list" serializer="default" />
+
+		<field name="contact_name" required="true"/>
+		<field name="contact_detail" />
+		<field name="contact_email" required="true"/>
+		<field name="contact_mobileno"/>
+		<field name="dtfiled" type="timestamp"/>
+		<field name="title" />
+		<field name="description" />
+		<field name="occupancytypeid" />
+		<field name="numunits" type="integer"/>
+		<field name="numfloors" type="integer"/>
+
+		<field name="totalfloorarea" type="decimal"/>
+		<field name="height" type="decimal"/>
+
+		<field name="projectcost" type="decimal"/>
+		<field name="dtproposedconstruction" type="date" />
+		<field name="dtexpectedcompletion" type="date"/>
+
+		<field name="location_lotno" />
+		<field name="location_blockno" />
+		<field name="location_unitno" />				
+		<field name="location_bldgno" />
+		<field name="location_bldgname" />		
+		<field name="location_street" />
+		<field name="location_subdivision" />
+		<field name="location_barangay_name" />
+		<field name="location_barangay_objid" />
+
+		<complex name="applicant" ref="online_building_permit_entity" jointype="many-to-one" required="false">
+			<key field="applicantid" target="objid" />
+		</complex>	
+
+		<complex name="contractor" ref="vw_online_building_permit_professional" jointype="many-to-one" required="false">
+			<key field="contractorid" target="objid" />
+		</complex>
+
+		<complex name="occupancytype" ref="vw_obo_occupancy_type" jointype="many-to-one" required="false">
+			<key field="occupancytypeid" target="objid" />
+		</complex>	
+
+		<!-- this is only a guard filled up when the occupancy type selected is an accessory 
+		to ensure that it will not be accidentally deleted --> 
+ 		<field name="accessoryid" />
+
+		<!-- shows where the current step is at -->		
+		<field name="step" type="integer"/>
+	</element>
+</schema>
+

@@ -1,0 +1,139 @@
+import com.rameses.annotations.*; 
+
+class BuildingIssuanceFormReportInterceptor {
+	
+	@DataContext("vw_building_application_subdoc")
+	def vwSubdocEm;
+
+
+	@DataContext("vw_building_application_info")
+	def vwInfoEm;
+
+	@DataContext("vw_building_application")
+	def vwAppEm;
+
+	@DataContext("building_application_task")
+	def appTaskEm;
+
+	@DataContext("building_evaluation")
+	def evalEm;
+
+	@DataContext("building_evaluation_task")
+	def evalTaskEm;
+
+	@DataContext("vw_building_application_fee_payment")
+	def payEm;
+
+	@DataContext("building_application_checklist_item")
+	def checkListEm;
+
+	@DataContext("obo_signature")
+	def signatureEm;
+
+	@After(pattern="FormReportService.getData", eval="#{args[0].reportid == 'building_application_subdoc' }")
+	public void getBuildingIssuanceReport( def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		def id = p.parameters.objid;
+
+		def docsub = vwSubdocEm.find([objid: id ]).first();
+
+		if( docsub.template == null ) {
+			docsub.template = docsub.doctype.template;
+		}
+
+		def app = vwAppEm.find( [objid: docsub.appid ] ).first();
+
+		docsub.applicant = app.applicant;
+		docsub.location = app.location;
+		docsub.occupancytype = app.occupancytype;
+		docsub.appno = app.appno;
+		docsub.apptype = app.apptype;
+		docsub.dtfiled = app.dtfiled;		
+		docsub.permitno = app.permitno;
+		docsub.title = app.title;
+		docsub.numunits = app.numunits;
+		docsub.fixedcost = app.fixedcost;
+		docsub.projectcost = app.projectcost;
+		docsub.dtproposedconstruction = app.dtproposedconstruction;
+		docsub.dtexpectedcompletion = app.dtexpectedcompletion;
+		docsub.totalfloorarea = app.totalfloorarea;
+		docsub.height = app.height;
+		docsub.numfloors = app.numfloors;
+		docsub.zone = app.zone;
+		docsub.zoneclass = app.zoneclass;
+
+		
+		//determine the date received
+		docsub.dtreceived = appTaskEm.find([refid: docsub.appid, state:'receiving' ] ).select("enddate").first()?.enddate;		
+
+		//load checklist items if any
+		def chklist = checkListEm.find( [parentid: docsub.objid]).list();
+		chklist.each {
+			docsub.put( it.typeid.toLowerCase(), 1 );
+			if( it.values  ) {
+				for(int i=0;i < it.values.size();i++) {
+					docsub.put( it.typeid.toLowerCase()+"_"+i, it.values[i] );
+				}
+			}
+		}
+
+		//load infos
+		def infos = vwInfoEm.find( [parentid: docsub.objid ] ).list();
+		infos.each {
+			def vname = it.name.toLowerCase();
+			if( it.datatype == 'date')  docsub.put( vname,  it.datevalue);
+			else if( it.datatype == 'decimal') docsub.put(vname, it.decimalvalue);
+			else if( it.datatype == 'integer') docsub.put(vname, it.intvalue);
+			else if( it.datatype == 'boolean') docsub.put(vname, ( (it.booleanvalue == 0) ? false: true));
+			else it.value = docsub.put(vname,  it.stringvalue);
+		}
+
+		//load fees
+		def feeParentid = docsub.objid;
+		if( docsub.doctype.subtypeof !=null ) {
+			def papp = vwSubdocEm.find( [appid: docsub.appid, doctypeid: docsub.doctype.subtypeof ]).first();
+			feeParentid = papp.objid;
+		}
+		def pay = payEm.find( [ parentid: feeParentid ] ).select("payment.refno,payment.refdate,amount").groupBy("payment.refno,payment.refdate").first();
+		if( pay?.payment ) {
+			docsub.receiptno = pay.payment.refno;
+			docsub.receiptdate = pay.payment.refdate;
+			docsub.amount = pay.amount;		
+		}
+
+		//load evaluator. find the associated building evaluation
+		def zeval = evalEm.find( [appid: docsub.appid, typeid: docsub.doctype.evaltypeid ] ).first();
+		def tsk = evalTaskEm.find( [refid: zeval.objid, state:'evaluation' ] ).orderBy("dtcreated DESC").first();
+		docsub.evaluator = tsk.assignee;
+		docsub.dtevaluated = tsk.enddate;
+		if( docsub?.evaluator?.objid ) {
+			def info = signatureEm.find( [objid: docsub.evaluator.objid] ).first();
+			if(info) {
+				docsub.evaluator.signature = info.signature;
+				docsub.evaluator.name = info.displayname;
+			}	
+		}
+
+		//load approver
+		tsk = evalTaskEm.find( [refid: zeval.objid, state:'evaluation-approval' ] ).orderBy("dtcreated DESC").first();
+		docsub.approver = tsk?.assignee;
+		docsub.dtapproved = tsk?.enddate;
+
+		//load issuer
+		if( docsub.issuedby?.objid ) {
+			def info = signatureEm.find( [objid: docsub.issuedby.objid] ).first();
+			if( info ) {
+				docsub.issuedby.signature = info.signature;
+				docsub.issuedby.name = info.displayname;
+			}	
+		}
+
+		//extra settings
+		result.printable = (docsub.issuanceid != null);
+
+		result.data = docsub;
+	}	
+
+
+}

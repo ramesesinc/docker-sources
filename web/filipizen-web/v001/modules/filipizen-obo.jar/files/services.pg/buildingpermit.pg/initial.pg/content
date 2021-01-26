@@ -1,0 +1,185 @@
+<%
+	def appTypes = [];
+	appTypes << [objid:'NEW', title:'NEW CONSTRUCTION'];
+	appTypes << [objid:'RENOVATION', title:'RENOVATION,ALTERATION,REPAIR,ADDITION,EXTENSION'];	
+%>
+
+<style>
+  .caption-class { width:150px; }
+  .input-class { width:250px;}
+  .test { width:300px; border:1px solid lighjtgrey; }
+</style>
+
+
+<script>
+	\$put("initial", new function() {
+		var self = this;
+		this.mode = "initial";
+
+		var app = \$get("app").code;
+		this.contact = {};
+		this.hiddenkey;
+		this.key;
+		this.appid;
+		this.appno;	
+		this.menuOption = "new";
+		this.apptype = "NEW";
+		this.orgname = app.orgname;
+
+		this.selectOption = function() {
+			if(this.menuOption == "new" ) {
+				self.appno = null;
+				self.mode = "add-contact";
+				self._controller.refresh();
+			}
+			else {
+				WindowUtil.load( "buildingpermit", {appid: self.appno } );
+			}
+		}
+
+		this.verifyEmail = function() {
+			var p = {email: self.contact.email, phoneno: self.contact.mobileno } 
+			var emailSvc = Service.lookup(app.orgcode+':VerifyEmailService');
+
+			return emailSvc.verifyEmail( p, function(s,o) {
+		      if( s.status == "ERROR" ) {
+		        self.error = s.msg;
+		      }
+		      else {
+		      	self.mode = "enter-key";
+		        self.hiddenkey = o.key;
+		        self.error = null;
+		      }
+		      self._controller.refresh();
+			});
+		}
+
+		this.validateKey = function() {
+			if(self.hiddenkey != self.key) {
+				self.error = "Key is incorrect. Please try again";
+			}
+			else {
+				self.error = null;
+				self.mode = "select-permit-type";
+			}
+		}
+
+		this.showConfirm = function() {
+			self.error = null;
+			self.mode = "confirm";
+		}
+
+		this.agreed = false;
+		this.confirm = function() {
+			if(!this.agreed) {
+				alert("Read first the terms and  check 'I agree' ");
+				return;
+			}
+			var p = {orgcode:app.orgcode, contact: self.contact, worktypes: [], numunits: 1, apptype:self.apptype, permittype: 'BUILDING' };
+			p.nextstep = "location";
+			var a = app.service.create( p );
+			this.appid = a.objid;
+			self.mode = "success";
+		}
+
+		this.cancelApp = function() {
+			WindowUtil.load( "/partners/${PARAMS.name}/services");
+		}
+
+		this.proceed = function() {
+			app.reload( { appid: this.appid }, "location" );
+		}
+
+
+	});
+</script>
+
+<div r:context="initial" r:visibleWhen="#{error != null }" style='display:none'>
+	<label r:context="initial" style="color:red;">#{error}</label>
+</div>
+
+<div r:context="initial" r:visibleWhen="#{mode=='initial'}" style='display:none'>
+	<div class="subtitle">Select an action</div>
+	<div class="form">
+		<input type="radio" r:context="initial" r:name="menuOption" value="new"> Create New Application</input><br>	
+		<input type="radio" r:context="initial" r:name="menuOption" value="resume"> Resume Pending Application</input><br>	
+		<div r:context="initial" r:depends="menuOption" r:visibleWhen="#{menuOption== 'resume'}" style="padding-left:10px">
+			@wx:text( caption:'App Tracking No', context:'initial', name:'appno', required:true )
+		</div>
+	</div>
+	@wx:button( context:'initial', name:'selectOption', caption: 'Next' )
+</div>
+
+
+<div r:context="initial" r:visibleWhen="#{mode=='add-contact'}" style='display:none'>
+	<div class="subtitle">Enter contact details</div>
+	<div class="form">
+		@wx:text( caption:'Contact Name', context:'initial', name:'contact.name', required:true, hint:'Lastname, Firstname MI.' )
+		@wx:text( caption:'Contact Detail', context:'initial', name:'contact.detail' )
+		@wx:email( context:'initial', name:'contact.email', required:true )
+		@wx:mobile( context:'initial', name:'contact.mobileno')
+	</div>
+	@wx:button( context:'initial', name:'verifyEmail', caption: 'Next')
+</div>
+
+<div r:context="initial" r:visibleWhen="#{mode=='enter-key'}" style='display:none'>
+	<div class="form">
+		<div>Please enter the 6 digit key sent in your email</div>
+		@wx:text( context:'initial', name:'key')
+	</div>
+	@wx:button( context:'initial', name:'validateKey', caption: 'Next' )
+</div>
+
+<div r:context="initial" r:visibleWhen="#{mode=='select-permit-type'}" style='display:none'>
+	<div class="subtitle">Select Type of application</div>
+	<div class="form">
+	    <%appTypes.each { o-> %>
+	    	<%if(o.objid == 'NEW') {%>
+	    	<div style="text-transform:capitalize;">
+	    		<input type="radio" r:context="initial" r:name="apptype" value="${o.objid}">&nbsp;${o.title.toLowerCase()}
+	    	</div>	
+	    	<%} else { %>
+	    	<div style="color:lightgrey;text-transform:capitalize;">
+	    		<input type="radio" r:context="initial" r:name="apptype" value="${o.objid}" disabled>&nbsp;${o.title.toLowerCase()}
+	    	</div>
+	    	<%}%>
+	    <%}%>
+	</div>
+    @wx:button( context:'initial', name:'showConfirm', caption: 'Next' )
+</div>
+
+<div r:context="initial" r:visibleWhen="#{mode=='confirm'}" style='display:none'>
+	<div class="subtitle">Please read throughly before proceeding</div>
+	<div class="form">
+		<p style="padding-bottom:10px;">
+			<label r:context="initial" style="font-weight:normal;">
+				This online service will require personal information from the applicant, lot owner(s) 
+				and professionals involved in this transaction. In compliance with the Data Privacy Act, we are
+				securing your consent that you have been authorized by the aforementioned parties to act on their behalf.   
+				The data collected will be stored, processed and used for effectively carrying out legitimate transactions 
+				with the local government of #{orgname}. If you do not agree to these terms, you can cancel out by clicking the Cancel button. 
+				If you agree to these terms, tick on the checkbox and click Continue.
+	    	</label>
+    	</p>
+    	<input type="checkbox" r:context="initial" r:name="agreed"> Yes I have read and agree to the terms and conditions 
+	</div>	
+	<div>
+		@wx:button( context:'initial', name:'cancelApp', caption: 'Cancel' )
+		@wx:button( context:'initial', name:'confirm', caption: 'Continue' )
+  	</div>
+</div>
+
+<div r:context="initial" r:visibleWhen="#{mode=='success'}" style='display:none'>
+	<div class="subtitle">Application created</div>
+	<div class="form">
+		<p>Please take note of 
+	        the tracking number for this application. This will be your tracking reference for completing
+	        and follow up for this application.
+		</p>
+		<h2>
+        	<label r:context="initial">#{appid}</label> 
+        </h2> 
+	</div>
+	@wx:button( context:'initial', name:'proceed', caption: 'Continue' )
+</div>
+

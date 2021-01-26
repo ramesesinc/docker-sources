@@ -1,0 +1,7 @@
+<schema>
+	<element tablename="obo_itemaccount_report_tag">
+		<field name="objid" primary="true" visible="true" caption="ID"/>
+		<field name="itemid" />
+		<field name="tag" />
+	</element>
+</schema>	

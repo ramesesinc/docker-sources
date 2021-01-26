@@ -1,0 +1,62 @@
+import com.rameses.annotations.*;
+
+class BuildingPermitPersistenceInterceptor {
+	
+
+	@DataContext("building_application")
+	def appEm;
+
+	@DataContext("building_application_entity")
+	def appEntity;
+
+	@Service("OboConstructionCostRuleService")
+	def costSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Env
+	def env;
+
+	//BEFORE CAPTURING THE PERMIT ENSURE APPLICATION IS SAVED
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'building_permit' }") 
+	public void onCreatePermit( def evt ) {
+		def app = evt.args[0];
+
+		//calculate the cost first before receiving
+
+		def param = [:];
+		param.app = [apptype:app.apptype, totalfloorarea:app.totalfloorarea];
+		param.occupancytype = app.occupancytype;
+		app.fixedcost = costSvc.calc( param );
+
+		//complete the work
+		//app.worktypes = [ app.worktype.objid ];
+		app.txnmode = "CAPTURE";
+		if(!app.appno) app.appno = app.permitno;
+		app.permittype = "BUILDING PERMIT";
+		app.orgcode = env.ORGCODE;
+		app.occupancytypeid = app.occupancytype.objid;
+		def applicant = app.remove("applicant");
+
+		//save the application
+		app = appEm.create( app );
+
+		//save the applicant entity
+		applicant.profileid = applicant.remove("objid");
+		applicant.appid = app.objid;
+		applicant.resident = ( applicant.address.type == 'local') ? 1 : 0;
+		def vent = appEntity.create( applicant );
+
+		def u = [:];
+		u.applicantid = vent.objid;
+		appEm.find( [objid: app.objid ] ).update( u );
+
+		//set the state and appid for saving to permit
+		app.appid = app.objid;
+		app.state = 3;
+	} 
+	
+
+
+}

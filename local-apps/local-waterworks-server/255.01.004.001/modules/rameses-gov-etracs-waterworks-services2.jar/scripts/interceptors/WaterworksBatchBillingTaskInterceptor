@@ -1,0 +1,32 @@
+import com.rameses.annotations.*;
+import treasury.facts.*;
+
+class WaterworksBatchBillingTaskInterceptor {
+	
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("waterworks_subarea")
+	def subareaEm;
+
+	@DataContext("waterworks_batch_billing")
+	def batchEm;
+
+	@DataContext("waterworks_batch_billing_task")
+	def taskEm;
+
+	@DataContext("waterworks_bill")
+	def billEm;
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname == 'waterworks_batch_billing' && args[0].action == 'submit' && args[0].to == 'processing'  }")
+	public void checkErrorsBeforeProcess( evt ) {
+		def p = evt.args[0]; 
+	
+		def cnt = batchEm.findInvalidAccountsForBillingCount([batchid: p.refid ] );
+		if( cnt!=null && cnt?.count > 0 ){
+			throw new Exception("Cannot submit for processing. There are still " + cnt.count +  " accounts included in the batch that need to be resolved.");
+		}
+	}
+
+	
+} 

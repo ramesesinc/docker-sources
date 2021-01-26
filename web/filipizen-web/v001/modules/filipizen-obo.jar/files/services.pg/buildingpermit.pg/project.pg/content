@@ -1,0 +1,132 @@
+
+
+<%
+  def svc = SERVICE.lookup("OboMiscListService", "obo");
+  def workTypes = svc.getWorkTypes();
+%>
+
+<script>
+
+
+  \$put("project", new function() {
+      var self = this;
+      this.error;
+      this.mode;
+      this.project;
+
+      var svc = Service.lookup("OnlineBuildingPermitService", "obo");
+      var app = \$get("app").code;
+      this.worktypes = {}
+
+      this.updateProject = function() {
+        this.project.worktypes = []; 
+        for( v in self.worktypes ) {
+          if( self.worktypes[v] == true ) {
+            this.project.worktypes.push( v );            
+          }
+        }
+        if(this.project.worktypes.length == 0) {
+          throw new Error("Please select at least one scope of work")
+        }  
+        this.project.appid = app.appid;
+        svc.updateProjectInfo( this.project );
+        app.moveNextStep();
+      }
+
+      this.onload = function() {
+        this.project = svc.getProjectInfo( {appid: app.appid });
+        for(var i = 0; i < this.project.worktypes.length; i++) {
+          var p = this.project.worktypes[ i ];
+          this.worktypes[ p ] = true;
+        };        
+        app.updateStepNavbar();
+      }
+
+      this.lookupOccupancyType = function() {
+        var f = function(x) {
+           self.project.occupancytype = x;
+           self._controller.refresh();
+        }
+        return new PopupOpener("occupancytype_lookup", {handler: f }, {title:'Lookup Occupancy Type', width:'700', height:'400', resizable:true}  );
+      } 
+
+      this.lookupProfessional = function( fldname ) {
+        var h = function(v) {
+            self.project[fldname] = v;
+        }
+        return new PopupOpener( "professional_lookup", { appid: app.appid, onselect: h }, 
+          {width:'700', height:'300', title: 'Lookup Contruction In Charge'}  );
+        
+      }
+
+      this.lookupContractor = function() {
+        return self.lookupProfessional( "contractor" )
+      }
+
+    });
+
+</script>
+
+<style>
+  .caption-class { width:250px; }
+  .input-class { width:300px;}
+  .w700 { width:700px }
+  .w100 { width:100px }
+</style>
+
+<div r:context="project" r:visibleWhen="#{error != null }">
+   <label r:context="project" style="color:red;">#{error}</label>
+</div>
+
+<div>
+  <legend>Project Details</legend>
+  <div class="form">
+    @wx:text(caption:'Project Title', context:'project', name:'project.title', required: true, hint:'Enter Project Title', inputClass: '+w700')
+    @wx:text(caption:'Project Description', context:'project', name:'project.description', required: true, hint:'Enter Project Description', inputClass: '+w700')
+
+    <div  r:context="project" style="padding-top:10px;">
+      <label class="caption-class">Scope of Work</label>
+      <div class="output-class w700" style="display:inline-block;">
+          <%workTypes.each { o->%>
+          <input type="checkbox" r:context="project" r:name="worktypes.${o.name}">&nbsp;${o.description}<br>   
+          <%}%>
+      </div>
+    </div>
+
+    <div  r:context="project"  style="padding-top:10px;padding-bottom:10px;">
+      <label class="caption-class">Occupancy Type</label>
+      <div class="output-class w700" style="display:inline-block;">
+        <label r:context="project" r:visibleWhen="#{project.occupancytype.objid != null }" class="output-class">
+          #{project.occupancytype.title}<br>
+          Group: #{project.occupancytype.group.objid} Division: #{project.occupancytype.division.objid}<br>
+          <a href="#" r:context="project" r:name="lookupOccupancyType" r:immediate="true" class="link-edit-action">[Change]</a>
+        </label>
+        <label r:context="project" r:visibleWhen="#{project.occupancytype.objid == null }"  class="output-class">
+          <a href="#" r:context="project" r:name="lookupOccupancyType" r:immediate="true">[Select an Occupancy Type]</a>
+        </label>
+      </div>
+    </div>
+
+    @wx:integer(caption:'No of Units', context:'project', name:'project.numunits', required: true, inputClass:'+w100')
+    @wx:decimal(caption:'Total Floor Area [sq.meter]', context:'project', name:'project.totalfloorarea', required: true, inputClass:'+w100')
+    @wx:decimal(caption:'Building Height [meter]', context:'project', name:'project.height', required: true, inputClass:'+w100')
+    @wx:integer(caption:'No of Storeys', context:'project', name:'project.numfloors', required: true, inputClass:'+w100')
+
+    <div style="padding-top:20px;"></div>
+    @wx:decimal(caption:'Estimated Cost [Php]', context:'project', name:'project.projectcost', required: true, inputClass:'+w200')
+
+    <div style="padding-top:20px;"></div>
+    @wx:date(caption:'Proposed Construction Date', context:'project', name:'project.dtproposedconstruction', required: true, attrs:[hint:'yyyy-MM-dd'])
+    @wx:date(caption:'Expected Completion Date', context:'project', name:'project.dtexpectedcompletion', required: true, attrs:[hint:'yyyy-MM-dd'])
+
+    <div style="padding-top:20px;">
+      <label class="caption-class">Fulltime Inspector/Supervisor of Construction:</label>
+      <label r:context="project" style="width:210px">#{ project.contractor.name }</label>
+      <button r:context="project" r:name="lookupContractor">Lookup</button>
+    </div>
+
+  </div>
+  @wx:button( caption: 'Save', context:'project', name: 'updateProject' )
+</div>
+
+

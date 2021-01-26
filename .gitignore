@@ -1,0 +1,8 @@
+._.DS_Store
+.DS_Store
+.osiris_pid
+.shutdown_pid
+Thumbs.db
+/_build_tools
+docker-compose-test.yml
+run-docker-compose-test.sh

@@ -1,0 +1,65 @@
+<schema>
+	<element tablename="occupancy_application">
+		<field name="objid" primary="true" prefix="OCCPERM" visible="true"/>
+		<field name="orgcode" required="true"/>
+		<field name="appno" searchable="true" indexed="true"/>
+
+		<field name="trackingno" searchable="true" indexed="true"/>
+		<field name="dtfiled" type="timestamp"/>
+
+		<!-- FULL OR PARTIAL -->
+		<field name="apptype" required="true"/>
+		<!-- permit no is the occupancy permit no -->
+		<field name="bldgpermitid" />
+
+		<field name="contact_name" required="true"/>
+		<field name="contact_detail" />
+		<field name="contact_email" required="true"/>
+		<field name="contact_mobileno"/>
+
+		<field name="occupancytypeid" />
+		
+		<field name="actualnumunits" type="integer"/>
+		<field name="actualtotalfloorarea" type="decimal"/>
+		<field name="actualnumfloors" type="integer"/>
+		<field name="actualheight" type="decimal"/>
+
+		<!-- fixed cost is a computed value -->
+		<field name="totalmaterialcost" type="decimal"/>
+		<field name="totaldirectlaborcost" type="decimal"/>
+		<field name="totalequipmentcost" type="decimal"/>
+		<field name="totalothercost" type="decimal"/>
+
+		<field name="firealarmcost" type="decimal" />
+		<field name="sprinklercost" type="decimal" />
+		<field name="lpgpipingcost" type="decimal" />
+		<field name="firesuppcost" type="decimal" />
+
+		<!-- actual values -->
+		<field name="applicantid" />
+		<field name="profarchitectid" />
+		<field name="profcivilid" />
+		<field name="profelectricalid" />
+		<field name="profmechanicalid" />
+		<field name="profsanitaryid" />
+		<field name="profplumbingid" />
+		<field name="profelectronicid" />
+		<field name="profinteriorid" />
+
+		<field name="supervisorelectricalid" />
+		<field name="supervisormechanicalid" />
+		<field name="supervisorsanitaryid" />
+		<field name="supervisorplumbingid" />
+		<field name="supervisorelectronicid" />
+		<field name="supervisorinteriorid" />
+		<field name="supervisorid" />
+		<field name="contractorid" />
+
+		<field name="dtactualstarted" />
+		<field name="dtactualcompleted" />
+		<field name="txnmode" />
+		<field name="taskid" />
+		<field name="inspectionschedule" type="timestamp" />
+	</element>
+</schema>
+

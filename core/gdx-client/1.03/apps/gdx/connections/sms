@@ -1,0 +1,7 @@
+provider=script
+app.host=${sms-server}:8170
+app.context=sms
+app.cluster=osiris3
+
+env.acctname=${sms_acctname}
+env.apikey=${sms_apikey}

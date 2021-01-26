@@ -1,0 +1,38 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import java.text.*;
+
+public class EntityRemoteService {
+
+	@Service(value="SmtpService", connection="email-sms-server")
+	def smtpSvc;
+
+	@Service 
+	def self; 
+
+	@Service(value="EntityOnlineRegistrationService", connection="entity")
+	def onlineSvc;
+
+	def sendOtp(def o, def subject) {
+		Random rand = new Random(); 
+		def otp = rand.nextInt(10000)+"Ñ"; 
+		def msg = " Your OTP is " + otp;
+		self.sendMail([ to: o.email, subject: subject, message: msg ]);
+		return otp;		
+	}
+
+	@ProxyMethod
+	public def sendRequest(data) {
+		def r = onlineSvc.sendRequest( data );
+		return [result:"OK", trackingno: r.objid];
+	}
+
+
+	@Async
+	@ProxyMethod 
+	public void sendMail( m ) {
+		smtpSvc.send([ to: m.to, subject: m.subject, message: m.message ]);
+	}
+}

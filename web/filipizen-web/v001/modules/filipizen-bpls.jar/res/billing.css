@@ -1,0 +1,73 @@
+.fade.in {
+    background: #00000030;
+}
+.close {
+    line-height: .6;
+}
+#barcode {
+    float: right;
+    height:80px;
+}
+
+@media print {
+  .navbar-inverse{display:none}
+  .footer{display:none}
+  .no-print{display:none}
+  .print{margin:30px}
+  .left{float:left}
+  .right{right}
+  #blackbar{display:none}
+  #Header, #Footer { display: none ! important; }
+  @page {size: auto;margin: 0mm;}
+}
+@media screen{
+  #barcode{display:none;}
+}
+.caption-class { width:200px; }
+
+
+
+/* Phone */
+@media (min-width: 320px){
+	.tablebilling{width: 100%}
+	.tablebilling td {display: block}
+	.tablebilling th {display: block;}
+	.tablebilling tr{border-bottom: 1px solid #a5a5a5;}
+	.tablebilling td.billamount, .tablebilling th.billamount{text-align: right;}
+	.tablebilling td.billdiscount, .tablebilling th.billdiscount{text-align: right;}
+	.tablebilling td.billsurcharge, .tablebilling th.billsurcharge{text-align: right;}
+	.tablebilling td.billinterest, .tablebilling th.billinterest{text-align: right;}
+	.tablebilling td.billtotal, .tablebilling th.billtotal{text-align: right;}
+}
+
+@media(min-width:380px){
+	.tablebilling{width: 100%}
+}
+
+  /*pc monitor */
+@media (min-device-width: 800px){ 
+
+}
+
+
+@media(min-width:992px){
+	.tablebilling{width: 100%}
+}
+
+/*pc monitor */
+@media (min-device-width: 1200px){ 
+	.tablebilling td {display: inline-block;}
+	.tablebilling th {display: inline-block;}
+	.tablebilling{width: 100%}
+	.lob{width: 20%}
+	.taxfee{width:20%}
+	.billamount{width: 15%;text-align: right;}
+	.billdiscount{width: 10%;text-align: right;}
+	.billsurcharge{width: 10%;text-align: right;}
+	.billinterest{width: 10%;text-align: right;}
+	.billtotal{width: 15%;text-align: right;}	
+}
+
+.searchtext {
+	width: 300px;
+}

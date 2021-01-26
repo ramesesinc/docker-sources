@@ -1,0 +1,228 @@
+<%def app = PARAMS.app; %>
+
+<table  width="100%" class="tblscope">
+	<tr>
+		<td colspan="9"><p class="allcaps-bold">Scope of work</p></td>
+	</tr>
+	<tr>
+		<td colspan="3"><input type="checkbox"> New Construction</td>
+		<td colspan="4"><input type="checkbox"> Renovation </td>
+		<td colspan="2"><input type="checkbox"> Raising</td>
+	</tr>
+	<tr>
+		<td colspan="3"><input type="checkbox"> Erection</td>
+		<td colspan="4"><input type="checkbox"> Conversion</td>
+		<td colspan="2"><input type="checkbox"> Demolition</td>
+	</tr>
+	<tr>
+		<td colspan="3"><input type="checkbox"> Addition</td>
+		<td colspan="4"><input type="checkbox"> Repair</td>
+		<td colspan="2"><input type="checkbox"> Accessory Building/Structure <label class="underline2"></label></td>
+	</tr>
+	<tr class="last-td">
+		<td colspan="3"><input type="checkbox"> Alteration</td>
+		<td colspan="4"><input type="checkbox"> Moving</td>
+		<td colspan="2"><input type="checkbox"> Other (specify) <p class="underline"></p></td>
+	</tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" width="100%">
+	<tbody>
+		<tr>
+			<td colspan="2" class="tdinside">
+				<p class="title">Box 2 (To be accomplished by the design professional)</p>
+				<table class="boxpermit" align="center" width="100%">
+						<tr>
+							<td colspan="8"><b>Fixtures to be installed:</b></td>
+						</tr>
+						<tr class="fixture" >
+							<td>Qty.</td>
+							<td>New Fixtures</td>
+							<td>Existing Fixtures</td>
+							<td>Kind of Fixtures</td>
+							<td>Qty.</td>
+							<td>New Fixtures</td>
+							<td>Existing Fixtures</td>
+							<td style="width:200px">Kind of Fixtures</td>
+						</tr>
+						<tr class="fixture">
+							<td><p class="underline qty">${app.water_closet}</p></td></td>
+							<td class="fixture"><input type="checkbox" <%if(app.water_closet!=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.water_closet!=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.water_closet!=null){%>checked<%}%>> Water Closet</td>
+							<td><p class="underline qty">${app.bidet}</p></td>
+							<td><input type="checkbox" <%if(app.bidet	 !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.bidet	 !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.bidet	 !=null){%>checked<%}%>> Bidette</td>
+						</tr>
+						<tr class="fixture" >
+							<td><p class="underline qty">${app.floor_drain}</p></td></td>
+							<td><input type="checkbox" <%if(app.floor_drain !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.floor_drain !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.floor_drain !=null){%>checked<%}%>> Floor Drain</td>
+							<td><p class="underline qty">${app.laundry_tray}</p></td>
+							<td><input type="checkbox" <%if(app.laundry_tray !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.laundry_tray !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.laundry_tray !=null){%>checked<%}%>> Laundry Trays</td>
+						</tr>
+						<tr class="fixture">
+							<td><p class="underline qty">${app.lavatory}</p></td></td>
+							<td><input type="checkbox" <%if(app.lavatory !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.lavatory !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.lavatory !=null){%>checked<%}%>> Lavatory</td>
+							<td><p class="underline qty">${app.dental_cuspidor}</p></td>
+							<td><input type="checkbox" <%if(app.dental_cuspidor !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.dental_cuspidor !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.dental_cuspidor !=null){%>checked<%}%>> Dental Cuspidor</td>
+						</tr>
+						<tr class="fixture">
+							<td><p class="underline qty">${app.kitchen_sink}</p></td></td>
+							<td><input type="checkbox" <%if(app.kitchen_sink !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.kitchen_sink !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.kitchen_sink !=null){%>checked<%}%>> Kitchen Sink</td>
+							<td><p class="underline qty">${app.drinking_fountain}</p></td>
+							<td><input type="checkbox" <%if(app.drinking_fountain !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.drinking_fountain !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.drinking_fountain !=null){%>checked<%}%>> Drinking Fountain</td>
+						</tr>
+						<tr class="fixture">
+							<td><p class="underline qty">${app.faucet}</p></td></td>
+							<td><input type="checkbox" <%if(app.faucet !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.faucet !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.faucet !=null){%>checked<%}%>> Faucet</td>
+							<td><p class="underline qty">${app.bar_sink}</p></td>
+							<td><input type="checkbox" <%if(app.bar_sink !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.bar_sink !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.bar_sink !=null){%>checked<%}%>> Bar Sink</td>
+						</tr>
+						<tr class="fixture">
+							<td><p class="underline qty">${app.shower_head}</p></td>
+							<td><input type="checkbox" <%if(app.shower_head	 !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.shower_head	 !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.shower_head	 !=null){%>checked<%}%>> Shower Head</td>
+							<td><p class="underline qty">${app.soda_fountain_sink}</p></td>
+							<td><input type="checkbox" <%if(app.soda_fountain_sink !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.soda_fountain_sink !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.soda_fountain_sink !=null){%>checked<%}%>> Soda Fountain Sink</td>
+						</tr>
+						<tr class="fixture">
+							<td><p class="underline qty">${app.water_meter}</p></td>
+							<td><input type="checkbox" <%if(app.water_meter !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.water_meter !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.water_meter !=null){%>checked<%}%>> Water Meter</td>
+							<td><p class="underline qty">${app.lab_sink}</p></td>
+							<td><input type="checkbox" <%if(app.lab_sink !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.lab_sink !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.lab_sink !=null){%>checked<%}%>> Labatory Sink</td>
+						</tr>
+						<tr class="fixture">
+							<td><p class="underline qty">${app.grease_trap}</p></td>
+							<td><input type="checkbox" <%if(app.grease_trap !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.grease_trap !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.grease_trap !=null){%>checked<%}%>> Grease Trap</td>
+							<td><p class="underline qty">${app.fixed_type_sterilizer}</p></td>
+							<td><input type="checkbox" <%if(app.fixed_type_sterilizer !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.fixed_type_sterilizer !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.fixed_type_sterilizer !=null){%>checked<%}%>> Sterilizer</td>
+						</tr>
+						<tr class="fixture">
+							<td><p class="underline qty">${app.bath_tub}</p></td>
+							<td><input type="checkbox" <%if(app.bath_tub !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.bath_tub !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.bath_tub !=null){%>checked<%}%>> Bath Tub</td>
+							<td><p class="underline qty"></p></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>> Others (Specify)</td>
+						</tr>
+						<tr class="fixture">
+							<td><p class="underline qty">${app.slop_sink}</p></td>
+							<td><input type="checkbox" <%if(app.slop_sink !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.slop_sink !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.slop_sink !=null){%>checked<%}%>> Slop Sink</td>
+							<td><p class="underline qty"></p></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><p class="underline qty"></p></td>
+						</tr>
+						<tr class="fixture">
+							<td><p class="underline qty">${app.urinal}</p></td>
+							<td><input type="checkbox" <%if(app.urinal !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.urinal !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.urinal !=null){%>checked<%}%>> Urinal</td>
+							<td><p class="underline qty"></p></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><p class="underline qty"></p></td>
+						</tr>
+						<tr class="fixture">
+							<td><p class="underline qty"></p></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>> Air Conditioning Unit</td>
+							<td><p class="underline qty"></p></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><p class="underline qty"></p></td>
+						</tr>
+						<tr class="fixture">
+							<td><p class="underline qty"></p></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>> Water Tank Reservoir</td>
+							<td><p class="underline qty"></p></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><input type="checkbox" <%if(app.staking !=null){%>checked<%}%>></td>
+							<td><p class="underline qty"></p></td>
+						</tr>
+						<tr class="fixture">
+							<td><p class="underline qty"></p></td>
+							<td colspan="3"> Total</td>
+							<td><p class="underline qty"></p></td>
+							<td colspan="3"> Total</td>
+						</tr>
+						<tr class="fixture">
+							<td colspan="8">
+								<table width="100%">
+									<tr class="fixture">
+										<td><input type="checkbox"> Water Distribution System</td>
+										<td><input type="checkbox"> Sewage System</td>
+										<td><input type="checkbox"> Septic Tank</td>
+										<td><input type="checkbox"> Storm Drainage System</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr class="last-td">
+							<td colspan="8">Prepared by: <p class="underline prepared"></p></td>
+						</tr>
+				</table> 
+			</td>
+		</tr>
+		<tr>
+			<td class="tdinside">
+				<p class="title">Box 3</p>
+				@obo:print_professional_box( title: 'Design Professional, Plans and Specifications', professional: app.designprofessional, role: 'MASTER PLUMBER' )
+			</td>
+			<td class="tdinside">
+				<p class="title">Box 4</p>
+				@obo:print_professional_box( title: 'Supervisor/In-charge of civil/structural works', professional: app.supervisor, role:'MASTER PLUMBER' )
+			</td>
+		</tr>
+		<!-- second row. 283 -->
+		<tr>
+			<td class="tdinside">
+				<p class="title">Box 5</p>
+				@obo:print_owner_box( title: '<b>BUILDING OWNER</b>', owner: app.owner )
+			</td>
+			<td class="tdinside">
+				<p class="title">Box 6</p>
+				@obo:print_owner_box( title: 'WITH MY CONSENT: <b>LOT OWNER</b>', owner: app.lotowner )
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+

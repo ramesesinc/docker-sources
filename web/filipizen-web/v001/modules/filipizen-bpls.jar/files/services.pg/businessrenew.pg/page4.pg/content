@@ -1,0 +1,131 @@
+<script>
+  var controller = new function() {
+    var self = this;
+    this.onload = function() {
+      var selector = '#UploadFile';
+      selector = '.file-upload';
+      FilipizenUtil.fileUploadChangeEventListener(selector, function() {
+        console.log('my change function');
+        var id = \$(this).attr('id');
+        if (id) {
+          \$('#' + id + '-filename').val(this.value.substring(12));
+        }
+      });
+    }
+
+  }
+  \$put( "${PAGE.context}", controller );
+</script>
+
+<div class="btn-bldgprev">
+  <button r:context="app" r:name="backToPage3" class="btn-bldg">
+    <i class="fa fa-angle-double-left"></i> Back 
+  </button>
+</div>
+<div class="btn-bldgnext">
+  <button r:context="app" r:name="moveToSuccess" class="btn-bldgnext"> 
+    Submit <i class="fa fa-angle-double-right"></i>
+  </button>
+</div>
+
+<br/> 
+
+@businessdetails()
+
+<h4><b>Line of Business</b></h4>
+<hr>
+
+<div class="row">
+  <div class="col-md-6">
+    <table r:context="app" r:items="data.lobs" r:varName="item" class="lobs">
+    <thead>
+      <tr>
+        <th> LOB Name </th> 
+        <th> Previous Gross Income </th> 
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td> #{item.name} </td>
+        <td> #{item.gross} </td>
+      </tr>
+    </tbody>
+    </table>
+  </div>
+  <div class="col-md-6">
+    <table r:context="app" r:items="data.lobs" r:varName="item" class="lobs">
+    <thead>
+      <tr>
+        <th> Current Gross Income </th> 
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td> <input type="number"  r:context="app" r:required="true" r:name="" class="text-right" placeholder="Php"></td>
+      </tr>
+    </tbody>
+    </table>
+  </div>
+</div> <!-- /.row -->
+<br>
+<h4><b>Requirements</b></h4>
+<hr>
+<div class="row">
+	<div class="col-md-12">
+		  <div style='border:1px solid #dadada;'> 
+    <div class="col-md-12">
+      <div class="panel panel-default panel-table">
+        <div class="panel-body">
+          <!--
+          <div class="main-img-preview">
+            <img class="thumbnail img-preview" src="" title="Preview">
+          </div>
+          -->
+          <div class="form-group row">
+            <div class="col-md-2">
+              <label><b>Requirement 1 </b></label>
+            </div>
+            <div class="col-md-2">
+              <div class="fileUpload">
+                <span><i class="fa fa-paperclip"></i> Attch File</span> 
+                <input id="uf1" type="file" class="file-upload">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <input id="uf1-filename" class="fileName" disabled="disabled">
+            </div>
+          </div> 
+          <div class="form-group row">
+            <div class="col-md-2">
+              <label><b>Requirement 2 </b></label>
+            </div>
+            <div class="col-md-2">
+              <div class="fileUpload">
+                <span><i class="fa fa-paperclip"></i> Attch File</span> 
+                <input id="uf2" type="file" class="file-upload">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <input id="uf2-filename" class="fileName" disabled="disabled">
+            </div>
+          </div> 
+          <div class="form-group row">
+            <div class="col-md-2">
+              <label><b>Requirement 3 </b></label>
+            </div>
+            <div class="col-md-2">
+              <div class="fileUpload">
+                <span><i class="fa fa-paperclip"></i> Attch File</span> 
+                <input id="uf3" type="file" class="file-upload">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <input id="uf3-filename" class="fileName" disabled="disabled"/>
+            </div>
+          </div>                      
+        </div>
+      </div>
+    </div>
+  </div>
+	</div>
+</div>

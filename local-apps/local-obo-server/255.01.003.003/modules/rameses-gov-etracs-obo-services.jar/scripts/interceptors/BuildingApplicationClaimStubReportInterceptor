@@ -1,0 +1,32 @@
+import com.rameses.annotations.*; 
+
+class BuildingApplicationClaimStubReportInterceptor {
+	
+	@DataContext("vw_building_application")
+	def appEm;
+
+	@DataContext("building_application_task")
+	def taskEm;
+
+	@After(pattern="FormReportService.getData", eval="#{args[0].reportid == 'building_application_claimstub' }")
+	public void getClaimStubReport( def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		def id = p.parameters.objid;
+
+		def ea = appEm.find( [objid: id ] ).first();
+
+		def r = taskEm.find( [refid: id, state: 'receiving'] ).orderBy("dtcreated DESC").first();
+		if( r ) {
+			ea.startdate = r.startdate;
+			ea.enddate = r.enddate;
+			ea.receiver = r.assignee;		
+			ea.dtreceived = r.enddate;			
+		};
+		ea.permittype =  "BUILDING PERMIT";
+		result.data = ea;
+	}	
+
+
+
+}

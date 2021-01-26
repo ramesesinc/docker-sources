@@ -1,0 +1,52 @@
+
+<% 
+    def partners = [];
+    def xitems = SERVICE.lookup("CloudPartnerService", "partner").getList();
+    xitems = xitems.findAll{ it.state.toString().toUpperCase() == 'ACTIVE' } 
+    partners.addAll(xitems);
+
+    def groups = partners.group.unique().sort{}
+%>
+
+<script>
+\$put("partner", new function(){
+
+  this.onload = function() {
+    GdxNotification.register('activate', function( ch ){
+      var e = \$('#partner_'+ ch); 
+      e.removeClass('online_0'); 
+      e.addClass('online_1');
+    }); 
+
+    GdxNotification.register('deactivate', function( ch ){
+      var e = \$('#partner_'+ ch); 
+      e.removeClass('online_1'); 
+      e.addClass('online_0');
+    })
+  }
+
+}); 
+</script>
+
+  <div class="partners-content">
+      <div class="container">
+        <h1>Select a Partner Agency</h1>
+        <div id="holder">                              
+            <%
+                groups.each{ k -> 
+                def v = partners.findAll{( it.clusterid==k.objid )}.sort{it.objid};
+            %>  
+            <div class="box">                                              
+                <h4>${k.title}</h4>
+                <%v.each{o->%>
+
+                    <p id="partner_${o.id}" class="online_${o.isonline}">
+                         <a href="/partners/${k.name}_${o.name}/services">${o.title}</a> <span class="online_${o.isonline}">(${o.id})</span>
+                    </p>
+
+                <%}%>
+            </div>         
+            <%}%>   
+        </div>
+      </div >
+  </div>

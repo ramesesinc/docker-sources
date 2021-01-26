@@ -1,0 +1,67 @@
+import com.rameses.annotations.*; 
+
+class OccupancyApplicationAssessmentReportInterceptor {
+	
+	@DataContext("vw_occupancy_application")
+	def appEm;
+
+	@DataContext("occupancy_application_fee")
+	def feeEm;
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'occupancy_application_assessment' }")
+	public void getOccupancyApplicationAssessmentReport( def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		def objid = p.parameters.id;
+		if(!objid) throw new Exception("id is required in requirement checklist report")
+
+		def data = appEm.find( [objid: objid ]).first();
+
+		data.permittype =  "OCCUPANCY PERMIT" ;
+
+		def list = feeEm.find( [appid: objid ] ).list();
+
+		def grps = [:];
+		grps.zoning = [name:'Locational Clearance/Zoning Fees', items: []];
+		grps.bldg = [name:'Building Permit Fees', items: []];
+		grps.fire = [name:'Fire Safety Evaluation Fees', items: [] ];
+		grps.rpt = [name:'Other Fees', items: [] ];
+
+		list.each {
+			def m = [:];
+			m.item = [title: it.item.title];
+			m.amount = it.amount;
+			def grp = null;
+			if( it.item.sectionid == null ) {
+				if( it.item.objid.toLowerCase().matches('tax_.*') ) {
+					grp = grps.rpt;
+				}
+				else {
+					grp = grps.bldg;
+				}	
+			}
+			else if( it.item.sectionid?.toLowerCase().matches(".*zoning.*") ) {
+				grp = grps.zoning; 
+			}
+			else if( it.item.sectionid?.toLowerCase().matches('fsec|fsic|hot_works') ) {
+				grp = grps.fire;
+			}
+			else {
+				grp = grps.bldg;
+			};
+			m.section = grp.name;
+			grp.items << m;
+		}
+
+		def items = [];
+		items.addAll( grps.zoning.items );
+		items.addAll( grps.bldg.items );
+		items.addAll( grps.fire.items );
+		items.addAll( grps.rpt.items );
+
+		data.items = items;
+		result.data = data;
+	}	
+
+
+}

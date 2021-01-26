@@ -1,0 +1,88 @@
+/*=======================================================
+*
+* HomeScreen 
+*
+=======================================================*/
+.HomeScreen {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    width: 50%;
+    margin: auto auto;
+    height: 100vh;
+}
+
+.HomeScreen__panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-top: 60px;
+}
+
+.HomeScreen__image {
+    width: 200px;
+}
+
+.HomeScreen__infoContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.HomeScreen__information {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 40px 0px;
+}
+
+.HomeScreen__title {
+    font-size: 2.7rem;
+    font-weight: 900;
+}
+
+.HomeScreen__description {
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-top: 10px;
+}
+
+.HomeScreen__button {
+    border-radius: 3px;
+    border: none;
+    padding: 12px 50px;
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: white;
+    background-color: #3f51b5;
+}
+
+.HomeScreen__button:hover {
+    cursor: pointer;
+    background-color: #33408a;
+}
+
+
+/*=======================================================
+*
+* Footer
+*
+=======================================================*/
+/* .Footer {
+    position: absolute;
+    bottom: 0;
+    width : 100%;
+    padding: 8px;
+    background-color: #ecf0f1;
+    border-top: 3px solid #2c3e50;
+    text-align: center;
+}
+
+.Footer__info {
+    font-size: 14px;
+    color: #4d4d4d;
+} */

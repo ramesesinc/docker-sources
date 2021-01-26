@@ -1,0 +1,10 @@
+<schema>
+	<element tablename="online_occupancy_permit_costitem">
+		<field name="objid" primary="true" prefix="OCCPMTCOSTITM"/>
+		<field name="appid" />
+		<complex name="item" ref="obo_costitem" jointype="many-to-one" required="true">
+			<key field="itemid" target="objid" />
+		</complex>	
+		<field name="amount" />
+	</element>
+</schema>

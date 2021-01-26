@@ -1,0 +1,152 @@
+
+<%def app = PARAMS.app; %>
+
+<% 
+	def svc = SERVICE.lookup("OnlineOccupancyPermitService", "obo");
+	def occupancy = svc.getApplication([appid:PARAMS.appid]);
+
+%>
+
+<style type="text/css">
+	body{font-size: 14px;}
+	@media print {
+    table tr td {font-size: 12px;height: 19px;}
+	}
+</style>
+
+	<div class="header-container">
+		<div class="formno">
+			<p>NBC FORM NO. B-11</p>
+		</div>
+
+		<div class="header">
+			<div>
+				<img src="/res/obo/lgu/legazpi_logo.png" style="width:100px;">
+			</div>
+			<div>
+				<h3>Republic of the Philippines</h3>
+				<h3>City of Legazpi</h3>
+				<h3>Province of Albay</h3>
+				<br>
+				<h2>Office of the Building Official</h2>
+			</div>
+			<div>
+				<img src="/res/obo/lgu/legazpi_oscp_logo.png" style="width:115px;">
+			</div>
+		</div>
+		<center><h1><b>${PAGE.title}</b></h1></center>
+
+	</div>	
+	<center>
+		<label style="margin-right:30px;"><input type="checkbox" <%if(occupancy.apptype == 'FULL'){%>checked<%}%>> FULL</label>
+		<label style="margin-right:30px;"><input type="checkbox" <%if(occupancy.apptype == 'PARTIAL'){%>checked<%}%>> PARTIAL</label>
+	</center>
+	<div style="float:right; width:200px;">
+		<label>Building Permit No. :</label><p class="underline" style="width:80px;">${occupancy.bldgpermit.permitno}</p><br>
+		<label>Date Issed : </label><p class="underline" style="width:121px;">${occupancy.bldgpermit.dtissued}</p> 
+
+		<br><br>
+		<p style="width:100%;border-bottom:1px solid #000;"></p> 
+		<p style="text-align:center;display:block">(Date)</p>
+	</div>
+
+	<table align="center" width="100%">
+		<tr>
+			<td style="width:180px;">Name Of Owner / Applicant :</td>
+			<td style="border-bottom:1px solid #000;" align="center">${occupancy.applicant.lastname}</td>
+			<td style="border-bottom:1px solid #000;" align="center">${occupancy.applicant.firstname}</td>
+			<td style="border-bottom:1px solid #000;" align="center">${occupancy.applicant.middlename}</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td align="center">(Last Name)</td>
+			<td align="center">(Given Name)</td>
+			<td align="center">(Middle Name)</td>
+		</tr>
+	</table>
+	<table align="center" width="100%">
+		<tr>
+			<td style="width:180px;">Address Of Owner / Applicant</td>
+			<td style="border-bottom:1px solid #000">${occupancy.applicant.address.text}</td>
+			<td style="width:80px;" align="right">ZIP Code :</td>
+			<td style="border-bottom:1px solid #000">${occupancy.applicant.address.zipcode}</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="border-bottom:1px solid #000"></td>
+			<td style="width:80px;" align="right">Tel. No :</td>
+			<td style="border-bottom:1px solid #000">${occupancy.applicant.mobileno}</td>
+		</tr>
+	</table>
+	<br>
+	<br>
+	<center><b>Requirements Submitted:</b></center>
+	<table align="center" width="100%">
+		<tr>
+			<td>
+				<input type="checkbox"> As-Built Plans and Specifications, duly signed and
+					<p style="display:block;margin-left:25px;">sealed by respective professional discipline</p>
+				<input type="checkbox"> Daily Construction Works Logbook <br>
+				<input type="checkbox"> Certificate of Completion, duly notarized<br>
+			</td>
+			<td>
+				<input type="checkbox"> Others: (Specify) ___________________________ 
+				
+				
+			</td>
+		</tr>
+	</table>
+	<br><br>
+	<table align="center" width="100%">
+		<tr>
+			<td style="width:120px;">Name of Project :</td>
+			<td colspan="5" style="border-bottom:1px solid #000;">${occupancy.title}</td>
+		</tr>
+	</table>
+	<table align="center" width="100%">
+		<tr>
+			<td style="width:80px;">Location :</td>
+			<td style="border-bottom:1px solid #000;" align="center">${occupancy.applicant.location?.lotno}</td>
+			<td style="border-bottom:1px solid #000;" align="center">${occupancy.applicant.location?.blkno}</td>
+			<td style="border-bottom:1px solid #000;" align="center">${occupancy.applicant.location?.street}</td>
+			<td style="border-bottom:1px solid #000;" align="center">${occupancy.applicant.location?.barangay}</td>
+			<td style="border-bottom:1px solid #000;" align="center">${occupancy.applicant.location?.citymunicipality}</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td align="center">(Lot No.)</td>
+			<td align="center">(Blk. No.)</td>
+			<td align="center">(Street)</td>
+			<td align="center">(Barangay)</td>
+			<td align="center">(City/Municipality)</td>
+		</tr>
+	</table>
+	<br><br>
+	<div style="margin:0 auto; width:600px;height:160px;">
+		<label>Use/Character of Occupancy:</label> <p class="underline" style="width:198px;"></p><br>
+		<label>No. of Storeys: </label> <p class="underline" style="width:276px;">${occupancy.bldgpermit?.numfloors}</p><br>
+		<label>No. of Units: </label><p class="underline" style="width:290px;">${occupancy.bldgpermit?.numunits}</p><br>
+		<label>Total Floor Area (Square Meters):</label><p class="underline" style="width:180px;">${occupancy.bldgpermit?.totalfloorarea}</p><br>
+		<label>Date of Completion:</label> <p class="underline" style="width:250px;">${occupancy.bldgpermit?.dtexpectedcompletion}</p><br>
+	</div>
+
+	<div style="float:right; width:300px;">
+		<p>Submitted By:</p><br><br><br>
+		<p style="width:100%;border-bottom:1px solid #000;text-align:center">${occupancy.applicant.name}</p> 
+		<p style="text-align:center;display:block"><b>OWNER / APPLICANT</b></p>	
+		<p style="text-align:center;display:block">(Signature Over Printed Name)</p>
+		<br><br>
+		<label>Community Tax Certificate No. :</label><p class="underline" style="width:98px;"></p><br>
+		<label>Date Issued :</label><p class="underline" style="width:198px;"></p><br>
+		<label>Place Issued :</label><label><p class="underline" style="width:198px;"></p>
+	</div>
+
+	<div style="float:left;width:300px;">
+		<p>Authorized representative :</p><br><br><br>
+		<p style="width:100%;border-bottom:1px solid #000;text-align:center"></p> 
+		<p style="text-align:center;display:block">(Signature Over Printed Name)</p>
+	</div>
+
+
+
+
+

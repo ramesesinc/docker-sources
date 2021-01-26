@@ -1,0 +1,51 @@
+<%   
+	def blockClass = '';
+	if( OPTIONS.blockClass ) blockClass = " class=\""+OPTIONS.blockClass+ "\"";
+
+	def visibleWhen = '';
+	if( OPTIONS.visibleWhen ) visibleWhen = " r:visibleWhen=\""+OPTIONS.visibleWhen+ "\"";
+	def depends = '';
+	if( OPTIONS.depends ) depends = " r:depends=\""+OPTIONS.depends+ "\"";
+
+	def captionClass = 'caption-class';
+	if( OPTIONS.captionClass ) {
+		def cc = OPTIONS.captionClass;
+		if( cc.trim().startsWith("+") ) {
+			captionClass += ' ' + cc.substring(1);
+		}		
+		else {
+			captionClass = cc;		
+		}
+	}	
+
+	def action = OPTIONS.action;
+
+	def outputClass = 'output-class';
+	if( OPTIONS.outputClass ) {
+		def cc = OPTIONS.outputClass;
+		if( cc.trim().startsWith("+") ) {
+			outputClass += ' ' + cc.substring(1);
+		}		
+		else {
+			outputClass = cc;		
+		}
+	}	
+
+	def props = OPTIONS.attrs;
+	if(props == null ) props = [:];
+	props.context = OPTIONS.context;
+
+	def attrs = "";
+	def list = [];
+	props.each { k,v->
+		list << ' r:'+k+'="'+v+ '"';		
+	}
+	attrs = list.join(" ");
+%>
+<div${blockClass}${visibleWhen}${depends} r:context="${OPTIONS.context}">
+	<label class="${captionClass}">${OPTIONS.caption}</label>
+	<label class="${outputClass}"${attrs}>${OPTIONS.expr}</label> 
+	<%if( action!=null) { %>
+		&nbsp;&nbsp;<a r:context="${OPTIONS.context}" r:name="${action.name}">${action.caption}</a>
+	<%}%>
+</div>

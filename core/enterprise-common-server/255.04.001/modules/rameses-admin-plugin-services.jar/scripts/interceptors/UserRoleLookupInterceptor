@@ -1,0 +1,22 @@
+import com.rameses.annotations.*;
+
+class UserRoleLookupInterceptor {
+	
+	@Service(value="QueryService", connection="admin")
+	def querySvc;
+
+
+	@After(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'sys_user_role' && args[0].tag == 'user_by_role' }")
+	public def getUserRoleLookup(def evt) {
+		def result = evt.result;
+		def m = [_schemaname: "sys_user"];
+		m.select = "objid,username,lastname,firstname,middlename,jobtitle,fullname";
+		result.each {
+			m.findBy = [objid: it.userid];
+			def u = querySvc.findFirst( m );
+			u.name = u.fullname;
+			it.putAll( u );
+		}
+	}
+
+}

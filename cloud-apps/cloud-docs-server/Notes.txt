@@ -1,0 +1,29 @@
+=====================================
+Setup:
+=====================================
+1. Run "build.sh" to buid an image
+
+2. Clone the "ramesesinc/documentation.git repository
+
+3. Edit "run.sh" and setup the volume property
+
+4. Execute "run.sh" to run the cloud-docs-server container
+
+5. Open browser and enter localhost:4000/
+
+
+=====================================
+Publishing Updates (local-server)
+=====================================
+1. Edit documentation
+
+2. Rebuild the server documentation using the browser
+   by entering the url:
+
+    http://localhost:4000/tool/docs/build
+
+3. Verify documentation is updated
+
+
+    
+    

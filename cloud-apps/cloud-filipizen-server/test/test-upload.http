@@ -1,0 +1,8 @@
+
+POST http://192.168.1.9:5000/filipizen/aws/upload HTTP/1.1
+content-type: application/json
+
+{
+    "name": "hello.txt",
+    "data": "Hello World"
+}

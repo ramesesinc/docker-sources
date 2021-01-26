@@ -1,0 +1,20 @@
+<schema>
+	<element tablename="payment">
+		<field name="objid" primary="true" prefix="EORPMT"/> 
+		<field name="orgcode" required="true"/> 		
+		<field name="paymentrefid" required="true"/> 
+		<field name="txndate" required="true" type="timestamp"/> 
+		<field name="traceid" required="true"/> 
+		<field name="tracedate" required="true"/> 
+		<field name="amount" required="true"/> 
+		<field name="receiptid" /> 
+		<field name="receiptno" /> 
+		<field name="receiptdate" /> 
+		<field name="paypartnerid" /> 
+		<complex name="partner" ref="payment_partner" jointype="many-to-one" required="true">
+			<key field="paypartnerid" target="objid"/> 
+		</complex> 
+	</element> 
+</schema>
+
+		

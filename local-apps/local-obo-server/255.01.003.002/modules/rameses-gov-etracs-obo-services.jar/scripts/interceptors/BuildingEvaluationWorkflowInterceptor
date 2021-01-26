@@ -1,0 +1,134 @@
+import com.rameses.annotations.*;
+
+class BuildingEvaluationWorkflowInterceptor {
+	
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("WorkflowTaskService")
+	def wfSvc;
+
+	@DataContext("building_evaluation_finding")
+	def findingEm;
+
+	@DataContext("vw_building_evaluation")
+	def vwEvalEm;
+
+	@DataContext("building_evaluation")
+	def evalEm;
+
+	@DataContext("building_application_fee")
+	def feeEm;
+
+	@DataContext("vw_building_application")
+	def appEm;
+
+	@DataContext("building_application_subdoc")
+	def subdocEm;
+
+	@DataContext("building_doc_type")
+	def doctypeEm;
+
+	@After(pattern="WorkflowTaskService.start", eval="#{args[0].processname == 'building_evaluation' }" ) 
+	public void afterStart( def evt ) {
+		def p = evt.args[0];
+		def appid = p.info.appid;	//appid
+		def dlist = evalEm.getSubdocsToActivate( [objid: p.refid ] );
+		if( dlist) {
+			dlist*.objid.each {
+				def m = [:];
+				m.appid = appid;
+				m.doctype = [objid: it ];
+				m.state = 0;
+				m.amount = 0;
+				m.occupancytypeid = '';
+				subdocEm.create( m );
+			}
+		}
+	}
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'building_evaluation' && args[0].action == 'send-for-revision' }" ) 
+	public void doActionBeforeRevision( def evt ) {
+		def p = evt.args[0];
+		def c = findingEm.find([parentid: p.refid]).where("state = 2 AND supersederid IS NULL AND transmittalid IS NULL").select("c:{COUNT(*)}").val();
+		if( c == 0 ) throw new Exception("There must be at least one open finding");
+	}
+
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'building_evaluation' && args[0].action == 'approve' }" ) 
+	public void doActionBeforeApprove( def evt ) {
+		def p = evt.args[0];
+		def c = findingEm.find([parentid: p.refid]).where("state = 2 AND supersederid IS NULL").select("c:{COUNT(*)}").val();
+
+		if( c > 0 ) throw new Exception("There must be no unresolved findings");
+		//check here if there are fees
+		def list = evalEm.getDocsThatRequireFees( [evaluationid: p.refid ] );
+		if(list) {
+			throw new Exception("The ff. must have fees: \n" + list*.title.join("\n") );
+		}
+	}
+
+
+	//release process. Ensure that all tasks are closed before firing main
+	@After(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'building_evaluation' && args[0].action == 'send-for-revision' }" ) 
+	public void doActioAfterApproveOrRevise( def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		def appid = vwEvalEm.find( [objid: p.refid] ).select("appid").val();
+		def cnt = vwEvalEm.find([appid:appid]).select("c:{COUNT(*)}").where( " task.state NOT IN ('for-revision', 'obo-processing') ").val();
+		if( cnt == 0 ) {
+			def app = appEm.find([objid:appid]).select("task.*").first();
+			def f = [:];
+			f.processname = 'building_application';
+			f.refid = appid;
+			f.startdate = dateSvc.getServerDate();
+			f.info = [ app: p.info ];
+			f.action = 'send-for-verification';
+			f.taskid = app.taskid;
+			wfSvc.signal(f);
+		}
+	}
+
+	@After(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'building_evaluation' && args[0].action == 'approve' }" ) 
+	public void doActionAfterApprove( def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+
+		def sec = vwEvalEm.find( [objid: p.refid] ).first();
+		def appid = sec.appid;
+
+		//check that all are in obo-processing before moving this application to the next step. There should be no for-revision in this phase because it is already checked in before
+		def cnt = vwEvalEm.find([appid:appid]).select("c:{COUNT(*)}").where( " task.state NOT IN ('obo-processing') ").val();
+		if( cnt == 0 ) {
+			def app = appEm.find([objid:appid]).select("task.*").first();
+			def f = [:];
+			f.processname = 'building_application';
+			f.refid = appid;
+			f.startdate = dateSvc.getServerDate();
+			f.info = [ app: p.info ];
+			f.action = 'approve-evaluation';
+			f.taskid = app.taskid;
+			wfSvc.signal(f);
+		}
+	}
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'building_evaluation' && args[0].action == 'release' }" ) 
+	public void doActionBeforeRelease( def evt ) {
+		def p = evt.args[0];
+
+		def ev = vwEvalEm.find( [objid: p.refid ] ).first();
+
+		//issuetype = 2 means it requires it to be issued
+		def where = "doctype.evaltypeid = :typeid AND doctype.issuetype = 2 AND issuanceid IS NULL";
+		def wlist = subdocEm.find( [appid: ev.appid] ).select("doctype.title").where(where, [typeid: ev.typeid]).list();
+		
+		def errs = [];
+		wlist.each {
+			errs << it.doctype.title;
+		}
+		if(errs) throw new Exception("The ff. documents must be released: \n" + errs.join(","));
+	}
+
+
+	
+}

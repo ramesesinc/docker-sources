@@ -1,0 +1,21 @@
+
+  <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="control-group">
+                <label class="control-label">
+                  Please enter one time password :
+                </label>
+                <input type="text" r:context="app" r:name="pass" r:required="true" class="form-control" />
+              </div> 
+          </div>
+        </div>
+      </div>
+  </div>
+
+<div class="input-group" style="padding-top:20px;">
+  <span class="input-group-btn">
+    <input type="button" r:context="app" r:name="verifyPass" value="Next" class="btn btn-primary">
+  </span>
+</div>

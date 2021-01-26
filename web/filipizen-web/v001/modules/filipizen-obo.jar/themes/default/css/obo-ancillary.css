@@ -1,0 +1,137 @@
+table {border-collapse: collapse;font-size: 12px; margin: 0; padding: 0;font-weight: normal;}
+* {box-sizing: border-box;-moz-box-sizing: border-box;}
+html, body {font-family: 'Arial';-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;-webkit-font-smoothing: antialiased;
+    color: #000000;font-size: 14px;margin: 0px;}
+h1{text-align: center;margin-top: 10px;font-size: 20px;font-weight: 500;font-family: 'Arial';line-height: 35px;
+    margin-bottom: 0px;color: #000000;text-transform: uppercase;}
+h2{text-align: center;font-size: 17px;text-transform: uppercase;}
+h3{text-align: center;text-transform: capitalize !important;margin: 0;font-weight: 600;font-family: 'Arial';font-size: 17px;line-height: 19px;}
+table tr td{padding-left: 10px;padding-right: 10px;}
+input[type="checkbox"]{ outline: 1px solid #000;}
+p {margin: 0px;}
+ol li {list-style: none;counter-increment: foo;display: table-row;}
+li::before {content: counter(foo) ".";display: table-cell;text-align: right;padding-right: 15px;}
+ol ol {counter-reset: list;margin: 0;}
+ol ol > li {list-style: none;position: relative;}
+ol ol > li:before {counter-increment: list;content: counter(list, lower-alpha) ". ";position: absolute;left: 11em;}
+canvas{width: 100px;}
+
+.dl{float: right;top:0;padding:5px;background: #D8D7D6;width: 100%;position: fixed;z-index: 999 !important;}
+.dl .btn{float: right;}
+.dl .btn {height: 35px;width: 80px;}
+.smallBox>tbody>tr>td{width: 23px;height: 23px;padding:0px;text-align: center;    border: solid 1px #000000}
+
+.boxpermit{border: 1px solid #000;text-transform: uppercase;}
+.title{margin-top: 5px;margin-bottom: 5px;font-size: 10pt;text-transform: uppercase;font-weight: bold;}
+.tblscope{border-left: 1px solid #000000;border-right: 1px solid #000000;border-bottom: 1px solid #000000;}
+.nopaddingleft{padding-left: 0;}
+.nopaddingright{padding-right: 0;}
+.data{font-size: 10pt;font-weight: bold;}
+
+/*All CAPS CSS*/
+.allcaps{text-transform: uppercase;}
+.allcaps-bold{text-transform: uppercase;font-weight: bold;}
+
+/*Header CSS*/
+.btn-print{width: 70px;height: 40px;color: #ffffff;background: #009688;font-size: 14px;outline: none;}
+.header {display: inline-block;margin:0 auto;width:80%;}
+.formno {width:20%;}
+.header-container{width:100%;text-align:center;}
+.page {background: white;padding:100px 20px 0px 20px;width: 100%}
+.barcode{float:right;text-align:center;height: 20px; padding-right:100px;position: relative;width:20%;text-transform: uppercase;font-size: 10px;}
+/*Underline CSS*/
+.underline {border-bottom: 1px solid #000000;margin-bottom: 0px; text-align: center;}
+
+/*TR CSS*/
+tr td p{ display: inline-block;}
+.trborder{border-bottom: 1px solid #000000;}
+
+/*TD CSS*/
+.tdinside {padding: 0px;}
+.tdborder{border-left: 1px solid #000;}
+.first-td:first-child td {padding-top:10px;}
+.last-td:last-child td {padding-bottom:10px;}
+
+/*Location CSS*/
+.lotno{width: 75%;}
+.blkno{width: 75%;}
+.tctno{width: 75%;}
+.taxdecno{width: 75%;}
+.street{width: 85%;}
+.barangay{width: 75%;}
+.municipality{ width: 70%;}
+
+/*Scope width % CSS*/
+.renovation{ width: 60%;}
+.conversion{ width: 60%;}
+.repair{ width: 69%;}
+.moving{ width: 68%;}
+.raising{ width: 75%;}
+.demolition{ width: 70%;}
+.accessory{ width: 55%;}
+.others{ width: 87%;}
+.others{ width: 87%;}
+.civilothers{ width: 70%;}
+.prepared{ width: 90%;}
+.kva{ width: 80%;}
+
+
+
+/*Design Professional boxCSS*/
+.signature{padding:40px 70px 0px 70px;text-align: center;}
+.signature-date{padding:30px 20px 0px 20px;vertical-align: bottom;}
+
+/*Owner Box CSS*/
+.ownerbox{padding:30px 70px 0px 70px;text-align: center}
+.ownerbox-date{padding:0px 20px 0px 20px;text-align: center}
+
+/*Building Official CSS*/
+.bldgofficial{width: 40%}
+.bldgofficial-date{width: 20%;}
+
+/*Plimbing CSS*/
+.fixture .qty{width:100%}
+
+/*Print Media CSS*/
+@page {  margin: 0;}
+@media print {
+    body { margin-left: -4mm; margin-right: -4mm}  
+    body { -webkit-print-color-adjust: exact !important;} 
+    h1{font-size: 16pt;}
+    h2{font-size: 12pt;}
+    h3{font-size: 10pt;}
+    button{display: none}
+    table tr td input {margin-left: 10px !important;margin-bottom: 0px;}
+    table tr td {font-size: 7px;height: 19px;}
+    .page {margin: 0em;page-break-after: always;padding-top: 20px;margin-top:5px;}
+    .data{font-size: 10px;font-weight: bold;}
+    .tdinside{padding-top: 5px;}
+    .title{font-size: 10pt;}
+    .fixture {font-size: 8px;}
+    .barcode{font-size: 8px;padding-bottom: 5px;text-align: center;}
+
+    /*TR CSS*/
+    .lotno{width: 40%;}
+    .blkno{width: 40%;}
+    .tctno{width: 40%;}
+    .taxdecno{width: 45%;}
+    .street{width: 75%;}
+    .barangay{width: 60%;}
+    .municipality{ width:60%;}
+
+    /*Architectural Scope CSS*/
+    .renovation{ width: 45%;}
+    .conversion{ width: 45%;}
+    .repair{ width: 59%;}
+    .moving{ width: 57%;}
+    .raising{ width: 76%;}
+    .accessory{ width: 43%;}
+    .others{ width: 95%;}
+
+    .fill{background: #4a4a4a !important; }
+}
+
+
+
+    .fill{background: #4a4a4a}
+    table.sidebox tr td{height:26px;padding-left: 10px;padding-right: 10px;}

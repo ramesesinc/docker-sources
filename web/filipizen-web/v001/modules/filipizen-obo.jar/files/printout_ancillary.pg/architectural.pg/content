@@ -1,0 +1,125 @@
+<%def app = PARAMS.app; %>
+	<table  width="100%" class="tblscope">
+		<tr class="first-td">
+			<td colspan="9"><p class="allcaps-bold">Scope of work</p></td>
+		</tr>
+		<tr>
+			<td colspan="3"><input type="checkbox" onclick="return false;"> NEW CONSTRUCTION </td>
+			<td colspan="4"><input type="checkbox" onclick="return false;"> RENOVATION <p class="underline renovation"></p></td>
+			<td colspan="2"><input type="checkbox" onclick="return false;"> RAISING <p class="underline raising"></p></td>
+		</tr>
+		<tr>
+			<td colspan="3"><input type="checkbox" onclick="return false;"> ERECTION</td>
+			<td colspan="4"><input type="checkbox" onclick="return false;"> CONVERSION <p class="underline conversion"></p></td>
+			<td colspan="2"><input type="checkbox" onclick="return false;"> ACCESSORY BUILDING/STRUCTURE<p class="underline accessory"></p></td>
+		</tr>
+		<tr>
+			<td colspan="3"><input type="checkbox" onclick="return false;"> ADDITION</td>
+			<td colspan="4"><input type="checkbox" onclick="return false;"> REPAIR <p class="underline repair"></p></td>
+			<td colspan="2" rowspan="2" valign="top"><input type="checkbox" onclick="return false;"> OTHERS (specify) <p class="underline"></p></td>
+		</tr>
+		<tr class="last-td">
+			<td colspan="3"><input type="checkbox" onclick="return false;"> ALTERATION</td>
+			<td colspan="4"><input type="checkbox" onclick="return false;"> MOVING <p class="underline moving"></p></td>
+		</tr>
+	</table>
+
+	<table cellpadding="0" cellspacing="0" width="100%">
+		<tbody>
+			<tr>
+				<td colspan="2" class="tdinside">
+					<p class="title">Box 2 (To be accomplished by the design professional)</p>
+					<table class="boxpermit" align="center" width="100%">
+						<tbody>
+							<tr class="first-td">
+								<td colspan="4"><b>ARCHITECTURAL FACILITIES AND OTHER FEATURES PURSUANT TO BATAS PAMBANSA BILANG 344. REQUIRING CERTAIN BUILDINGS, INSTITUTIONS, ESTABLISHMENTS AND PUBLIC UTILITIES TO INSTALL FACILITIES AND OTHER DEVICES.</b></td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" onclick="return false;" <%if(app.stairs !=null){%>checked<%}%>> STAIRS</td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.washroom_and_toilets !=null){%>checked<%}%>> WASH ROOMS AND TOILETS</td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.switch_control_buzzers !=null){%>checked<%}%>> SWITCHES, CONTROLS, BUZZERS </td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.drinking_fountains !=null){%>checked<%}%>> DRINKING FOUNTAINS </td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" onclick="return false;" <%if(app.walkways !=null){%>checked<%}%>> WALKWAYS</td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.lifts_elevators !=null){%>checked<%}%>> LIFTS/ELEVATORS</td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.handrails !=null){%>checked<%}%>> HANDRAILS </td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.public_telephones !=null){%>checked<%}%>> PUBLIC TELEPHONES</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" onclick="return false;" <%if(app.corridors !=null){%>checked<%}%>> CORRIDORS</td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.ramps !=null){%>checked<%}%>> RAMPS</td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.thresholds !=null){%>checked<%}%>> THRESHOLDS </td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.seating_accomodations !=null){%>checked<%}%>> SEATING ACCOMMODATIONS</td>
+							</tr>
+							<tr class="trborder last-td">
+								<td><input type="checkbox" onclick="return false;" <%if(app.doors_entrance_thresholds !=null){%>checked<%}%>> DOORS ENTANCES & THRESHOLDS</td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.parking_areas !=null){%>checked<%}%>> PARKING AREAS</td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.floor_finishes !=null){%>checked<%}%>> FLOOR FINISHES</td>
+								<td><input type="checkbox" onclick="return false;" > OTHERS (Specify)</td>
+							</tr>
+						</tbody>
+						<tbody>
+							<tr class="first-td">
+								<td colspan="2">2. PERCENTAGE OF SITE OCCUPANCY </td>
+								<td colspan="2" class="tdborder">3. CONFORMANCE TO FIRE CODE OF THE PHILIPPINES (F. D. 1185) OTHERS (Specif</td>
+							</tr>
+							<tr>
+								<td colspan="2" >PERCENTAGE OF BUILDING FOOTPRINT <label class="underline data">${app.percentage_building_footprint}%</label></td>
+								<td class="tdborder"><input type="checkbox" onclick="return false;" <%if(app.number_and_width_of_exit_doors !=null){%>checked<%}%>>  NUMBER AND WIDTH OF EXIT DOORS</td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.fire_walls !=null){%>checked<%}%>> FIRE WALLS</td>
+							</tr>
+							<tr>
+								<td colspan="2">PERCENTAGE OF IMPERVIOUS SURFACE AREA <label class="underline data">${app.percentage_impervious_surface_area}%</label> </td>
+								<td class="tdborder"><input type="checkbox" onclick="return false;" <%if(app.width_of_corridors !=null){%>checked<%}%>> WIDTH OF CORRIDORS</td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.fire_fighting_and_safety_facilities !=null){%>checked<%}%>> FIRE FIGHTING AND SAFETY FACILITIES</td>
+							</tr>
+							<tr>
+								<td colspan="2">DETECTORS PERCENTAGE OF UNPAVED SURFACE AREA <label class="underline data">${app.percentage_unpaved_surface_area}%</label>  </td>
+								<td class="tdborder"><input type="checkbox" onclick="return false;" <%if(app.distance_to_fire_exits !=null){%>checked<%}%>> DISTANCE TO FIRE EXITS</td>
+								<td><input type="checkbox" onclick="return false;" <%if(app.emergency_lights !=null){%>checked<%}%>> EMERGENCY LIGHTS</td>
+							</tr>
+							<tr>
+								<td colspan="2">OTHERS (Specify) __________</td>
+								<td class="tdborder"><input type="checkbox" onclick="return false;" <%if(app.smoke_detectors !=null){%>checked<%}%>> SMOKE DETECTORS</td>
+								<td><input type="checkbox" onclick="return false;" > OTHERS (Specify)</td>
+							</tr>
+							<tr class="last-td">
+								<td colspan="2"></td>
+								<td class="tdborder"><input type="checkbox" onclick="return false;" <%if(app.access_to_public_street !=null){%>checked<%}%>> ACCESS TO PUBLIC STREET</td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table> 
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table cellpadding="0" cellspacing="0" width="100%">
+		<tbody>
+			<tr>
+				<td class="tdinside">
+					<p class="title">Box 3</p>
+					@obo:print_professional_box( title: 'Design Professional, Plans and Specifications', professional: app?.designprofessional, role:'ARCHITECT' )
+				</td>
+				<td class="tdinside">
+					<p class="title">Box 4</p>
+					@obo:print_professional_box( title: 'Supervisor/In-charge of Architectural works', professional: app?.supervisor, role: 'ARCHITECT' )
+				</td>
+			</tr>
+			<tr>
+				<td class="tdinside">
+					<p class="title">Box 5</p>
+					@obo:print_owner_box( title: '<b>BUILDING OWNER</b>', owner: app?.owner )
+				</td>
+				<td class="tdinside">
+					<p class="title">Box 6</p>
+					@obo:print_owner_box( title: 'WITH MY CONSENT: <b>LOT OWNER</b>', owner: app?.location?.owner )
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+
+

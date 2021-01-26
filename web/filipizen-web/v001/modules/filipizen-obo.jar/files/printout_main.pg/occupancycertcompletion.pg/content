@@ -1,0 +1,385 @@
+
+<%def app = PARAMS.app; %>
+<% 
+	def svc = SERVICE.lookup("OnlineOccupancyPermitService", "obo");
+	def occupancy = svc.getApplication([appid:PARAMS.appid]);
+
+%>
+
+<style type="text/css">
+	body{font-size: 14px;}
+	@media print {
+    table tr td {font-size: 10px;height: 19px;}
+    .details tr td{font-size: 9px;height: 19px;}
+	}
+</style>
+
+<table align="center" width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td>
+						<div class="header-container">
+								<div class="formno">
+									<p>NBC FORM NO. B-10</p>
+								</div>
+								<div class="header">
+									<div>
+										<img src="/res/obo/lgu/legazpi_logo.png" style="width:100px;">
+									</div>
+									<div>
+										<h3>Republic of the Philippines</h3>
+										<h3>City of Legazpi</h3>
+										<h3>Province of Albay</h3>
+										<br>
+										<h2>Office of the Building Official</h2>
+									</div>
+									<div>
+										<img src="/res/obo/lgu/legazpi_oscp_logo.png" style="width:115px;">
+									</div>
+									<center>
+										<h1><b>${PAGE.title}</b></h1>
+									</center>
+								</div>
+						</div>	
+						<br>
+						<table align="center" class="boxpermit" width="100%">
+								<tr>
+									<td colspan="4">
+										<div style="width:200px;float:right;margin-right:20px;margin-bottom:10px;">
+											<p style="width:200px;border-bottom:1px solid #000;padding-top:20px;text-align:center">${occupancy.dtfiled}</p> 
+											<p style="text-align:center;display:block">Date</p>
+										</div>
+										
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<div style="text-indent:20px;text-transform:none">
+											This is to certify that the building/structure covered by Building Permit No. <p class="underline" style="width:170px;">${occupancy.bldgpermit.permitno}</p> issued on <p class="underline" style="width:170px;">${occupancy.bldgpermit.dtissued}</p> has been constructed and completed under our supervision, conform with the plans and specifications submitted and on file with the Office of the Building Official, and complies with the provisions of the National Building Code and Accessibility Law (BP Blg. 344).
+										</div> 
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<br>
+										<table width="100%" class="details">
+											<tr>
+												<td style="width:130px;">NAME OF OWNER</td>
+												<td style="border-bottom:1px solid #000;" align="center">${occupancy.applicant.lastname}</td>
+												<td style="border-bottom:1px solid #000;" align="center">${occupancy.applicant.firstname}</td>
+												<td style="border-bottom:1px solid #000;" align="center">${occupancy.applicant.middlename}</td>
+											</tr>
+											<tr>
+												<td align="center"></td>
+												<td align="center">(Last Name)</td>
+												<td align="center">(Given Name)</td>
+												<td align="center">(M.I)</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<br>
+										<table width="100%" class="details">
+											<tr>
+												<td style="width:160px;">ADDRESS OF OWNER</td>
+												<td style="border-bottom:1px solid #000; width:400px" align="center">${occupancy.applicant.address?.text}</td>
+												<td style="width:80px;">ZIP CODE</td>
+												<td style="border-bottom:1px solid #000;:" align="center">${occupancy.address?.zipcode ? occupancy.address?.zipcode : ''}</td>
+												<td style="width:70px;">TEL NO.</td>
+												<td style="border-bottom:1px solid #000;" align="center">${occupancy.applicant?.phoneno ? occupancy.applicant?.phoneno : ''}</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<br>
+										<table width="100%" class="details">
+											<tr>
+												<td style="width:255px;">LOCATION OF CONSTRUCTION: LOT NO.</td>
+												<td style="border-bottom:1px solid #000;width:40px;" align="center">${occupancy.location?.lotno ? occupancy.location?.lotno : ''}</td>
+												<td style="width:69px;">BLK NO.</td>
+												<td style="border-bottom:1px solid #000;width:40px;" align="center">${occupancy.location?.blkno ? occupancy.location?.blkno : ''}</td>
+												<td style="width:70px;">STREET</td>
+												<td style="border-bottom:1px solid #000;" align="center">${occupancy.location?.street ? occupancy.location?.street : ''}</td>
+												<td style="width:100px;">BARANGAY</td>
+												<td style="border-bottom:1px solid #000;" align="center">${occupancy.location?.barabgay ? occupancy.location?.barabgay : ''}</td>
+												<td style="width:155px;">CITY/MUNICIPALITY OF</td>
+												<td style="border-bottom:1px solid #000;width:80px;" align="center">${occupancy.location?.citymunicipality ? occupancy.location?.citymunicipality : ''}</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr class="trborder">
+									<td colspan="4">
+										<br>
+										<table width="100%">
+											<tr>
+												<td style="width:260px;">USE OR CHARACTER OF OCCUPANCY </td>
+												<td colspan="3" style="border-bottom:1px solid #000;" align="center">${occupancy?.use ? occupancy?.use : ''}</td>
+												<td style="width:60px;"> GROUP</td>
+												<td style="border-bottom:1px solid #000;" align="center">${occupancy?.group ? occupancy?.group : ''}</td>
+											</tr>
+										</table>
+										<br>
+									</td>
+								</tr>
+								<tr class="trborder">
+									<td colspan="4" style="padding:0px;padding-bottom:20px;">
+										<table width="100%">
+											<tr class="trborder">
+												<td style="width:300px;"></td>
+												<td class="tdborder" align="center">PLANNED</td>
+												<td class="tdborder" align="center">ACTUAL</td>
+											</tr>
+											<tr class="trborder">
+												<td>DATE OF START OF CONSTRUCTION</td>
+												<td class="tdborder"></td>
+												<td class="tdborder"></td>
+											</tr>
+											<tr class="trborder">
+												<td>DATE OF COMPLETION</td>
+												<td class="tdborder"></td>
+												<td class="tdborder"></td>
+											</tr>
+											<tr class="trborder">
+												<td>TOTAL FLOOR AREA (Square Meters)</td>
+												<td class="tdborder"></td>
+												<td class="tdborder"></td>
+											</tr>
+											<tr class="trborder">
+												<td>NO. OF STOREY (S)</td>
+												<td class="tdborder"></td>
+												<td class="tdborder"></td>
+											</tr>
+											<tr class="trborder">
+												<td>NO. OF UNITS</td>
+												<td class="tdborder"></td>
+												<td class="tdborder"></td>
+											</tr>
+											<tr>
+												<td colspan="3">SUMMARY OF ACTUAL COSTS</td>
+											</tr>
+											<tr>
+												<td colspan="2" style="padding-top:10px;">1.<label style="padding-left:20px;"> TOTAL COST OF MATERIALS</label></td>
+												<td>P ________________________ </td>
+											</tr>
+											<tr>
+												
+												<td colspan="2"><label style="padding-left:30px;">1.1. CEMENT (bags) ___________________________________ </label></td>
+												<td></td>
+											</tr>
+											<tr>
+												
+												<td colspan="2"><label style="padding-left:30px;">1.2. LUMBER (bd. ft.) __________________________________  </label></td>
+												<td></td>
+											</tr>
+											<tr>
+												<td colspan="2"><label style="padding-left:30px;">1.3. REINFORCING BARS (kg.) __________________________</label></td>
+												<td></td>
+											</tr>
+											<tr>
+										
+												<td colspan="2"><label style="padding-left:30px;">1.4. G.I. SHEETS (sheets) _______________________________ </label></td>
+												<td></td>
+											</tr>
+											<tr>
+									
+												<td colspan="2"><label style="padding-left:30px;">1.5. PREFAB STRUCTURAL STEEL (kg.) __________________ </label></td>
+												<td></td>
+											</tr>
+											<tr>
+									
+												<td colspan="2"><label style="padding-left:30px;">1.6. Other Materials ____________________________________ </label></td>
+												<td></td>
+											</tr>
+											<tr>
+									
+												<td colspan="2">2. <label style="padding-left:20px;"> TOTAL COST OF DIRECT LABOR: </label></td>
+												<td><label>P ________________________</label></td>
+											</tr>
+											<tr>
+												<td colspan="2"><label style="padding-left:30px;">This includes compensation whether by salary or contract <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for project  architect/engineer down to laborers</label> </td>
+												<td></td>
+											</tr>
+											<tr>
+									
+												<td colspan="2">3. <label style="padding-left:20px;">TOTAL COST OF EQUIPTMENT UTILIZATION: </label></td>
+												<td><label>P ________________________ </label></td>
+											</tr>
+											<tr>
+									
+												<td colspan="2"> 4. <label style="padding:20px;">OTHER COST:  </label></td>
+												<td><label>P ________________________ </label></td>
+											</tr>
+											<tr>
+									
+												<td colspan="2"><label style="padding-left:30px;">This includes professional services fees, permits and other fees  </label></td>
+												<td> </td>
+											</tr>
+											<tr>
+									
+												<td colspan="2" align="right"><b>TOTAL COST OF BUILDING/STRUCTURE </b> </td>
+												<td> P ________________________ </td>
+											</tr>
+										</table>
+
+									</td>
+
+								</tr>
+								<tr class="trborder">
+									<td colspan="2" ><p class="allcaps-bold">Full-time Supervisor or inspector of construction</p></td>
+									<td colspan="2" class="tdborder"><p class="allcaps-bold"><p class="allcaps-bold">IF CONSTRUCTION WAS UNDERTAKEN BY CONTRACT</p></td>
+								</tr>
+								<tr class="trborder">
+									<td colspan="2" class="tdinside" style="border-right:1px solid #000;">
+										<table width="100%">
+											<tbody>
+												<tr class="trborder">
+													<td align="center" colspan="3" rowspan="5" style="padding-bottom:20px;padding-top:20px">
+														<label class="underline signature data">${occupancy?.supervisor?.name ? occupancy?.supervisor?.name : ''}</label>
+														<p class="allcaps-bold" style="display:block">ARCHITECT OR CIVIL ENGINEER</p>
+														<p style="display:block">(Signed and Sealed Over Printed Name)</p>
+														Date <p class="underline" style="width:120px;"></p>
+														
+													</td>
+												</tr>
+											</tbody>
+											<tbody>
+												<tr class="trborder">
+													<td>PRC No. : ${occupancy?.supevisor?.prc?.idno ? occupancy?.supevisor?.prc?.idno : ''}</td>
+													<td colspan="2" class="tdborder">Validity : ${occupancy?.supevisor?.prc?.dtvalid ? occupancy?.supevisor?.prc?.dtvalid : ''}</td>
+												</tr>
+												<tr class="trborder">
+													<td>PTR No. : ${occupancy?.supevisor?.ptr?.idno ? occupancy?.supevisor?.ptr?.idno : ''}</td>
+													<td colspan="2" class="tdborder">Date Issued : ${occupancy?.supevisor?.ptr?.dtissued ? occupancy?.supevisor?.ptr?.dtissued : ''}</td>
+												</tr>
+												<tr class="trborder">
+													<td>Issued at : ${occupancy?.supevisor?.ptr?.placeissued ? occupancy?.supevisor?.ptr?.placeissued : ''}</td>
+													<td colspan="2" class="tdborder">TIN : ${occupancy?.supevisor?.tin ? occupancy?.supevisor?.tin : ''}</td>
+												</tr>
+											</tbody>
+											<tbody>
+												<tr>
+													<td>CTC No.</td>
+													<td class="tdborder">Date Issued</td>
+													<td class="tdborder">Issued at</td>
+												</tr>
+												<tr>
+													<td>${occupancy?.supevisor?.ctc?.idno ? occupancy?.supevisor?.ctc?.idno : '&nbsp'}</td>
+													<td class="tdborder">${occupancy?.supevisor?.ctc?.dtissued ? occupancy?.supevisor?.ctc?.dtissued : '&nbsp'}</td>
+													<td class="tdborder">${occupancy?.supevisor?.ctc?.palceissued ? occupancy?.supevisor?.ctc?.palceissued : '&nbsp'}</td>
+												</tr>
+											</tbody>
+
+										</table> 
+									</td>
+									<td colspan="2" class="tdinside">
+
+										<table width="100%" heigth="100%" >
+											<tbody>
+												<tr>
+													<td colspan="2" >Contractor</td>
+													<td class="tdborder"></td>
+												</tr>
+												<tr  class="trborder">
+													<td colspan="2" rowspan="3">
+														<p>${occupancy?.contractor?.name? occupancy?.contractor?.name: '&nbsp'}</p>
+													</td>
+													<td class="tdborder">PCAB Lic. No. : ${occupancy?.contractor?.pcab?.idno ? occupancy?.contractor?.pcab?.idno : '&nbsp'}</td>
+												</tr>
+												<tr  class="trborder">
+													<td class="tdborder">Validity : ${occupancy?.contractor?.pcab?.validity ? occupancy?.contractor?.pcab?.validity : '&nbsp'}</td>
+												</tr>
+												<tr  class="trborder">
+													<td class="tdborder">TIN : ${occupancy?.contractor?.tin ? occupancy?.contractor?.tin : '&nbsp'}</td>
+												</tr>
+											</tbody>
+											<tbody>
+												<tr class="trborder">
+													<td align="center" colspan="3" rowspan="5" style="padding-bottom:10px;padding-top:20px">
+														<label class="underline signature data">${occupancy?.authorizedofficer?.name ? occupancy?.authorizedofficer?.name : '&nbsp'}</label>Date <p class="underline" style="width:120px;"></p>
+														<p class="allcaps-bold" style="display:block">AUTHORIZED MANAGING OFFICER</p>
+														<p style="display:block">(Signed and Sealed Over Printed Name)</p>
+													</td>
+												</tr>
+											</tbody>
+											<tbody>
+												<tr>
+													<td >CTC No.</td>
+													<td class="tdborder">Date Issued</td>
+													<td class="tdborder">Place Issued</td>
+												</tr>
+												<tr>
+													<td>${occupancy?.authorizedofficer?.ctc?.idno ? occupancy?.authorizedofficer?.ctc?.idno : '&nbsp'}</td>
+													<td class="tdborder">${occupancy?.authorizedofficer?.ctc?.dtissued ? occupancy?.authorizedofficer?.ctc?.dtissued : '&nbsp'}</td>
+													<td class="tdborder">${occupancy?.authorizedofficer?.ctc?.placeissued ? occupancy?.authorizedofficer?.ctc?.placeissued : '&nbsp'}</td>
+												</tr>
+											</tbody>
+										</table>
+
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4" class="tdinside">
+										<table align="center" width="100%" >
+											<tbody>
+												<tr class="trborder">
+													<td align="center" colspan="3" rowspan="5" style="padding-bottom:10px;padding-top:20px">
+														<label class="underline signature data">${occupancy.applicant.name}</label>Date <p class="underline" style="width:120px;"></p>
+														<p class="allcaps-bold" style="display:block">OWNER/APPLICANT</p>
+														<p style="display:block; text-transform:none">(Signed and Sealed Over Printed Name)</p>
+														
+													</td>
+												</tr>
+												<tr class="trborder">
+													<td class="tdborder" colspan="2">CTC No. : <label class="data">${occupancy.applicant?.ctc?.idno ? occupancy.applicant.ctc.idno : ''}</label></td>
+												</tr>
+												<tr class="trborder">
+													<td class="tdborder" colspan="2">Date Issued : <label class="data">${occupancy?.applicant?.ctc?.dtissued ? occupancy.applicant.ctc.dtissued : ''}</label></td>
+												</tr>
+												<tr class="trborder">
+													<td class="tdborder" colspan="2">Place Issued : <label class="data">${occupancy?.applicant?.ctc?.placeissued ? occupancy?.applicant?.ctc?.placeissued : ''}</label></td>
+												</tr>
+											</tbody>
+										</table> 
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4" class="tdinside">
+										<div style="padding:10px">
+											REPUBLIC OF THE PHILIPPINES ) S.S.<br>
+											CITY OF LEGAZPI )<br><br>
+
+											<p style="text-transform:capitalize;display:block">BEFORE ME, at the City/Municipality of ______________________________________on __________________________personally
+											appeared the persons whose signatures appear herein at the front and back of this page, known to me to be same persons who executed this
+											standard prescribed form and acknowledged to me that the same is their free and voluntary act and deed.</p><br>
+
+											<p style="display:block">WITNESS MY HAND AND SEAL on the date and place above written. </p> <br>
+
+											<label>Doc. No.</label> <p class="underline" style="width:100px;"></p><br>
+											<label>Page No.</label> <p class="underline" style="width:100px;"></p><br>
+											<label>Book No. </label> <p class="underline" style="width:100px;"></p><br>
+											<label>Series of</label> <p class="underline" style="width:100px;"> </p><br>
+
+											<div style="float:right">
+												<p class="underline" style="width:100%;display:block"></p>
+												<p>NOTARY PUBLIC (Until December _________)</p>
+											</div>
+
+										</div>
+									</td>
+								</tr>
+
+						</table>
+					</td>
+				</tr>
+			</table>
+
+
+
+
+	
+		
+

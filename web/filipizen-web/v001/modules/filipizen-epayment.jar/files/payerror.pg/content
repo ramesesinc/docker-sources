@@ -1,0 +1,59 @@
+<style>
+.caption-class { font-weight: bolder; width:200px; }
+.output-class { }
+</style>
+
+<div style="padding-top:10px">
+	<h2 style="color:red;">Payment Error</h2>
+	<div>
+		<label class="caption-class">Agency Code</label>
+		<label class="output-class">${PARAMS.agencytitle}</label>
+	</div>
+	<div>
+		<label class="caption-class">Payment Ref No</label>
+		<label class="output-class">${PARAMS.paymentrefid}</label>
+	</div>
+	<div>
+		<label class="caption-class">Partner Bank</label>
+		<label class="output-class">${PARAMS.paymentpartnercode}</label>
+	</div>
+	<%if( PARAMS.errcode != null ){%>
+	<div>
+		<label class="caption-class">Error Code</label>
+		<label class="output-class">${PARAMS.errcode}</label>
+	</div>
+	<%}%>
+	<div>
+		<label class="caption-class">Message</label>
+		<label class="output-class">${PARAMS.message}</label>
+	</div>
+</div>
+
+<%if( PARAMS.cancelpaymentorder ) { %>
+<script>
+\$put("err", new function() {
+	var self = this;
+	this.voidPayment = function() {
+		var svc = Service.lookup( "CloudPaymentService", "epayment" );
+		var p = { refno: "${PARAMS.paymentrefid}", orgcode: "${PARAMS.orgcode}" }		
+		svc.cancelPaymentOrder( p );
+		window.location.href = "/partners/${PARAMS.agencylink}/services";
+	}
+});	
+</script>
+<br>
+@wx:button( caption:'Cancel Payment Order', context:'err',  name:'voidPayment' )
+<%}%>
+
+
+<%if( !PARAMS.cancelpaymentorder ) { %>
+<script>
+\$put("err", new function() {
+	this.redoPayment = function() {
+		window.location.href = "/epayment/paymentorder?refno=${PARAMS.paymentrefid}";
+	}
+});	
+</script>
+<br>
+@wx:button( caption:'Back', context:'err',  name:'redoPayment' )<%}%>
+

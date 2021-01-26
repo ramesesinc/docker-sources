@@ -1,0 +1,55 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import obo.facts.*;
+import java.text.*;
+
+public class OnlineBuildingPermitDownloadService  {
+
+	@DataContext("online_building_permit")
+	def appEm;
+
+	@DataContext("online_building_permit_entity")
+	def entityEm;
+
+	@DataContext("online_building_permit_rpu")
+	def rpuEm;
+
+	@DataContext("online_building_permit_professional")
+	def professionalEm;
+
+	@DataContext("online_building_permit_accessory")
+	def accessoryEm;
+
+	@DataContext("online_building_permit_ancillary")
+	def ancillaryEm;
+
+
+	@DataContext("online_building_permit_info")
+	def appInfoEm;
+
+	//This is called by the local client
+	@ProxyMethod
+	public def getDownloadInfo(def parm) {
+		def appid = parm.appid;
+		def app = appEm.find([objid: appid ] ).first();
+
+		if( parm.orgcode != app.orgcode ) {
+			throw new Exception("This application is not for this organization");
+		}	
+		if( app.step < 9 ) {
+			throw new Exception("This application is not yet completed");
+		}
+
+		app.entities = entityEm.find( [appid: appid ]).list();
+		app.rpus = rpuEm.find( [appid: appid] ).list();
+		app.professionals = professionalEm.find( [appid:appid] ).list();
+		app.accessories = accessoryEm.find( [appid: appid ]).list();
+		app.ancillaries = ancillaryEm.find( [appid: appid ]).list();
+		app.infos = appInfoEm.find( [appid: appid ] ).list();
+		app.trackingno = app.remove("objid");
+		return app;
+	}
+
+
+}

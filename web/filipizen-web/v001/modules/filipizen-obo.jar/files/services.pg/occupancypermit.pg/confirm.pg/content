@@ -1,0 +1,91 @@
+<script>
+\$put("confirm", new function() {
+	
+	var self = this;
+	this.error;
+	this.mode = "initial";
+	this.info;	
+
+	var app = \$get("app").code;
+	this.appid = app.appid;
+	this.selectedItem;
+
+	this.onload = function() {
+		var svc = Service.lookup("OnlineBuildingPermitService", "obo");	
+		this.info = svc.getApplication({appid: this.appid, loadall: true})
+		if( this.info.step == 8 ) this.mode = "success";
+	}
+
+	this.submit = function() {
+		if(!confirm("You are about to submit this application. Proceed")) return;
+		var svc =  Service.lookup( app.orgcode + ":OboOnlineService" );
+		app.moveNextStep();
+	}
+
+
+});
+</script>
+
+<style>
+	.caption-class {
+		width:200px;
+	}
+</style>
+
+<div r:context="confirm" r:visibleWhen="#{mode == 'initial'}">
+	Please confirm information before submission:
+	<div class="form">
+	  @wx:label(caption:'Tracking No', context:'confirm', expr:'#{info.objid}')
+	  @wx:label(caption:'Applicant', context:'confirm', expr:'#{info.applicant.name}')  	
+	  @wx:label(caption:'Applicant Address', context:'confirm', expr:'#{info.applicant.address.text}')  	
+
+	  @wx:label(caption:'Project Location', context:'confirm', expr:'#{info.location.address.text}')
+
+	  @wx:label(caption:'Project Title', context:'confirm', expr:'#{info.title}')
+	  @wx:label(caption:'Project Description', context:'confirm', expr:'#{info.description}')
+	  @wx:label(caption:'Occupancy Type', context:'confirm', expr:'#{info.occupancytype.title}')
+	  @wx:label(caption:'Occupancy Category', context:'confirm', expr:'#{info.occupancytype.group.objid}')
+	  @wx:integer(caption:'No of Units', context:'confirm', name:'info.numunits', attrs: [ disableWhen:'#{true}'] )
+	  @wx:decimal(caption:'Total Floor Area [sq.meter]', context:'confirm', name:'info.totalfloorarea', attrs: [disableWhen:'#{true}'])
+	  @wx:decimal(caption:'Building Height [meter]', context:'confirm', name:'info.height', attrs:[disableWhen:'#{true}'])
+	  @wx:decimal(caption:'Estimated Cost [Php]', context:'confirm', name:'info.estimatedcost', attrs:[disableWhen:'#{true}'])
+	  @wx:date(caption:'Proposed Construction Date', context:'confirm', name:'info.dtproposedconstruction', attrs:[disableWhen:'#{true}'])
+	  @wx:date(caption:'Expected Completion Date', context:'confirm', name:'info.dtproposedconstruction', attrs:[disableWhen:'#{true}'])
+
+	 <b>Ancillary Permits</b>
+	 <table r:context="confirm" r:items="info.ancillaries" r:varName="item" r:name="selectedItem" style="width:100%" class="customtable" 
+			cellpadding="0" cellspacing="0">
+			<thead>
+				<tr>
+					<td class="ap-permit">Permit Type</td>
+					<td class="ap-status">Status</td>
+					<td class="ap-design">Design Professional</td>
+					<td class="ap-supervisor">Supervisor In Charge</td>
+					<td class="ap-view">View</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="ap-permit">#{item.type.title}</td>
+					<td class="ap-status">#{item.state}</td>
+					<td class="ap-design">#{item.designprofessional.name}</td>
+					<td class="ap-supervisor">#{item.supervisor.name}</td>
+					<td class="ap-view"> 	
+						<a href="/obo/printout_ancillary/#{item.type.objid}?refid=#{item.objid}" target="#{item.type.objid}_#{item.objid}:print">Print Report</a>
+					</td>
+				</tr>	
+			</tbody>
+		</table>
+
+	</div>
+
+	@wx:button(caption: 'Submit', context:'confirm', name: 'submit')
+</div>
+
+<div r:context="confirm" r:visibleWhen="#{ mode == 'success' }">
+	<p>Your application was successfully submitted. 
+	<br>Please wait for further instructions.
+	</p>
+
+</div>
+

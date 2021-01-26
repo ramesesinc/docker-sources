@@ -1,0 +1,104 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+
+class WaterworksCompromiseBillingPaymentService  {
+	
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("WorkflowTaskService")
+	def taskSvc;
+
+	@DataContext("vw_waterworks_compromise")
+    def vwCompromiseEm;
+
+    @DataContext("waterworks_compromise_fee")
+    def compFeeEm;
+
+ 	@DataContext("waterworks_itemaccount_mapping")
+    def itemMappingEm;
+
+	@DataContext("waterworks_payment")
+	def paymentEm;
+
+	@ProxyMethod
+	public def findTxn( def o ) {
+        def r = vwCompromiseEm.find([controlno: o.id]).select("objid").first();
+        return (( r ) ? "compromise" : null);
+	}
+
+	@ProxyMethod
+	public def getBilling( def o ) {
+		def comp = vwCompromiseEm.find([controlno: o.id]).first();
+		println "task is " + comp.task.state;
+
+        if( !comp.task.state.matches(".*payment"))
+            throw new Exception("This application is not yet for payment");
+        def acct = comp.account;    
+        def rct = [:];
+        rct.payer = acct.owner;
+        rct.paidby = acct.acctname + " (Compromise No." + comp.controlno + ")";
+        rct.paidbyaddress = acct.address?.text;
+        rct.pmttxntype = "compromise";
+        rct.items = [];
+        rct.compromiseid = comp.objid;
+        rct.billitems = compFeeEm.find([parentid: comp.objid]).where("amount - amtpaid > 0").list();
+        if(!rct.billitems) throw new Exception("There are no billitems found");
+
+        rct.billitems.each {
+            def mi = itemMappingEm.find([parentid: it.itemid]).first();
+            if(!mi) throw new Exception("There is no item mapping for " + it.itemid);
+            def pt = [:];
+            pt.item = [objid:mi.objid, code:mi.code, title:mi.title, fund: mi.fund];
+            pt.amount = it.amount;
+            rct.items << pt;
+        }
+        return rct;
+	}
+
+	@ProxyMethod
+	public void postPayment( def rct ) {
+		def pmt = [:];
+		pmt.refno = rct.receiptno;
+		pmt.reftype = "cashreceipt"
+		pmt.refid = rct.objid;
+		pmt.refdate = rct.receiptdate;
+		pmt.discount = 0;
+		pmt.amount = rct.amount;
+		pmt.voided = 0;
+		pmt.txnmode = rct.txnmode;
+		pmt.remarks = rct.remarks;
+		pmt.acctid = rct.acctid;
+		pmt.compromiseid = rct.compromiseid;
+		pmt.pmttxntype = rct.pmttxntype;
+		pmt.txndate = dateSvc.getServerDate();
+
+		pmt = paymentEm.create( pmt );
+		compFeeEm.find( [parentid: rct.compromiseid ] ).update( [amtpaid: "{amount}"] );
+		//update also workflow to move it from payment
+		def wf = [:];
+		wf.processname = 'waterworks_compromise';
+		wf.refid = rct.compromiseid;
+		wf.startdate = dateSvc.serverDate;
+		wf.action = "post-payment";
+		taskSvc.signal( wf );		
+	}
+
+	@ProxyMethod
+	public void voidPayment(def o ) {
+        def pmt = paymentEm.find( [objid: o.pmtid  ]).first();
+        if(!pmt) throw new Exception("Payment does not exist");
+        if(!pmt.compromiseid ) throw new Exception("voidPayment error. compromiseid is null in waterworks_payment");
+		paymentEm.find( [objid: pmt.objid] ).update( [voided: 1 ] );
+		compFeeEm.find( [parentid: pmt.compromiseid ] ).update( [amtpaid: 0] );
+		def wf = [:];
+		wf.processname = 'waterworks_compromise';
+		wf.refid = pmt.compromiseid;
+		wf.startdate = dateSvc.serverDate;
+		wf.action = "void-payment";
+		taskSvc.signal( wf );	
+	}
+
+
+}

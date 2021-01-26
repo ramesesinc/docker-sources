@@ -1,0 +1,15 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import java.text.*;
+
+public class EntityTestService {
+
+	@ProxyMethod
+	public def test(data) {
+		println "Hello test ->" + data;
+		return [result:"result is"+data];
+	}
+
+}

@@ -1,0 +1,40 @@
+
+<script type="text/javascript">
+\$put("requirement", new function() {
+    var self = this;
+    var app = \$get("app").code;
+});
+
+</script>
+
+
+<div>
+  <legend>Congratulations!</legend>
+
+  <p>You have completed the application. Please check and comply the requirements listed below:</p>
+
+    <ul>
+      <li>Three (3) copies of duly accomplished Application Form for Certificate of Occupancy</li>
+      <li>Three (3) copies of duly accomplished and notarized form for Certificate of Completion</li>
+      <li>
+        Three (3) sets of As-Built Plans showing the deviations made from the approved building plans, prepared, signed 
+        and sealed over the printed names of the duly licensed and registered professionals who signed the approved building plans 
+      </li>
+      <li>
+        Certification from the Geodetic Engineer that the construction, alteration, repair or addition did not encroach 
+        any adjoining property (incorporated in the first page of As-Built Architectural Design Plans)
+      </li>
+      <li>
+        One (1) photocopy of latest PRC Identification Card and Professional Tax Receipt, signed (three specimen signatures) 
+        and sealed by the respective design professionals
+      </li>
+      <li>
+        Duly accomplished Construction Logbook with Certification from the duly licensed and registered Civil Engineer 
+        or Architect-In-Charge of construction
+      </li>
+    </ul>
+
+</div>
+
+
+

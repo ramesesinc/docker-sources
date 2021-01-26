@@ -1,0 +1,13 @@
+import com.rameses.annotations.*;
+
+public class OnlineRealtyTaxClearanceService {
+
+	@Service(value="OnlineRealtyTaxClearanceService", connection="landtax")
+	def svc;
+
+	@ProxyMethod
+	public def getBilling( params ) { 
+		return svc.getBilling( params );
+	}
+
+}

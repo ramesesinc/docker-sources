@@ -1,0 +1,14 @@
+<%
+def orgname = (PARAMS.name ? PARAMS.name : ''); 
+if ( orgname.toString().trim().length() > 0 ) { 
+	orgname = (orgname+'/'); 
+} 
+%>
+<script>
+\$register( {id:'page1', page: '/partners/${orgname}services/business/businessrenew/page1'} );
+\$register( {id:'page2', page: '/partners/${orgname}services/business/businessrenew/page2'} );
+\$register( {id:'page3', page: '/partners/${orgname}services/business/businessrenew/page3'} );
+\$register( {id:'page4', page: '/partners/${orgname}services/business/businessrenew/page4'} );
+</script>
+
+<div id="content"> </div>

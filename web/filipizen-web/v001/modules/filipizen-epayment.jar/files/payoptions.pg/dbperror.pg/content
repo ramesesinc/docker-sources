@@ -1,0 +1,28 @@
+<%
+	//get the partner so we can go back to the payment order page
+	def svc = SERVICE.lookup( "CloudPaymentService", "epayment" );
+	def po = svc.getPaymentOrder([ refno: PARAMS.referenceCode ]);
+	def partnerSvc = SERVICE.lookup( "CloudPartnerService", "partner" );
+	def agency = partnerSvc.findById([ id: po.orgcode ]);
+
+	def params = [:];
+	params.paymentrefid = PARAMS.referenceCode; 
+	params.message = PARAMS.message;
+	params.paymentpartnercode = 'DBP'; 
+	params.orgcode =  po.orgcode; 
+	params.agencylink =  agency.group.name + '_' + agency.name;
+	params.agencytitle =  agency.title + ', '+agency.group.title; 
+	if( PARAMS.responseCode ) {
+		params.errcode = PARAMS.responseCode;
+	}	
+%>
+
+<form id="postform" method="POST" action="/epayment/payerror">
+<%params.each{ k,v-> %>
+<input type="hidden" name="${k}" value="${v}"/>
+<%}%>
+</form>
+
+<script> 
+\$('#postform').submit();     
+</script>

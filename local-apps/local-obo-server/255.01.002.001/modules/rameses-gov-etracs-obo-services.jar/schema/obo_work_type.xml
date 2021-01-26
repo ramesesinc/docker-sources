@@ -1,0 +1,8 @@
+<schema>
+	<element tablename="obo_work_type">
+		<field name="objid" primary="true" />
+		<field name="description" />
+		<field name="idx" />
+	</element>
+</schema>
+		

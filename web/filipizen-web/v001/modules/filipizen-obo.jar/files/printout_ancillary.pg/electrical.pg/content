@@ -1,0 +1,103 @@
+<%def app = PARAMS.app; %>
+<table  width="100%" class="tblscope">
+	<tbody>
+		<tr class="first-td">
+			<td colspan="9"><p class="allcaps-bold">Scope of work</p></td>
+		</tr>
+		<tr>
+			<td colspan="3"><p class="allcaps"><input type="checkbox" onclick="return false;"> New Installation</p></td>
+			<td colspan="3"><p class="allcaps"><input type="checkbox" onclick="return false;"> Reconnection of service entrance</p></td>
+			<td colspan="3"><p class="allcaps"><input type="checkbox" onclick="return false;"> relocation service etrance</p></td>
+		</tr>
+		<tr>
+			<td colspan="3"><p class="allcaps"><input type="checkbox" onclick="return false;"> Annual inspection</p></td>
+			<td colspan="3"><p class="allcaps"><input type="checkbox" onclick="return false;"> separation of service entrance</p></td>
+			<td colspan="3" rowspan="2" valign="top"><input type="checkbox" onclick="return false;"> Others</p> (specify) <p class="underline others"></p></td>
+		</tr>
+		<tr class="trborder last-td" >
+			<td colspan="3"><p class="allcaps"><input type="checkbox" onclick="return false;"> Temporary</p></td>
+			<td colspan="5"><p class="allcaps"><input type="checkbox" onclick="return false;"> Upgrade of service entrace</p></td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr class="trborder first-td last-td">
+			<td colspan="9" align="center"><p class="allcaps-bold">Summary of electrical load/capacities applied for</p></td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr class="first-td">
+			<td colspan="3" align="center"><p class="allcaps">Total Connected Load</p></td>
+			<td colspan="3" class="tdborder" align="center"><p class="allcaps">Total Transformer Capacity</p></td>
+			<td colspan="3" class="tdborder" align="center"><p class="allcaps">TTotal Generator/Ups Capacity</p></td>
+		</tr>
+		<tr class="last-td">
+			<td colspan="3" align="center"><p class="underline data kva">${app.total_connected_load}</p>kVA</td>
+			<td colspan="3" class="tdborder" align="center"><p class="underline data kva">${app.total_transformer_capacity}</p>kVA</td>
+			<td colspan="3" class="tdborder" align="center"><p class="underline data kva">${app.total_generator_ups_capacity}</p>kVA</td>
+		</tr>	
+	</tbody>
+</table>
+
+<table cellpadding="0" cellspacing="0" width="100%">
+	<tbody>
+		<tr>
+			<td colspan="2" class="tdinside">
+				<p class="title allcaps-bold">Box 2 (To be accomplished by the design professional)</p>
+				@obo:print_professional_single_box( title: 'Design Professional, Plans and Specifications', professional: app.designprofessional, role:'PROFESSIONAL ELECTRICAL ENGINEER' ) 
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="tdinside">
+				<p class="title">Box 3</p>
+				<table class="boxpermit" width="100%">
+					<tbody>
+						<tr class="trborder ">
+							<td colspan="3"><b>Supervisor / In-charge of electrical works</b></td>
+						</tr>
+						<tr>
+							<td><p class="allcaps"><input type="checkbox" onclick="return false;" <%if(app.staking !=null){%>checked<%}%>> Professional Electrical Engineer</p></td>
+							<td><p class="allcaps"><input type="checkbox" onclick="return false;" <%if(app.staking !=null){%>checked<%}%>>  Registered Electrical Engineer</p></td>
+							<td><p class="allcaps"><input type="checkbox" onclick="return false;" <%if(app.staking !=null){%>checked<%}%>>  Registered Master Electrician</p></td>
+						</tr>
+						<tr class="trborder last-td">
+							<td colspan="3" align="center">
+								<p class="underline signature data">${app.supervisor.name}</p> 
+								Date <p class="underline signature-date data"></p><br>
+								<p>(Signed and Sealed Over Printed Name)</p><br>
+							</td>
+						</tr>
+					</tbody>
+					<tbody>
+						<tr class="trborder">
+							<td>PRC No. : <label class="data">${app.supervisor.prc.idno}</label> </td>
+							<td colspan="2" class="tdborder">Validity : <label class="data">${app.supervisor.prc.dtvalid}</label> </td>
+						</tr>
+						<tr class="trborder">
+							<td>PTR No. : <label class="data">${app.supervisor.ptr.idno} </label></td>
+							<td colspan="2" class="tdborder">Date Issued : <label class="data">${app.supervisor.ptr.dtissued} </label></td>
+						</tr>
+						<tr class="trborder">
+							<td>Issued at : <label class="data">${app.supervisor.prc.placeissued}</label></td>
+							<td colspan="2" class="tdborder">TIN : <label class="data">${app.supervisor.tin}</label></td>
+						</tr>
+						<tr>
+							<td colspan="3">Address : <label class="data">${app.supervisor.address.text}</label></td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+
+		<!--second row. 283 -->
+		<tr>
+			<td class="tdinside">
+				<p class="title">Box 4</p>
+				@obo:print_owner_box( title: '<b>BUILDING OWNER</b>', owner: app.applicant )
+			</td>
+			<td class="tdinside">
+				<p class="title">Box 5</p>
+				@obo:print_owner_box( title: 'WITH MY CONSENT: <b>LOT OWNER</b>', owner: app.location.owner )
+			</td>
+		</tr>
+	</tbody>
+</table>

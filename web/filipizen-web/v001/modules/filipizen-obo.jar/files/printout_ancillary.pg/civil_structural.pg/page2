@@ -1,0 +1,97 @@
+<table>
+		<tr>
+			<td>
+				<p class="title">Box 7 (To be accomplished by the processing and evaluation division)</p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr class="trborder" style="height:40px;">
+						<td>Received by:</td>
+						<td class="tdborder">Date:</td>
+					</tr>
+					<tr style="height:60px;">
+						<td colspan="2" align="center"><b>FIVE (5) SETS OF CIVIL/STRUCTURAL DOCUMENTS</b></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox"> Civil/Structural Designs Computations, Plans and sepecification</td>
+						<td><input type="checkbox"> Cost Estimates</td>
+					</tr>
+					<tr class="last-td">
+						<td><input type="checkbox"> Bill of Materials</td>
+						<td><input type="checkbox"> Others (Specify) <p class="underline civilothers"></p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p class="title">Box 8</p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr class="trborder" style="height:60px;">
+						<td colspan="6" align="center"><b>Progress Flow</b></td>
+					</tr>
+					<tr class="trborder">
+						<td class="tdborder" rowspan="2"></td>
+						<td align="center" class="tdborder" colspan="2">in</td>
+						<td align="center" class="tdborder" colspan="2">out</td>
+						<td align="center" class="tdborder" rowspan="2">Processed by:</td>
+					</tr>
+					<tr class="trborder">
+						<td align="center" class="tdborder">Date</td>
+						<td align="center" class="tdborder">Time</td>
+						<td align="center" class="tdborder">Date</td>
+						<td align="center" class="tdborder">Time</td>
+					</tr>
+					<tr class="trborder">
+						<td>Civil/Structural</td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+					</tr>
+					<tr>
+						<td>Others (Specify)</td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p class="title">Box 9</p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr style="height:80px;">
+						<td align="left"><p class="allcaps-bold">Action Taken</p></td>
+					</tr>
+					<tr>
+						<td><p class="allcaps-bold">Permit is hereby issued subject to the following:</p></td>
+					</tr>
+					<tr>
+						<td>	
+							<ol>
+								<li>That under Article 1723 of the Civil Code of the Philippines, the engineer (or architect) who drew up the plans and specifications for the building/structure is responsible for damages if within fifteen (15) years from the completion of the building/structure, the same should collapse due to defect in the plans or specifications or defects in the ground. The engineer or architect who supervises the construction shall be solidarily liable with the contractor should the edifice collapse due to defect in the construction or the use of inferior materials.</li>
+								<li>That the proposed civil/structural works shall be in accordance with the civil/structural plans filed with this office and in conformity with the latest National Structural Code of the Philippines, the National Building Code and its IRR.</li>
+								<li>That prior to any construction activity, a duly accomplished prescribed "<b>Notice of Construction</b>" shall be submitted to the Office of the Building Official.</li>
+								<li>That upon completion of the construction, the licensed full-time inspector and supervisor/in-charge of construction works shall submit the entry to the logbook duly signed and sealed to the Building Official including as-built plans and other documents and shall also accomplish and submit a certificate of completion stating that the civil/structural works conform to the provisions of the National Structural Code of the Philippines, the National Building Code and its IRR.</li>
+								<li>That this permit is null and void unless accompanied by the building permit.</li>
+							</ol>
+					</tr>
+					<tr style="height:80px;">
+						<td><p class="allcaps-bold">Permit Issued by:</p></td>
+					</tr>
+					<tr class="last-td">
+						<td align="center">
+							<p class="underline bldgofficial"></p><br>
+							<p class="allcaps-bold">Local building official</p><br>
+							<p>(Signature over Printed Name)</p><br>
+							<p>Date</p><p class="underline bldgofficial-date"></p>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+

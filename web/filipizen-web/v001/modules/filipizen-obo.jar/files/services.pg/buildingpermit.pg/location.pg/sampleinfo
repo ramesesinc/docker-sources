@@ -1,0 +1,28 @@
+
+<style>
+  .label-caption { width: 105px; }
+  .display-block{display:block}
+  .w20{width:400px}
+</style>
+  <br>
+  <br>
+  @obo:text( caption:'Last Name', context:'location', name: 'info.lastname' )
+  @obo:text( caption:'First Name', context:'location', name: 'info.firstname' )
+  @obo:text( caption:'Middle Name', context:'location', name: 'info.firstname' )
+ 
+
+  @obo:text( caption:'Last Name', context:'location', name: 'info.lastname', blockclass:'col-md-4' )
+  @obo:text( caption:'First Name', context:'location', name: 'info.firstname', blockclass:'col-md-4' )
+  @obo:text( caption:'Middle Name', context:'location', name: 'info.firstname', blockclass:'col-md-4' )
+ 
+ <br><br><br><br><br>
+
+  @obo:text( caption:'Last Name', context:'location', name: 'info.lastname', blockclass:'col-md-4' , display:'display-block')
+  @obo:text( caption:'First Name', context:'location', name: 'info.firstname', blockclass:'col-md-4' , display:'display-block')
+  @obo:text( caption:'Middle Name', context:'location', name: 'info.firstname', blockclass:'col-md-4' , display:'display-block w20')
+
+ <br><br><br><br><br><br>
+
+  @obo:text( caption:'Last Name', context:'location', name: 'info.lastname', blockclass:'col-md-5' )
+  @obo:text( caption:'First Name', context:'location', name: 'info.firstname', blockclass:'col-md-6' )
+  @obo:text( caption:'Middle Name', context:'location', name: 'info.firstname', blockclass:'col-md-5' )

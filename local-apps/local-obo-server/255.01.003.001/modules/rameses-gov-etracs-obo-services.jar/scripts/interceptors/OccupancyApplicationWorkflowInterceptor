@@ -1,0 +1,181 @@
+import com.rameses.annotations.*;
+import java.rmi.server.*;
+
+class OccupancyApplicationWorkflowInterceptor {
+	
+
+	@Service("WorkflowTaskService")
+	def wfSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("occupancy_inspection")
+	def sectionEm;
+
+	@DataContext("vw_occupancy_inspection")
+	def vwSectionEm;
+
+	@DataContext("occupancy_inspection_type")
+	def sectionTypeEm;
+
+	@DataContext("occupancy_application")
+	def appEm;
+
+	@DataContext("building_permit_rpu")
+	def rpuEm;
+
+	@DataContext("occupancy_application_requirement")
+	def reqEm;
+
+	@DataContext("occupancy_inspection_finding")
+	def findingEm;
+
+	@DataContext("occupancy_application_fee")
+	def feeEm;
+
+	@DataContext("occupancy_permit")
+	def permitEm;
+
+
+	@Service("OccupancyApplicationTransmittalService")
+	def transmittalSvc;
+
+	@Service("OccupancyApplicationService")
+    def appSvc;
+
+    // --- Requirement and Findings for  revision --- //
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'occupancy_application' && args[0].action == 'send-for-revision' }") 
+	public void doActionBeforeRevision( def evt ) {
+		def p = evt.args[0];
+		p.type = (p.to == 'requirement-revision' ) ? 'requirement' : 'finding';
+		def m = [appid:p.refid, type:p.type];
+		transmittalSvc.validateForRevision( m );
+	}
+
+	@After(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'occupancy_application' && args[0].action == 'send-for-revision' }") 
+	public void doActionAfterRevision( def evt ) {
+		def p = evt.args[0];
+		def r = evt.result;
+		def m = [taskid:r.taskid, appid:p.refid, type: p.type];
+		transmittalSvc.create( m );
+	}
+
+    //approval of requirements
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname =='occupancy_application' && args[0].action == 'approve-requirement' }")      
+	public void doRequirementValidation( def evt ) { 
+		def p = evt.args[0];
+		//check if there are pending findings
+		def t = reqEm.find( [appid: p.refid ] ).select("c:{COUNT(*)}").where("state=0").val();
+		if( t > 0) throw new Exception("You must check first all requirements.");
+		t = reqEm.find( [appid: p.refid ] ).select("c:{COUNT(*)}").where("state=2 AND supersederid IS NULL").val();
+		if( t > 0) throw new Exception("There are unresolved requirements. You need to send this for revision");
+
+		//generate the app no here
+		appSvc.generateAppNo( [appid: p.refid ] );
+	}
+
+	
+
+	//trigger when entering evaluation state
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'occupancy_application' && args[0].action == 'send-for-inspection' }") 
+	public void beforeSendForInspection( def evt ) {
+		def p = evt.args[0];
+		def t = appEm.find( [objid: p.refid] ).select("inspectionschedule").val();
+		if(!t) throw new Exception("Please specify the inspection schedule first");
+	}
+
+	//trigger when entering evaluation state
+	@After(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'occupancy_application' && args[0].action == 'send-for-inspection' }") 
+	public void fireInspectionSections( def evt ) {
+		def p = evt.args[0];
+		def r = evt.result;
+
+		def appid = p.refid;
+		def state = r.state;
+
+		def mlist = sectionTypeEm.getSectionsForActivation( [appid: appid, state: state ] )*.objid;
+		if( mlist ) {
+			def dt = dateSvc.getServerDate();
+			mlist.each {
+				def m = [appid: appid, typeid: it ]
+				boolean b = sectionEm.find( m ).exists();
+				if(!b) {
+					m = sectionEm.create( m );
+					def f = [:];
+					f.processname = 'occupancy_inspection';
+					f.refid = m.objid;
+					f.startdate = dt;
+					f.info = [ type: it ];
+					wfSvc.start(f);				
+				}
+			}
+		}		
+	}
+
+	//for-reactivation. check if there are evaluations where the task state is for-revision and reactivate each
+	@After(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'occupancy_application' && args[0].action == 'reactivate' }" ) 
+	public void reactivateInspectionTasks( def evt ) {
+		def p = evt.args[0];
+		def list = vwSectionEm.select("objid,taskid").find( [appid: p.refid ] ).where( " task.state = 'for-revision' " ).list();
+		if( list ) {
+			def dt = dateSvc.getServerDate();
+			list.each {
+				def f = [:];
+				f.processname = 'occupancy_inspection';
+				f.refid = it.objid;
+				f.taskid = it.taskid;
+				f.startdate = dt;
+				f.action = "reactivate";
+				f.info = [:];
+				wfSvc.signal(f);	
+			}		
+		}
+	}
+
+	//approve-inspection. 
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname =='occupancy_application' && args[0].action.matches('approve-inspection') }")      
+	public void doEvaluationValidation( def evt ) { 
+		def p = evt.args[0];
+		//check if there are pending findings
+		def t = findingEm.find( [appid: p.refid ] ).select("c:{COUNT(*)}").where("state=2 AND supersederid IS NULL").val();
+		if( t > 0) throw new Exception("There are unresolved findings. You need to send this for revision");
+	}
+
+	//check at least one fee
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'occupancy_application' && args[0].action == 'send-for-assessment-approval' }") 
+	public void doActionBeforeApproveAssessment( def evt ) {
+		def p = evt.args[0];
+		def c = feeEm.find( [appid: p.refid ]).select("c:{COUNT(*)}").where("sectionid IS NULL").val();
+		if( c == 0 )
+			throw new Exception("There must be at least one fee");		
+	}
+
+	@After(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'occupancy_application' && args[0].action == 'post-payment' }" ) 
+	public void postPaymentTasks( def evt ) {
+		def p = evt.args[0];
+		def appid = p.refid;
+		def dt = dateSvc.getServerDate();
+
+		//search first before creating
+		def perm = permitEm.find( [appid: appid]).first();
+		if(!perm) {
+			//trigger the permit
+			def m = [:];
+			m.permitno = "TMP" + new UID();
+			m.appid = appid;
+			m.state = 0;
+			permitEm.create( m );			
+		}
+	}
+
+	//release process. Make sure there is at least one occupancy_application_issuance
+	@Before(pattern="WorkflowTaskService.signal", eval="#{args[0].processname == 'occupancy_application' && args[0].action == 'release' }", index=0 ) 
+	public void doActionBeforeRelease( def evt ) {
+		def p = evt.args[0];
+		def appid = p.refid;
+		def pmt = permitEm.find( [appid: appid]).first();
+		if( !pmt) throw new Exception("Permit not found");
+		if(pmt.state == 0) throw new Exception("Permit is not yet issued. Please issue the permit first");
+	}
+}

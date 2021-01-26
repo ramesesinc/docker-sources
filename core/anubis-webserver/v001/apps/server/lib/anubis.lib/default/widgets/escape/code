@@ -1,0 +1,5 @@
+<%
+if ( OPTIONS.value ) {
+   println org.apache.commons.lang.StringEscapeUtils.escapeHtml( OPTIONS.value.toString() );    
+}
+%>

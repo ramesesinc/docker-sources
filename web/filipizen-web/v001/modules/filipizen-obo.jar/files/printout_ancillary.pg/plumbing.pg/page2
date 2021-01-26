@@ -1,0 +1,99 @@
+<table>
+		<tr>
+			<td>
+				<p class="title">Box 7 (To be accomplished by the processing and evaluation division)</p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr class="trborder" style="height:40px;">
+						<td>Received by:</td>
+						<td>Date:</td>
+					</tr>
+					<tr style="height:60px;">
+						<td colspan="2" align="center"><p class="allcaps-bold">FIVE (5) SETS OF PLUMBING DOCUMENTS</p></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox"> Plumbing Plans and Specifications</td>
+						<td><input type="checkbox"> Cost Estimates</td>
+					</tr>
+					<tr class="last-td">
+						<td><input type="checkbox"> Bill of Materials</td>
+						<td><input type="checkbox"> Others (Specify) <label class="underline"></label></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p class="title"><b>Box 8</b></p>
+				<table class="boxpermit" align="center" width="100%">
+					<tbody>
+						<tr class="trborder first-td last-td">
+							<td colspan="6" align="center"><p class="allcaps-bold"> Progress Flow</p></td>
+						</tr>
+					</tbody>
+					<tr class="trborder allcaps">
+						<td class="tdborder" rowspan="2"></td>
+						<td align="center" class="tdborder" colspan="2">in</td>
+						<td align="center" class="tdborder" colspan="2">out</td>
+						<td align="center" class="tdborder" rowspan="2">Processed by:</td>
+					</tr>
+					<tr class="trborder allcaps">
+						<td align="center" class="tdborder">Date</td>
+						<td align="center" class="tdborder">Time</td>
+						<td align="center" class="tdborder">Date</td>
+						<td align="center" class="tdborder">Time</td>
+					</tr>
+					<tr class="trborder">
+						<td>Plumbing</td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+					</tr>
+					<tr>
+						<td>Others (Specify)</td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p class="title"><b>Box 9</b></p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr style="height:80px;">
+						<td align="left"><p class="allcaps-bold">Action Taken:</p></td>
+					</tr>
+					<tr>
+						<td><p class="allcaps-bold">Permit is hereby issued subject to the following:</p></td>
+					</tr>
+					<tr>
+						<td>
+							<ol>
+								<li>That the proposed plumbing works shall be in accordance with the plumbing plans filed with this Office and in conformity with the Revised Plumbing Code of the Philippines, the National Building Code and its IRR.</li>
+								<li>That prior to any commencement of plumbing works, a duly accomplished prescribed <b>"Notice of Construction"</b> shall be submitted to the Office of the Building  Official.</li>
+								<li>That upon completion of plumbing works, the licensed supervisor/in-charge of construction works shall submit the entry to the logbook duly signed and sealed to the Building Official including as-built plans and other documents and shall also accomplish the Certificate of Completion stating that the plumbing works conform to the provision of the Revised Plumbing Code, the National Building Code and its IRR.</li>
+								<li>That this permit is null and void unless accompanied by the building permit.</li>
+							</ol>
+
+						</td>
+					</tr>
+					<tr style="height:80px;">
+						<td><p class="allcaps-bold">Permit Issued by:</p></td>
+					</tr>
+					<tr class="last-td">
+						<td align="center">
+							<p class="underline bldgofficial"></p><br>
+							<p class="allcaps-bold">Local building official</p><br>
+							<p>(Signature over Printed Name)</p><br>
+							<p>Date</p><p class="underline bldgofficial-date"></p>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>

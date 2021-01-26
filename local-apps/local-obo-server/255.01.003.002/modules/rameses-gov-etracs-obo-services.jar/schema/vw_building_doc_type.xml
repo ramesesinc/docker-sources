@@ -1,0 +1,30 @@
+<schema>
+	<element tablename="vw_building_doc_type">
+		<field name="objid" primary="true" visible="true" searchable="true"/>
+		<field name="title" searchable="true"/>
+		<field name="sortorder" />
+
+		<!-- Type is any of the ff: ANCILLARY,CLEARANCE,CHECKLIST -->
+		<field name="type" indexed="true"/>
+		<field name="evaltypeid" />		
+
+		<!-- if 1 this would auto create when evaluation is activated -->
+		<field name="autocreate" />
+
+		<!-- if 1 this would ensure before approval of evaluation there must be at least one feeitem -->
+		<field name="requirefee" />
+
+		<!-- if not null, this would allow display of the report -->
+		<field name="template" />
+		<field name="subtypeof" />
+		
+
+		<!--  0 - no issuance required, 1= auto issue,  2=manual issue -->
+		<field name="issuetype"  type="integer"/>
+		<field name="controlnopattern"/>
+
+		<field name="org_objid" caption="Org"/>
+		<field name="org_name"/>
+
+	</element>
+</schema>

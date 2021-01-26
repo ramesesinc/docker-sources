@@ -1,0 +1,121 @@
+
+
+ <section id="services" class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+              <div class="container">
+                  <br>
+                  <br>
+                    <div class="stepwizard">
+                        <div class="stepwizard-row setup-panel">
+                          <div class="stepwizard-step">
+                            <a href="#step-1" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                            <p>Step 1</p>
+                          </div>
+                          <div class="stepwizard-step">
+                            <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                            <p>Step 2</p>
+                          </div>
+                          <div class="stepwizard-step">
+                            <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                            <p>Step 3</p>
+                          </div>
+                          <div class="stepwizard-step">
+                            <a href="#step-4" type="button" class="btn btn-primary btn-circle" >4</a>
+                            <p>Step 4</p>
+                          </div>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                      <form role="form" action="" method="post">
+                        <div class="row setup-content" id="step-1">
+                          <div class="col-md-12">
+                            <div class="col-md-11">
+                              <h1>Search Business Location</h1>
+                                <hr> 
+                                <form>
+                                  <input id="geocomplete" type="text" placeholder="Type in an address" value="Panabo City" />
+                                  <input id="find" type="button" value="find" />
+                                  <div class="map_canvas"></div>
+                                  <a id="reset" href="#" style="display:none;">Reset Marker</a>
+                                </form>
+                                <a href="/partners/${PARAMS.name}/services/business/applynew/businessaddress" class="btn btn-next nextBtn btn-lg pull-left">Back</a>
+                                <a href="/partners/${PARAMS.name}/services/business/applynew/applynewbill" class="btn btn-next nextBtn btn-lg pull-left">Next</a>
+                                <br>
+                                  
+                             </div>
+                           </div>
+                         </div>
+                      </form>
+                    <br>
+              </div>
+            </div>
+        </div>
+    </div>
+ </section>
+
+  
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBlcVxWw_o27dNlDeyLdvZh8HY4I3bF7kQ&sensor=true&libraries=places"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+<script src="/res/jquery.geocomplete.js"></script>
+    
+<script>
+  \$(function(){
+    \$("#geocomplete").geocomplete({
+      map: ".map_canvas",
+      details: "form ",
+      markerOptions: {
+        draggable: true
+      }
+    });
+    
+    \$("#geocomplete").bind("geocode:dragged", function(event, latLng){
+      \$("input[name=lat]").val(latLng.lat());
+      \$("input[name=lng]").val(latLng.lng());
+      \$("#reset").show();
+    });
+    
+    
+    \$("#reset").click(function(){
+      \$("#geocomplete").geocomplete("resetMarker");
+      \$("#reset").hide();
+      return false;
+    });
+    
+    \$("#find").click(function(){
+      \$("#geocomplete").trigger("geocode");
+    }).click();
+  });
+</script>
+<style type="text/css" media="screen">
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+#examples a {
+  text-decoration: underline;
+}
+#geocomplete { width: 200px}
+.map_canvas { 
+  width: 100%; 
+  height: 400px; 
+  margin: 10px 20px 10px 0;
+}
+
+#multiple li { 
+  cursor: pointer; 
+  text-decoration: underline; 
+}
+  form { width: 100%; float: left; margin-left: 20px}
+  fieldset { width: 320px; margin-top: 20px}
+  fieldset strong { display: block; margin: 0.5em 0 0em; }
+  fieldset input { width: 95%; }
+  ul span { color: #999; }
+</style>

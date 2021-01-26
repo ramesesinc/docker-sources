@@ -1,0 +1,9 @@
+<schema>
+	<element tablename="sys_role_permission">
+		<field name="objid" primary="true" prefix="USRROLPERM"/>	
+		<field name="role" />
+		<field name="object" />
+		<field name="permission" />
+		<field name="title" />
+	</element>	
+</schema>	

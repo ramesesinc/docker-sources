@@ -1,0 +1,93 @@
+<br>
+<br>
+
+
+ <section id="services" class="section">
+         <div class="container">
+             <div class="row">
+               <div class="form-group">
+                 <div class="col-md-12">
+                   <div class="container">
+                   <h2>BIN: </h2>
+                       	<div class="row">
+                       		<div class="col-md-6">
+	                           <dl>
+	                               <dt>Owner :</dt>
+	                               <dd></dd>
+	                           </dl>
+	                            <dl>
+	                                <dt>Address :</dt>
+	                                <dd></dd>
+	                            </dl> 
+                            </div> 
+                            <div class="col-md-4">
+	                             <dl>
+	                                <dt>Application type :</dt>
+	                                <dd></dd>
+	                            </dl>
+	                            <dl>
+	                                <dt>Date Filed :</dt>
+	                                <dd></dd>
+	                            </dl>
+                        	</div>
+                          </div>  
+
+						    <table class="table">
+						    	<thead>
+							    	<tr>
+							    		<th align="left">Line of Business</th>
+							    		<th align="left">Tax/Fee</th>
+							    		<th class="text-right">Amount</th>
+							    	</tr>
+						    	</thead>
+						    	<tbody>
+						    		
+							    	<tr>
+							    		<td>RERAILER - CAKES & PRTY ACCESSORIOS</td>
+							    		<td>SERVICE</td>
+							    		<td align="right">9,440.00</td>
+
+							    	</tr>
+							    	<tr>
+							    		<td>RERAILER - CAKES & PRTY ACCESSORIOS</td>
+							    		<td>SERVICE</td>
+							    		<td align="right">9,440.00</td>
+
+							    	</tr>
+							    	<tr>
+							    		<td>RERAILER - CAKES & PRTY ACCESSORIOS</td>
+							    		<td>SERVICE</td>
+							    		<td align="right">9,440.00</td>
+
+							    	</tr>
+							    	<tr>
+							    		<td>RERAILER - CAKES & PRTY ACCESSORIOS</td>
+							    		<td>SERVICE</td>
+							    		<td align="right">9,440.00</td>
+
+							    	</tr>
+							    	<tr>
+							    		<td>RERAILER - CAKES & PRTY ACCESSORIOS</td>
+							    		<td>SERVICE</td>
+							    		<td align="right">9,440.00</td>
+
+							    	</tr>
+							    
+							    </tbody>
+						    	<thead>
+							    	<tr>
+							    		<th align="left" >THIS BILL IS VALID UNTIL</th>
+							    		<th class="text-right" > BILL AMOUNT :</th>
+							    		<th class="text-right"></th>
+							    	</tr>
+						    	</thead>
+						    </table>
+                      
+                </div>
+       
+               </div>
+             </div>
+         </div>
+        </div>
+ </section>
+<hr>

@@ -1,0 +1,43 @@
+/* Phone */
+@media (min-width: 320px){
+
+	.input-response{
+		height: 50px;
+	}
+
+	.btn-response{
+		height: 50px;
+	}
+	
+}
+/* Tablet */
+@media (min-width: 380px){
+.input-response{
+		height: 50px;
+	}
+	.btn-response{
+		height: 50px;
+	}
+	
+}
+/* Phone */
+@media (min-width: 800px){
+
+	.input-response{
+		height: 32px;
+	}
+	.btn-response{
+		height: 32px;
+	}
+	
+}
+/* Tablet */
+@media (min-width: 1200px){
+.input-response{
+		height: 32px;
+	}
+	.btn-response{
+		height: 32px;
+	}
+	
+}

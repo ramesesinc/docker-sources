@@ -1,0 +1,89 @@
+import com.rameses.annotations.*;
+import java.rmi.server.*;
+
+public class OboMenuNotificationService {
+	
+	@DataContext("vw_building_evaluation")
+	def appTask;
+
+	@DataContext("building_application")
+	def vwApp;
+
+	@DataContext("building_permit")
+	def bldgPermitEm;
+
+	@DataContext("building_issuance")
+	def issuanceEm;
+
+	@Service("WorkflowTaskListService")
+	def taskSvc;
+
+	def getTaskCount( def r ) {
+		//use self so that it will fire the interceptors
+    	def nodes = taskSvc.getNodeList( r );
+    	def d = nodes.findAll{it.name!='mytask'}.findAll{it.count!=null}.sum{ it.count };
+    	return d;
+	}
+
+	def building_application = { o->
+		def r = [processname: 'building_application'];
+		r._schemaname = "vw_building_application";
+		r.domain = o.domain;
+		return getTaskCount(r);		
+	}
+	
+	def building_evaluation = { o->
+		def r = [processname: 'building_evaluation'];
+		r._schemaname = "vw_building_evaluation";
+		r.domain = o.domain;
+		r.where = [ " typeid = :typeid", [typeid: o.typeid.toUpperCase() ] ];
+		return getTaskCount(r);		
+	}
+
+	def occupancy_application = { o->
+		def r = [processname: 'occupancy_application'];
+		r._schemaname = "vw_occupancy_application";
+		r.domain = o.domain;
+		return getTaskCount(r);		
+	}
+	
+	def occupancy_inspection = { o->
+		def r = [processname: 'occupancy_inspection'];
+		r._schemaname = "vw_occupancy_inspection";
+		r.domain = o.domain;
+		r.where = [ " typeid = :typeid", [typeid: o.typeid.toUpperCase() ] ];
+		return getTaskCount(r);		
+	}
+
+	def building_permit = { o->
+		return bldgPermitEm.select( "c:{COUNT(*)}" ).where("state = 0").val();
+	}
+
+
+	@ProxyMethod
+	public def fetchNotifications( def p ) {
+		def result = p.items;
+		p.domain = "OBO";
+		result.each { 
+			if( it.id == 'building_application' ) {
+				it.count = building_application( p );
+			}
+			else if( it.id == 'occupancy_application') {
+				it.count = occupancy_application( p );
+			}			
+			else if( p.event == 'building_evaluation') {
+				p.typeid = it.id?.split(":")[1];
+				it.count = building_evaluation( p );
+			}
+			else if( p.event == 'occupancy_inspection') {
+				p.typeid = it.id?.split(":")[1];
+				it.count = occupancy_inspection( p );
+			}	
+			else if( p.event == 'building_permit' ) {
+				it.count = building_permit( p )
+			}
+		}	
+		return result;
+	}
+
+}

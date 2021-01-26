@@ -1,0 +1,7 @@
+<schema>
+	<element tablename="sys_email_template">
+		<field name="objid" primary="true" searchable="true"/>
+		<field name="message" />
+	</element>
+</schema>
+

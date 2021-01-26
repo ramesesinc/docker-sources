@@ -1,0 +1,13 @@
+<schema>
+	<element tablename="building_permit_rpu">
+		<field name="objid" primary="true" prefix="OBOBPMTRPU"/>
+		<field name="permitid" required="true"/>
+
+		<!-- link to actual reference -->
+		<field name="refid" required="true"/>		
+		<field name="tdno" required="true"/>
+		<field name="pin" required="true"/>		
+		<field name="rputype" required="true"/>		
+		<field name="particulars" />
+	</element>
+</schema>

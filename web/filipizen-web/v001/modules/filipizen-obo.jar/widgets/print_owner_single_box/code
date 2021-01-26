@@ -1,0 +1,29 @@
+<%def app = PARAMS.app; %>
+<table  class="boxpermit" width="100%" height="100%">
+		<tbody>
+			<tr>
+				<td colspan="4" align="center"><p class="underline ownerbox data">${app.applicant?.name}</p><br> <p class="allcaps-bold">APPLICANT</p></td>
+			</tr>
+			<tr >
+				<td align="center" colspan="4"><p>(Signed Over Printed Name)</p></td>
+			</tr>
+			<tr class="trborder last-td">
+				<td align="center" colspan="4">Date <p class="underline ownerbox-date"></p></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr class="trborder">
+				<td align="center">C.T.C. No. </td>
+				<td class="tdborder" align="center">Date Issued </td>
+				<td colspan="2" class="tdborder" align="center">Place Issued </td>
+			</tr>
+			<tr class="trborder">
+				<td class="tdborder" align="center"><p class="data">${app.applicant?.id?.idno}</p></td>
+				<td class="tdborder" align="center"><p class="data">${app.applicant?.id?.dtissued}</p></td>
+				<td colspan="2" class="tdborder" align="center"><p class="data">${app.applicant?.id?.placeissued}</p></td>
+			</tr>
+			<tr>
+				<td colspan="4">TIN : <label class="data">${app.applicant?.tin}</label></td>
+			</tr>
+		</tbody>
+	</table>

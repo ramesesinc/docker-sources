@@ -1,0 +1,45 @@
+import com.rameses.annotations.*;
+
+class PaymentSMSInterceptorService {
+
+	@Service("SMSService")
+	def smsSvc;
+
+	@DataContext('paymentorder_paid')
+	def po_db;
+
+	@Service 
+	def self; 
+
+	@After(pattern="CloudPaymentService.updatePaymentReceipt")
+	public void smsAfterReceiptConfirmed( evt ) { 
+		try {
+			def pmt = evt.args[0]; 
+			self.sendSMS( pmt ); 
+		} 
+		catch(Throwable t) {
+			t.printStackTrace(); 
+		}
+	}
+
+
+	@Async
+	@ProxyMethod 
+	public void sendSMS( pmt ) {
+		try {
+			
+			def v = po_db.find([ objid: pmt.paymentrefid ]).select("mobileno").first(); 
+			if ( v.mobileno ) { 
+                def m = [:];
+                m.phoneno = v.mobileno;
+
+                def str = "https://www.filipizen.com/epayment/eor?receiptno="+ pmt.receiptno;
+                m.message = "Your receipt has been successfully processed. You can view your e-receipt at " + str;
+                smsSvc.send( m );                
+            }
+        }
+        catch(Throwable t) {
+        	t.printStackTrace(); 
+        } 
+	}
+}

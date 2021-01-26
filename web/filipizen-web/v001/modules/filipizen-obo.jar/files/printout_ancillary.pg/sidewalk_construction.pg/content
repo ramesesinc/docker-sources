@@ -1,0 +1,51 @@
+<%def app = PARAMS.app; %>
+
+<table  width="100%" class="tblscope">
+	<tr class="first-td">
+		<td colspan="9"><p class="allcaps-bold">Scope of work</p></td>
+	</tr>
+	<tr>
+		<td colspan="3"><p class="allcaps"><input type="checkbox"> New Construction</p></td>
+		<td colspan="3"><p class="allcaps"><input type="checkbox"> Renovation</p> <p class="underline renovation"></p></td>
+		<td colspan="3"><p class="allcaps"><input type="checkbox"> OTHERS (Specify)</p>  <p class="underline civilothers"></p></td>
+	</tr>
+	<tr >
+		<td colspan="3"><p class="allcaps"><input type="checkbox"> Erection</p></td>
+		<td colspan="3" rowspan="2" valign="top"><p class="allcaps"><input type="checkbox"> REPAIR</p> <p class="underline repair"></p></td>
+		<td colspan="3" rowspan="2" valign="top"><input type="checkbox"> <p class="underline others"></p></td>
+	</tr>
+	<tr class="last-td">
+		<td colspan="3"><p class="allcaps"><input type="checkbox"> Addition</p></td>
+	</tr>
+</table>
+<table cellpadding="0" cellspacing="0" width="100%">
+	<tbody>
+		<tr>
+			<td class="tdinside">
+				<p class="title">Box 2</p>
+				@obo:print_professional_box( title: 'Design Professional, Plans and Specifications', professional: app.designprofessional, role:'ARCHITECT or civil engineer' )
+			</td>
+			<td class="tdinside">
+				<p class="title">Box 3</p>
+				@obo:print_professional_box( title: 'Full-time inspector and Supervisor construction works', professional: app.supervisor, role: 'ARCHITECT or civil engineer' )
+			</td>
+		</tr>
+		<!-- second row. 283 -->
+		<tr>
+			<td class="tdinside">
+				<p class="title">Box 4</p>
+				@obo:print_owner_box( title: '<b>BUILDING OWNER</b>', owner: app.owner )
+			</td>
+			<td class="tdinside">
+				<p class="title">Box 5</p>
+				@obo:print_owner_box( title: 'WITH MY CONSENT: <b>LOT OWNER</b>', owner: app.lotowner )
+			</td>
+			<tr>
+			<td class="tdinside" colspan="2">
+				<p class="title">Box 5</p>
+				@obo:print_owner_single_box( title: '<b>BUILDING OWNER</b>', owner: app.owner )
+			</td>
+		</tr>
+		</tr>
+	</tbody>
+</table>

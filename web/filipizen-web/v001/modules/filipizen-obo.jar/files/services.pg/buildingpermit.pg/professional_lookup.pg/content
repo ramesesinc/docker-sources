@@ -1,0 +1,53 @@
+
+<script>
+\$put("professional_lookup", new function() {
+	var self = this;	
+	this.onselect;
+	this.appid;
+	this.selectedItem;
+
+	var svc = Service.lookup("OnlineBuildingPermitService", "obo");
+	this.professionalList;
+
+	this.onload = function() {
+		this.professionalList =  svc.getLookupProfessionalList( {appid: self.appid } );  
+	}
+
+	this.select = function() {
+		if(!self.selectedItem) throw new Error("Please select an item");
+		self.onselect( self.selectedItem );
+		return "_close";
+	}
+
+});
+</script>
+
+<style>
+  a { color: blue !important;  }
+  .table-class div { display:inline-block }
+</style>
+
+<div style="padding-bottom:20px;">
+  <table r:context="professional_lookup" r:items="professionalList" r:varName="item" r:name="selectedItem"   style="width:100%" class="customtable">
+    <thead>
+      <tr>
+        <td style="width:80px;">PRC No</td>
+        <td style="width:100px;">Profession</td>
+        <td style="width:160px;">Name</td>
+        <td style="width:220px;">Address</td>
+        <td>&nbsp;</td> 
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+      <td style="width:80px;">#{item.prc.idno}</td>
+        <td style="width:100px;">#{item.profession}</td>
+        <td style="width:160px;">#{item.name}</td>
+        <td style="width:220px;">#{item.address.text}</td>
+        <td><a href="#" r:context="professional_lookup" r:name="select">Select</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<input type="submit" r:context="professional_lookup" r:name="_close" value="Close"/>

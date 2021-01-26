@@ -1,0 +1,45 @@
+import com.rameses.annotations.*;
+
+class WaterworksCashReceiptService {
+
+    @Service('WaterworksBillingService') 
+    def billingSvc; 
+
+    @Service("NumberService")
+    def numSvc;
+
+	@ProxyMethod 
+	public def getBilling( pp ) {
+        def param = pp.params;
+
+        def p = [:];
+        p.acctid = param.id;
+        p.include_items = true;
+        p.request_action = "cashreceipt";
+
+        if(param.payoption) {
+            p.putAll(param.payoption);
+        }
+        if(param.amtpaid) {
+            p.amtpaid = param.amtpaid;
+        }    
+
+        def res = billingSvc.getBilling(p);
+
+        def rct = [:];
+        rct.payer = res.owner;
+        rct.paidby = res.acctname + " (" + res.acctno + ")";
+        rct.paidbyaddress = res.address?.text;
+        rct.acctno = res.acctno;
+        rct.acctid = res.objid;
+
+        rct.items = res.items;
+        //attach the accounts before returning to the client
+
+        rct.billitems = res.billitems;
+        return rct;
+	}
+
+
+
+}

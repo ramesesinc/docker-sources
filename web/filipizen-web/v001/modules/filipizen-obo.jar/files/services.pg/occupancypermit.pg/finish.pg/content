@@ -1,0 +1,121 @@
+<%
+  def svc = SERVICE.lookup("OnlineOccupancyPermitService", "obo");
+  def occupancy = svc.getApplication([appid: PARAMS.appid, loadall: true]);
+%>
+
+<script>
+\$put("finish", new function() {
+  var self = this;  
+  var app = \$get("app").code;
+  
+  this.onload = function() {
+    app.updateStepNavbar(); 
+  }
+}); 
+</script>
+
+<style>
+  a.printlink {
+    color: blue;
+    text-transform: underline;
+  }
+</style>
+
+<div class="container">
+  <legend>Congratulations!</legend>
+
+  <p>You have completed the application. Please click and print the following</p>
+
+  <div style="padding-top:10px;font-weight:bold;">1) Application for Certificate of Occupancy
+    <a href="/obo/printout_main/occupancycertapplication?appid=${appid}" target=":print" class="printlink">[Print 3 copies]</a>
+    &nbsp;&nbsp;
+    <a class="printlink">[Download data]</a>    
+  </div>
+
+  <div style="padding-top:10px;font-weight:bold;">2) Certificate of Completion
+    <a href="/obo/printout_main/occupancycertcompletion?appid=${appid}" target=":print" class="printlink">[Print 3 copies]</a>
+    &nbsp;&nbsp;
+    <a class="printlink">[Download data]</a>    
+  </div>
+
+  <div style="padding-top:20px;font-weight:bold;">
+  3) Prepare the requirements listed below, and submit at the receiving window of our One-Stop Shop for Construction Permits (OSCP) located at the Ground Floor, City Engineering Office, Miguel Lopez de Legazpi Boulevard, Dapdap, Legazpi City.
+  </div> 
+  <div style="padding-top:40px;" ></div>
+
+
+
+  <div class="title">
+    <p style="font-weight:bold;font-size:15px;">Checklist of Requirements</p>
+  </div>
+
+  <div class="body-content">
+    <div><div class="box"></div></div>
+    <div class="body-content-text"><p>Three (3) copies of duly accomplished Application Form for Certificate of Occupancy</p></div>
+  </div>
+
+  <div class="body-content">
+    <div><div class="box"></div></div>
+    <div class="body-content-text"><p>Three (3) copies of duly accomplished and notarized form for Certificate of Completion</p></div>
+  </div>
+
+  <div class="body-content">
+    <div><div class="box"></div></div>
+    <div class="body-content-text">
+      <p>
+      Three (3) sets of As-Built Plans showing the deviations made from the approved building plans, prepared, signed 
+      and sealed over the printed names of the duly licensed and registered professionals who signed the approved building plans 
+      </p>
+    </div>
+  </div>
+
+  <div class="body-content">
+    <div><div class="box"></div></div>
+    <div class="body-content-text">
+      <p>
+      Certification from the Geodetic Engineer that the construction, alteration, repair or addition did not encroach 
+      any adjoining property (incorporated in the first page of As-Built Architectural Design Plans) 
+      </p>
+    </div>
+  </div>
+
+  <div class="body-content">
+    <div><div class="box"></div></div>
+    <div class="body-content-text">
+      <p>
+      One (1) photocopy of latest PRC Identification Card and Professional Tax Receipt, signed (three specimen signatures) 
+      and sealed by the respective design professionals
+      </p>
+    </div>
+  </div>
+
+  <div class="body-content">
+    <div><div class="box"></div></div>
+    <div class="body-content-text">
+      <p>
+      Duly accomplished Construction Logbook with Certification from the duly licensed and registered Civil Engineer 
+      or Architect-In-Charge of construction
+      </p>
+    </div>
+  </div>
+
+  <div class="body-content">
+    <div><div class="box"></div></div>
+    <div class="body-content-text">
+      <p>
+      Photographs of the completed structure showing front, side and rear areas
+      </p>
+    </div>
+  </div>
+
+  <div class="body-content">
+    <div><div class="box"></div></div>
+    <div class="body-content-text">
+      <p>
+      Fire Safety Compliance and Commissioning Report (FSCCR), if applicable (as prescribed by the provisions of the Revised IRR)
+      of Fire Code of the Philippines
+      </p>
+    </div>
+  </div>
+
+</div>

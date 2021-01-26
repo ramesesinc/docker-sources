@@ -1,0 +1,70 @@
+import com.rameses.annotations.*;
+
+class OccupancyApplicationPersistenceInterceptor {
+	
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("occupancy_application_requirement")
+	def reqEm;
+
+	@DataContext("occupancy_inspection_finding")
+	def findingEm;
+
+	@DataContext("occupancy_application_transmittal")
+	def transmittalEm;
+
+	@Env
+	def env;
+
+	//REQUIREMENTS
+	@Before(pattern="PersistenceService.(create|update)", eval="#{args[0]._schemaname == 'occupancy_application_requirement' }") 
+	public void onSaveRequirement( def evt ) {
+		def o = evt.args[0];
+		o.reviewer = [objid: env.USERID, name: env.FULLNAME ];
+		o.dtreviewed = dateSvc.getServerDate();
+	} 
+	
+	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'occupancy_application_requirement' }") 
+	public void afterCreateReq( def evt ) {
+		def o = evt.args[0];
+		def z = evt.result;
+		if(o.previd ) {
+			reqEm.find( [objid: o.previd] ).update( [supersederid: z.objid ] );
+		}	
+	} 
+
+	//FINDINGS
+	@Before(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'occupancy_inspection_finding' }") 
+	public void beforeSaveFinding( def evt ) {
+		def o = evt.args[0];
+		o.createdby = [objid: env.USERID, name: env.FULLNAME ];
+		o.dtcreated = dateSvc.getServerDate();
+	} 
+
+	@After(pattern="PersistenceService.create", eval="#{args[0]._schemaname == 'occupancy_inspection_finding' }") 
+	public void afterUpdateFinding( def evt ) {
+		def o = evt.args[0];
+		def z = evt.result;
+		if(o.previd ) {
+			findingEm.find( [objid: o.previd] ).update( [supersederid: z.objid ] );
+		}	
+	} 
+
+	@After(pattern="PersistenceService.read", eval="#{ args[0]._schemaname == 'vw_occupancy_application' }")
+	public void afterOpenApplication(def evt) {
+		def p = evt.args[0];
+		def a = evt.result;
+
+		//lookup if there is existing transmittal
+		if( a.task.state.matches(".*(verification|revision)") ) {
+			def t = transmittalEm.find( [taskid: a.taskid ]).first();
+			if( t ) {
+				a.transmittalid = t.objid;
+			}
+		}
+
+	}
+
+
+}

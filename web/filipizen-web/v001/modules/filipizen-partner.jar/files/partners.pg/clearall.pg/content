@@ -1,0 +1,27 @@
+<% 
+    def cacheSvc = SERVICE.lookup("CacheService");
+    def partners = SERVICE.lookup("GdxPartnerService").getList();
+    partners.each {
+    	String key = "partner_info:"+it.clusterid+"_"+it.name;
+		cacheSvc.removeCache([key:key]);
+    } 
+
+    def ctclist = ["123", "456", "321", "654"];
+    def trackingno = "ONBP-2017-01-0001";
+    def permitlist = ["architectural", "civil", "electrical", "electronics", "mechanical", "plumbing", "sanitary"];
+
+    cacheSvc.removeCache( [key: trackingno] );
+
+    ctclist.each{ c->
+		cacheSvc.removeCache([key: c]);
+		cacheSvc.removeCache([key: c + "_location"]);
+		cacheSvc.removeCache([key: c + "_bldgapp"]);
+		cacheSvc.removeCache([key: c + "_permits"]);
+		cacheSvc.removeCache([key: c + "_trackingno"]);
+		permitlist.each{ p->
+			cacheSvc.removeCache([key: c + "_permit_" + p]);
+		}
+    }
+%>
+
+<h1>Cache cleared</h1>

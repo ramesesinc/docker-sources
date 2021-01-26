@@ -1,0 +1,30 @@
+<schema>
+	<element tablename="building_application_subdoc">
+		<field name="objid" primary="true" prefix="BASUBDOC"/>
+		<field name="appid" required="true"/>
+		<field name="state" required="true" type="integer"/>
+		<field name="contractorname"/>
+
+		<complex name="doctype" ref="building_doc_type" jointype="many-to-one" required="false">
+			<key field="doctypeid" target="objid" />
+		</complex>  
+
+		<complex name="designprofessional" ref="vw_building_application_professional" jointype="many-to-one" required="false">
+			<key field="designprofessionalid" target="objid" />
+		</complex>  
+		<complex name="supervisor" ref="vw_building_application_professional" jointype="many-to-one"  required="false">
+			<key field="supervisorid" target="objid" />
+		</complex>  
+
+		<complex name="worktypes" type="list" serializer="default" required="false"/>
+		
+		<field name="remarks"/>
+		<field name="occupancytypeid" />
+
+		<!-- copied from doctype -->
+		<field name="amount" type="decimal"/>
+		<field name="issuanceid" />
+
+	</element>
+</schema>
+

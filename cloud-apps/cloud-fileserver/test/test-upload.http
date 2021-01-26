@@ -1,0 +1,9 @@
+
+POST http://192.168.1.9:7000/fileserver/upload HTTP/1.1
+content-type: application/json
+
+{
+    "key": "AAA",
+    "name": "hello.txt",
+    "data": "Hello World"
+}

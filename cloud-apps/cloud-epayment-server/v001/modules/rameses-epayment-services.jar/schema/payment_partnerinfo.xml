@@ -1,0 +1,7 @@
+<schema>
+	<element tablename="payment_partnerinfo">
+		<field name="objid" primary="true"/>
+		<field name="partnerid" required="true"/>
+		<field name="webfee" />
+	</element>
+</schema>	

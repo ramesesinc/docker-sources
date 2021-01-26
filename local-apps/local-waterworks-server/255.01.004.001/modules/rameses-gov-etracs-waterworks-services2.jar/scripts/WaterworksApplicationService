@@ -1,0 +1,95 @@
+import com.rameses.annotations.*;
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+
+class WaterworksApplicationService  {
+	
+	@Service("RuleExecutorService")
+	def ruleSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("ControlnoGeneratorService")
+	def controlNoSvc;
+
+	@Service("WorkflowTaskService")
+	def taskSvc;
+
+	@DataContext("waterworks_account")
+	def acctEm;
+
+	@DataContext("waterworks_application")
+	def appEm;
+
+
+
+	@Env
+	def env;
+
+	@Service("Var")
+	def varSvc;
+
+	/*******************************
+	* compute fee and requirements
+	*******************************/
+	@ProxyMethod 
+	public def getInitialInfo( params ) { 
+		def facts = [];
+		facts << new WaterApplication();
+		def res = ruleSvc.execute("waterworksapplication", facts, null, null);
+		def m = [:];
+		if(res.requirements) {
+			m.requirements = res.requirements;
+		}
+		return m; 
+	}
+
+
+	@ProxyMethod 
+	public def findAccount( def o ) { 
+		def apptype = o.apptype;
+
+		def acct = acctEm.find( [acctno: o.acctno] ).first();
+		if(!acct) throw new Exception("Account " + o.acctno + " not found");
+
+		//throw new Exception("meter state is " + acct.meter);
+
+		if( apptype == "DISCONNECT" ) {
+			if( acct.meter.state != "ACTIVE"  ) throw new Exception("Meter must be active");
+		}
+        else {
+
+        }
+
+		def app = [:];
+		app.apptype = apptype;
+		app.appdate = dateSvc.getServerDate();
+        app.acctname = acct.acctname;
+        app.address = acct.address;
+        app.classificationid = acct.classificationid;
+        app.owner = acct.owner;
+        app.account = acct;
+        app.classificationid = acct.classificationid;
+        app.info = [:];
+        return app;
+	}
+
+	@ProxyMethod
+	public def create( def o ) {
+		o.appno = controlNoSvc.getNextNo( "WAPP-[MM][yyyy]-[%05d]"  );
+		o.createdby = [objid: env.USERID,name: env.FULLNAME];
+		o.state = "PENDING";
+		o = appEm.create( o );
+
+		def m = [:];
+		m.processname = "waterworks_application";
+		m.refid = o.objid;
+		m.assignee = o.createdby;
+		m.startdate = dateSvc.serverDate;
+		taskSvc.start( m );
+		return o;
+	}
+
+
+}

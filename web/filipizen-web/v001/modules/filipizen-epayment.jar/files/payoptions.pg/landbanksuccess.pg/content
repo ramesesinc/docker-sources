@@ -1,0 +1,23 @@
+<%
+	def svc = SERVICE.lookup("CloudPaymentService", "epayment");
+
+	def m = [:]; 
+	m.putAll( PARAMS );  
+	m.paypartnerid = 'LBP'; 
+	m.paymentrefid = m.MerchantRefNo; 
+
+	def pmt = svc.postPayment( m );
+	pmt.orgcode = pmt.info.orgcode;
+	pmt.particulars = pmt.info.particulars;
+	pmt.paypartnercode = pmt.paypartnerid;
+%>
+
+<form id="postform" method="POST" action="/epayment/paysuccess">
+	<%pmt.each{ k,v-> %>
+		<input type="hidden" name="${k}" value="${v}"/>
+	<%}%>
+</form>
+
+<script> 
+\$('#postform').submit(); 
+</script>

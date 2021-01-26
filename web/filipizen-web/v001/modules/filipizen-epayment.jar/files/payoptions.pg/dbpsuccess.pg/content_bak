@@ -1,0 +1,56 @@
+<%
+def m = [:]; 
+boolean pass = false; 
+try { 
+	PARAMS.showdetails = true;
+	PARAMS.partnercode = 'DBP'; 
+	PARAMS.paymentrefid = PARAMS.referenceCode; 
+
+	if ( !PARAMS.refdate ) {
+	   def cal = Calendar.getInstance();  
+	   def timeZone = TimeZone.getTimeZone("Asia/Manila"); 
+	   def formatter = new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm:ss'); 
+	   formatter.calendar = cal; 
+	   formatter.timeZone = timeZone; 
+	   PARAMS.refdate = formatter.format( cal.time ); 	
+	} 
+
+	def svc = SERVICE.lookup("FilipizenPaymentService"); 
+	m = svc.postReceipt( PARAMS ); 
+	if ( m.status > 0 ) throw new Exception( m.message ); 
+
+	def cname = m.partnerinfo?.clusterid; 
+	def pname = m.partnerinfo?.name; 
+	m.partnerkey = cname.toString() +'_'+ pname.toString(); 
+	pass = true; 
+} 
+catch(Throwable t) {
+	def errmsg = t.message; 
+	if ( !errmsg ) {
+		def cause = t.cause; 
+		while ( cause != null ) {
+			errmsg = cause.message; 
+			if ( errmsg ) break; 
+		}
+	}	
+
+	m.errmsg = errmsg.toString(); 
+	t.printStackTrace(); 
+}
+
+%>
+
+<% if (!pass) {%>
+  <pre style="margin:10px;">${m.errmsg.toString()}</pre>
+
+<% } else { %> 
+
+<form id="form1" method="POST" action="/payoptions/${m.partnerkey}/successinit">
+	<input type="hidden" name="paymentrefid" value="${m.paymentrefid}"/> 
+	<input type="hidden" name="orgcode" value="${m.orgcode}"/> 
+</form> 
+<script> 
+\$('#form1').submit(); 
+</script>
+
+<% } %> 

@@ -1,0 +1,5 @@
+dialect=mysql
+driverClass=com.mysql.jdbc.Driver
+url=jdbc:mysql://${db_server_ip}/cloud_obo
+user=${db_server_user}
+pwd=${db_server_pass}

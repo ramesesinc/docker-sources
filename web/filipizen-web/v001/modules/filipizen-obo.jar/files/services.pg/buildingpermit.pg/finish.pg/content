@@ -1,0 +1,157 @@
+<%
+	def svc = SERVICE.lookup("OnlineBuildingPermitService", "obo");
+	def ancillaryList = svc.getAncillaryPermits( [appid: PARAMS.appid ] );
+%>
+
+<script>
+\$put("finish", new function() {
+	var self = this;	
+	var app = \$get("app").code;
+	this.onload = function() {
+		app.updateStepNavbar();	
+	}
+});	
+</script>
+
+<style>
+	a.printlink {
+		color: blue;
+		text-transform: underline;
+	}
+</style>
+
+<div class="container">
+	<legend>Congratulations!</legend>
+
+	<p>You have completed the application. Please click and print the following</p>
+
+	<div style="padding-top:10px;font-weight:bold;">1) Building Permit
+		<a href="/obo/printout_main/buildingpermit?appid=${appid}" target=":print" class="printlink">[Print 4 copies]</a>
+		&nbsp;&nbsp;
+		<a class="printlink">[Download data]</a>		
+	</div>
+
+	<div style="padding-top:20px;font-weight:bold;">2) Ancillary Permits</div>
+	<%ancillaryList.each { item-> %>
+		<div style="padding-left:10px;">	
+			${item.type.title}
+			<a href="/obo/printout_ancillary/${item.type.objid}?refid=${item.objid}" target="${item.type.objid}_${item.objid}:print" class="printlink">[Print  4 copies]</a>
+		</div>
+	<%}%>
+
+	<div style="padding-top:20px;font-weight:bold;">
+	3) Please download and print the Building and Ancillary Permit forms, prepare the requirements listed below, and submit at the receiving window of our One-Stop Shop for Construction Permits (OSCP) located at the Ground Floor, City Engineering Office, Miguel Lopez de Legazpi Boulevard, Dapdap, Legazpi City.
+	</div> 
+	<div style="padding-top:40px;" ></div>
+
+	<div class="title">
+		<p style="font-weight:bold;font-size:15px;">Checklist of Requirements</p>
+		<a class="printlink">[Download and Print]</a>
+	</div>
+	<div class="body">
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text"><p>Four (4) copies of duly accomplished and notarized Application Form for Building Permit and the necessary Ancillary Permit Forms</p></div>
+		</div>
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text">
+				<div><p>Proof of lot/property ownership</p></div>
+				<div>
+					<div class="body-content-subtext">
+						<div>
+						<p>a. In case the applicant is the registered owner of the lot, one (1) certified true copy of latest Original Certificate of Title (OCT)/ Transfer Certficate of Title (TCT), on file with the Registry of  Deeds</p></div>
+					</div>
+					<div class="body-content-subtext">
+						<div><p>b. In case the applicant is not the registered owner of the lot, in addition to the certified true copy of latest Original Certificate of Title (OCT)/ Transfer Certficate of Title (TCT), duly notarized copy of the Contract of Lease, Award Notice, Deed of Absolute Sale, Contract to Sell, Extra-Judicial Settlement or Authority from the registered owner</p></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text"><p>Certification from a duly licensed and registered Geodetic Engineer that the proposed construction, renovation, alteration, repair or addition shall be within the property of the owner/applicant and will not encroach any adjoining property (incorporated in the first page of Architectural Design Plans)</p></div>
+		</div>
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text"><p>Four (4) sets of Survey Plans, Design Plans/Drawings, Specifications and other documents prepared, signed and sealed over the printed name of the respective duly licensed and registered design professionals, and approved by the owner/applicant</p>
+				<div style="display: flex">
+					<div>
+						<ul>
+							<li>Architectural Documents (Architect)</li>
+							<li>Civil/Structural Documents (Civil/Structural Engineer)</li>
+							<li>Electrical Documents (Professional Electrical Engineer)</li>
+							<li>Mechanical Documents (Professional Mechanical Engineer</li>
+							<li>Sanitary Documents (Sanitary Engineer)</li>
+						</ul>
+					</div>
+					<div>
+						<ul>
+							<li>Plumbing Documents (Master Plumber)</li>
+							<li>Electronics Documents (Electronics Engineer)</li>
+							<li>Geodetic Documents (Geodetic Engineer)</li>
+							<li>Others</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text"><p>Three (3) sets of Structural Analysis and Design, signed and sealed over the printed name of the duly licensed and registered Civil/ Structural Engineer (Applicable for all buildings/structures except for one storey and single detached building/structure with a total floor area of 20.00 sq. meters or less)</p></div>
+		</div>
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text"><p>Boring and Load Test (Applicable for buildings/structures of three (3) storeys and higher, lower building structures for areas with potential geological/geotechnical hazards, or if necessary in accordance with the provisions of the National Structural Code of the Philippines-NSCP)</p></div>
+		</div>
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text"><p>Three (3) sets of Electrical Analysis and Design, signed and sealed over the printed name of the duly licensed and registered Professional Electrical Engineer</p></div>
+		</div>
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text"><p>One (1) photocopy of latest PRC Identification Card and Professional Tax Receipt, signed (three specimen signatures) and sealed by the respective professionals</p></div>
+		</div>
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text"><p>Four (4) sets of duly notarized Bill of Materials/Cost Estimate of the building or structure to be erected, signed and sealed over the printed name by a duly licensed and registered Architect or Civil Engineer, and approved by the owner/applicant</p></div>
+		</div>
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text"><p>One (1) Construction Logbook, signed and sealed over the printed name of the duly licensed and registered Civil Engineer or Architect- In-Charge of construction, and signed by the owner/applicant</p></div>
+		</div>
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text"><p>Certificate of Approval of Construction Safety and Health Program (CSHP) (Department of Labor and Employment)</div>
+		</div>
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text"><p>Affidavit of Undertaking (for clearances from National Government Agencies which can be submitted 30 days or less after the issuance of the Building Permit per JMC No. 2018-01, applicable for Simple Structures only)</div>
+		</div>
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text"><p>Special Power of Attorney (for individuals) or Board Resolution/Secretary's Certificate (for corporations) for the authorized representative/signatory in behalf of the owner/applicant</div>
+		</div>
+		<div class="body-content">
+			<div><div class="box"></div></div>
+			<div class="body-content-text"><p>Other Zoning requirements, if necessary/applicable:</p>
+				<div style="display: flex">
+					<div>
+						<ul>
+							<li>Affidavit of Non-Objection</li>
+							<li>Affidavit of Undertaking on Lot Occupancy</li>
+							<li>Barangay Resolution/Endorsement</li>
+							<li>Manifestation</li>
+						</ul>
+					</div>
+					<div>
+						<ul>
+							<li>Simple Subdivision Approval/Copy of Approved Subdivision Plan</li>
+							<li>Other pertinent documents</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

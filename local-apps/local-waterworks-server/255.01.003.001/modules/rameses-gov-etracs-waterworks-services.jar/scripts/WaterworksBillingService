@@ -1,0 +1,159 @@
+import com.rameses.annotations.*;
+import com.rameses.functions.*;
+import java.rmi.server.UID;
+import com.rameses.util.*;
+import treasury.utils.*;
+import treasury.facts.*;
+import waterworks.facts.*;
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+
+
+/****************************************************************************************
+* Applicable for billing one item only.
+* This is called on the ff. instances:
+*   1. Batch billing - to get the arrears or overpayments if any
+*   2. Cash Receipt - to display the receipts
+*   3.  
+*****************************************************************************************/
+
+class WaterworksBillingService {
+	
+	@DataContext('waterworks_account')
+	def acctEm; 
+
+	@DataContext('waterworks_account_attribute')
+	def attrEm; 
+
+	@DataContext("vw_waterworks_consumption")
+	def wcEm;
+
+	@DataContext("waterworks_credit")
+	def wcCreditEm;
+
+	@DataContext("waterworks_otherfee")
+	def wotherEm;
+
+	@DataContext("waterworks_itemaccount")
+	def itemAccountEm;
+
+	@Service("BillingRuleService")
+	def ruleSvc;	
+
+	def loadBillItems( o ) {
+
+		def facts = [];
+
+		def arr = [];
+		def wp = [ state: 'POSTED' ];
+		if ( o.year!=null && o.month!=null ) { 
+			arr << "((year * 12)+month) <= :yearmonth";
+			wp.yearmonth = (o.year * 12)+o.month;
+		} 
+		def wheres = []; 
+		wheres.addAll( arr ); 
+		wheres << " state = :state "; 
+		wheres << " (amount - amtpaid - discount) > 0 ";
+
+		def select = "hold,year,month,volume,amount:{amount-amtpaid-discount},principal:{amount},amtpaid,refid:{objid},reftype:{'waterworks_consumption'},duedate,discdate,fromdate:{fromperiod},todate:{toperiod}"; 
+		def conList = wcEm.find([acctid: o.acctid]).select(select).where(wheres.join(" AND "), wp).orderBy("year,month").list();
+
+		conList.each {
+			if( it.hold ) {
+				it.amount = 0;
+				it.amtpaid = 0;
+			}	
+			facts << new WaterBillItem(it);
+		}
+
+		//select for other fees
+		wheres = []; 
+		wheres.addAll( arr );  
+		wheres << "(amount - amtpaid - discount) > 0"; 
+		select = "year,month,item.*,billcode:{item.objid},amount:{amount-amtpaid-discount},amtpaid,principal:{amount},refid:{objid},reftype:{'waterworks_otherfee'}";
+		conList = wotherEm.find([acctid: o.acctid]).select(select).where(wheres.join(" AND "), wp).orderBy("year,month").list();
+		conList.each {
+			facts << new MonthBillItem(it);
+		}
+
+		//if there are no water or other billitems then immediately return the list
+		if(!facts && o.request_action=='cashreceipt' ) return facts;
+
+		//if request action is credit payment, do not include credit items
+		if( o.request_action == 'creditpayment') return facts;
+
+		//select credit for advance payments not yet deducted
+		def cr = wcCreditEm.find( [acctid: o.acctid] ).select( "amount:{SUM(cr-dr)}").first();
+		if(cr!=null && cr.amount !=null && cr.amount != 0 ) {
+			cr.reftype = "waterworks_credit";
+			facts << new CreditBalanceBillItem( cr );
+		}
+		return facts;
+	}
+
+	@ProxyMethod
+	public def getBilling( pp ) {
+		def acct = acctEm.find([ objid: pp.acctid ]).first();
+		if(!acct) {
+			acct = acctEm.find( [acctno: pp.acctid ] ).first();
+		}
+		if(!acct) throw new Exception("Account not found");
+
+		def pv = [year: pp.year, month: pp.month, acctid: acct.objid ];
+		if( pp.request_action ) pv.request_action = pp.request_action;
+		def billItemFacts = loadBillItems( pv );
+
+		if(!billItemFacts && !pp.amtpaid ) {
+			acct.items = [];
+			acct.billitems = [];
+			return acct;
+		}
+
+		def factBuilder = new FactBuilder();
+		factBuilder.facts = billItemFacts; 
+		factBuilder.facts << new WaterAccount( acct );
+
+		def attributes = attrEm.find( [parentid: acct.objid ] ).list();
+		if( attributes ) {
+			attributes*.attribute.each {
+				facts << new WaterworksAttribute(name:it.name);
+			}
+		}
+
+		def req = [rulename:'waterworksbilling'];
+		req.factBuilder = factBuilder;
+		req.params = pp;
+		if(pp.include_items) req.include_items = pp.remove("include_items");
+
+		def res = ruleSvc.execute( req );
+		res.putAll( acct );
+
+		def itemMap = [:];
+		def lookupItem = { pid->
+			if( !itemMap.containsKey(pid)) {
+				itemMap.put( pid, itemAccountEm.find( [objid: pid ] ).first() );
+			}
+			return itemMap.get(pid);
+		}
+
+		res.billitems?.each {
+			if(it.billcode) it.item = lookupItem(it.billcode)?.item;
+			if( it.txntype == "credit") {
+				it.reftype = "waterworks_credit";
+			}	
+		}
+
+		//attach the item accounts also
+		if(res.items) {
+			res.items.findAll{ !it.item?.objid}.each {
+				it.item = lookupItem( it.billcode )?.item;
+			}
+			if(res.items.find{ !it.item?.objid }) 
+				throw new Exception("All items must have an item account");
+		}
+
+		return  res;
+	}
+
+	
+} 

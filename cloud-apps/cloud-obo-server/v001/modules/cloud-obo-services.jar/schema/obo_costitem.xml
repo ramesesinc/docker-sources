@@ -1,0 +1,11 @@
+<schema>
+	<element tablename="obo_costitem">
+		<field name="objid" primary="true" visible="true"  />
+		<field name="category" />
+		<field name="title" />
+		<field name="unit" />
+		<field name="remarks" />
+	</element>
+</schema>
+		
+

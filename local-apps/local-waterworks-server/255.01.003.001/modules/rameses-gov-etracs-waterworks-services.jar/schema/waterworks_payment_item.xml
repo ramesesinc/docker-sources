@@ -1,0 +1,25 @@
+<schema>
+	<element tablename="waterworks_payment_item">
+		<field name="objid" primary="true" prefix="WPI" />
+
+		<complex name="parent" ref="waterworks_payment" jointype="many-to-one" required="false"
+			includefields="objid,refid,refno,refdate,reftype,txnmode,voided">
+			<key field="parentid" target="objid"/>
+		</complex>
+		
+		<field name="parentid"  />
+
+		<!-- link to ledger -->
+		<field name="refid"  />
+		<field name="reftype"  />
+
+		<field name="amount" required="true" type="decimal" caption="Amount"/>
+		<field name="discount"  type="decimal" caption="Discount"/>
+		<field name="surcharge"  type="decimal" caption="Surcharge"/>
+		<field name="interest"  type="decimal" caption="Interest"/>
+
+		<!-- derived fields -->
+		<field name="total" expr="(amount + surcharge + interest) - discount" type="decimal"/>	
+		<field name="remarks"  />
+	</element>
+</schema>

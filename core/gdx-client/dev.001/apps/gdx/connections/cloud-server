@@ -1,0 +1,4 @@
+provider=script
+app.host=${cloud_server_ip}
+app.cluster=cloud-server
+readTimeout=60000

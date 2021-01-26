@@ -1,0 +1,111 @@
+<style>
+	.caption-class { width:200px; }
+	.w300 { width:300px; }
+	.initial-caption {font-weight:bold; width:100px;}
+</style>
+
+<script>
+\$put( "rptctc", new function() {
+
+		var self = this;
+		this.error;
+		this.mode;
+		this.info;
+		this.payorderdetails;
+		this.show_owner_name = true;
+    	this.show_owner_address = true;
+		this.orgcode = "${PARAMS.info.id}";    	
+		this.lgu = {title:"${PARAMS.info.title}", group: "${PARAMS.info.group.title}"};
+
+		this.loadInfo = function() {
+			var svc = Service.lookup(this.orgcode + ":TDService");
+			var params = {refno : this.refno };
+			return svc.verifyTaxDec( params, function(s,o) {
+				if( s.status == "ERROR" ) {
+					self.error = s.msg;
+				}
+				else {
+					self.error = null;
+					self.mode = "viewinfo";
+					self.payorderdetails = o;
+					self.info = o;
+				}
+				self._controller.refresh();					
+			});
+		}
+
+		this.viewInitial = function() {
+			self.mode = "initial";
+		}
+
+		this.onload = function() {
+			this.refno = WindowUtil.getParameter("refno");
+			if(this.refno) {
+				this.loadInfo(); 
+			}
+			else {
+				this.mode = "initial";
+			}	
+		}
+
+		this.createPaymentOrder = function() {
+			var svc = Service.lookup(self.orgcode + ":EPaymentService");
+		    var pp = {};
+		    pp.refno = this.refno;
+		    pp.orgcode = self.orgcode;
+		    pp.origin = "filipizen";
+		    pp.txntype = "rptctc";
+		    return svc.createPaymentOrder( pp, function(s,o) {
+		        if( s.status == "ERROR" ) {
+		          alert("error " + s.msg );
+		        }
+		        else {
+		          var refno = o.objid;
+		          WindowUtil.load( "/epayment/paymentorder", {refno: refno});          
+		        }  
+		    });
+		}
+
+	})
+</script>
+
+
+<div r:context="rptctc" r:visibleWhen="#{error!=null}">
+	<label r:context="rptctc" style="color:red;">#{error}</label>
+</div>
+
+<div style="padding-top:0px;"  r:context="rptctc" r:visibleWhen="#{mode=='initial'}" style="display:none;">
+	<div class="form">
+		@wx:text(caption:'Tax Declaration No', context:'rptctc', name:'refno', required:true)
+	</div>
+	@wx:button(caption: 'Submit', context:'rptctc', name:'loadInfo')
+</div>
+
+<div r:context="rptctc" r:visibleWhen="#{mode=='viewinfo'}"  style="display:none;">
+
+	<label r:context="rptctc" r:visibleWhen="#{info.bill.amtdue > 0 }" style="font-size:15px;">
+	  	There is still an unpaid balance of #{info.bill.amtdue}. You need to settle this first before proceeding.<br>
+	  	Click <a href="/partners/${PARAMS.name}/services/rptis/billing?refno=#{info.tdno}" target="rptis:billing">here</a> to pay online
+	</label>
+	
+
+	<div class="form" style="padding-top:20px;">
+		<p>Please verify if the following info is correct</p>
+		@wx:label(caption:'TD No', context:'rptctc', expr: '#{info.tdno}' )
+		@wx:label(caption:'Owner', context:'rptctc', expr: '#{info.owner.name}' )
+		@wx:label(caption:'Address', context:'rptctc', expr: '#{info.owner.address}' )
+		@wx:label(caption:'PIN', context:'rptctc', expr: '#{info.pin}' )
+		@wx:label(caption:'Title No', context:'rptctc', expr: '#{info.titleno}' )
+		@wx:label(caption:'Classification', context:'rptctc', expr: '#{info.classcode}' )
+		@wx:label(caption:'Lot No', context:'rptctc', expr: '#{info.cadastrallotno}' )
+		@wx:label(caption:'Area [sqm]', context:'rptctc', expr: '#{info.areasqm}' )
+		@wx:label(caption:'Market Value', context:'rptctc', expr: '#{info.totalmv}' )
+		@wx:label(caption:'Assessed Value', context:'rptctc', expr: '#{info.totalav}' )
+
+		@wx:text(caption:'Purpose', context:'rptctc', name:'purpose', required:true, inputClass:'+w300', 
+			hint: 'Specify purpose of requesting clearance', visibleWhen: '#{info.bill.amtdue <= 0 }')
+	</div>
+	<br>
+	@wx:button(caption: 'Cancel', context:'rptctc', name:'viewInitial', attrs: [immediate: true] )
+	@wx:button(caption: 'Submit', context:'rptctc', name:'createPaymentOrder1', visibleWhen:'#{info.bill.amtdue <= 0 }' )
+</div>

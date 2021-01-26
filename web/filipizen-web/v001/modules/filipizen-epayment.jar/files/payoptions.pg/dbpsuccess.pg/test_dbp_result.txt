@@ -1,0 +1,39 @@
+<form id="postform" method="POST" action="/epayment/paysuccess">
+
+<input type="hidden" name="paypartner" value="["objid":"DBP", "actionurl":"https://testipg.apollo.com.ph:8443/transaction/verify", "name":"DEVELOPMENT BANK OF THE PHILIPPINES", "state":"ACTIVE", "caption":"DBP", "code":"002", "info":["terminalid":56, "transactionkey":"5f16150a98195379b69b525626cf41c41d79b33d", "actionurl":"https://testipg.apollo.com.ph:8443/transaction/verify", "xtestactionurl":"http://test.rameses.com:8580/dbp/transaction/verify"]]"/>
+
+<input type="hidden" name="paypartnerid" value="DBP"/>
+
+<input type="hidden" name="amount" value="5344.00"/>
+
+<input type="hidden" name="paymentrefid" value="1370005EEFWM68P671"/>
+
+<input type="hidden" name="traceid" value="919813030334"/>
+
+<input type="hidden" name="tracedate" value="Wed Jul 17 13:15:53 PHT 2019"/>
+
+<input type="hidden" name="partner" value="["objid":"DBP"]"/>
+
+<input type="hidden" name="txndate" value="2019-07-17 12:27:39.0"/>
+
+<input type="hidden" name="objid" value="EORPMT5f9e31d8:16bfe2e8fe1:-7ff6"/>
+
+<input type="hidden" name="txntype" value="obo"/>
+
+<input type="hidden" name="orgcode" value="137"/>
+
+<input type="hidden" name="partnerid" value="DBP"/>
+
+<input type="hidden" name="partnercode" value="002"/>
+
+<input type="hidden" name="refno" value="BP-201907-00044"/>
+
+<input type="hidden" name="origin" value="filipizen"/>
+
+<input type="hidden" name="txntypename" value="Building Permit"/>
+
+<input type="hidden" name="info" value="["objid":"1370005EEFWM68P671", "cachekey":null, "webfee":0.00, "origin":"filipizen", "controlno":"137000000000079", "expirydate":2019-07-18, "mobileno":null, "amount":5344.0000, "orgcode":"137", "refno":"BP-201907-00044", "paidby":"LANA, PHOEBE B.", "email":null, "txntype":"obo", "particulars":"Building Permit", "paymentrefid":"1370005EEFWM68P671", "txndate":2019-07-17 12:26:58.0, "txntypename":"Building Permit", "phoneno":null, "payment":["receiptid":null, "receiptno":null, "objid":null]]"/>
+
+<input type="hidden" name="particulars" value="Building Permit"/>
+
+<input type="hidden" name="paypartnercode" value="DBP"/>

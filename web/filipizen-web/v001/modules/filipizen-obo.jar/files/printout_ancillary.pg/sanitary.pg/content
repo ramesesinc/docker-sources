@@ -1,0 +1,99 @@
+<%def app = PARAMS.app; %>
+
+
+<table  width="100%" class="tblscope">
+	<tr class="first-td">
+		<td colspan="9"><p class="allcaps-bold">Scope of work</p></td>
+	</tr>
+	<tr>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" <%if(app.new_construction !=null){%>checked<%}%> > New Construction</p></td>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" <%if(app.renovation !=null){%>checked<%}%>> Renovation</p> <p class="underline renovation"></p></td>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" <%if(app.raising !=null){%>checked<%}%>> Raising</p> <p class="underline raising"></p></td>
+	</tr>
+	<tr>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" <%if(app.erection !=null){%>checked<%}%>> Erection</p></td>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" <%if(app.conversion !=null){%>checked<%}%>> Conversion</p> <p class="underline conversion"></p></td>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" <%if(app.demolition !=null){%>checked<%}%>> Demolition</p> <p class="underline demolation"></p></td>
+	</tr>
+	<tr>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" <%if(app.addition !=null){%>checked<%}%>> Addition</p> </td>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" <%if(app.repair !=null){%>checked<%}%>> repair</p> <p class="underline repair"></p></td>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" <%if(app.accessory_building_structure !=null){%>checked<%}%>> Accessory Building/structure</p> <p class="underline accessory"></p></td>
+	</tr>
+	<tr class="last-td">
+		<td colspan="3"><p class="allcaps"><input type="checkbox" <%if(app.alteration !=null){%>checked<%}%>> Alteration</p> </td>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" <%if(app.moving !=null){%>checked<%}%>> Moving</p> <p class="underline moving"></p></td>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" <%if(app.others !=null){%>checked<%}%>> others</p> (specify) <p class="underline civilothers"></p></td>
+	</tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" width="100%">
+	<tbody>
+		<tr>
+			<td colspan="2" class="tdinside">
+				<p class="title">Box 2 (To be accomplished by the design professional)</p>
+				<table class="boxpermit" align="center" width="100%">
+					<tbody>
+						<tr>
+							<td colspan="3"><p class="allcaps-bold">Installation and Operation of:</p></td>
+						</tr>
+						<tr>
+							<td><p class="allcaps-bold">Water Supply:</p></td>
+							<td><p class="allcaps-bold">System of Disposal:</p></td>
+						</tr>
+						<tr>
+							<td><p class="allcaps"><input type="checkbox" <%if(app.shallow_well !=null){%>checked<%}%>> Shallow well</p></td>
+							<td><p class="allcaps"><input type="checkbox" <%if(app.water_treatment_plant !=null){%>checked<%}%>> waste water treatment plant</p></td>
+							<td><p class="allcaps"><input type="checkbox" <%if(app.surface_drainage !=null){%>checked<%}%>> Surface Drainage</p></td>
+						</tr>
+						<tr>
+							<td><p class="allcaps"><input type="checkbox" <%if(app.deep_well_pump_set !=null){%>checked<%}%>> Deep Weel & Pump Set</p></td>
+							<td><p class="allcaps"><input type="checkbox" <%if(app.imhoff_tank !=null){%>checked<%}%>> Imhoff tank</p></td>
+							<td><p class="allcaps"><input type="checkbox" <%if(app.street_canal !=null){%>checked<%}%>> Street Canal</p></td>
+						</tr>
+						<tr>
+							<td><p class="allcaps"><input type="checkbox" <%if(app.water_system !=null){%>checked<%}%>> City/Municipal water system</p></td>
+							<td><p class="allcaps"><input type="checkbox" <%if(app.sanitary_sewer_connection !=null){%>checked<%}%>> Sanitary sewer connection</p></td>
+							<td><p class="allcaps"><input type="checkbox" <%if(app.water_course !=null){%>checked<%}%>> water course</p></td>
+						</tr>
+						<tr>
+							<td><p class="allcaps"><input type="checkbox" <%if(app.moving !=null){%>checked<%}%>> Others</p> (Specify) <p class="underline civilothers"></p></td>
+							<td><p class="allcaps"><input type="checkbox" <%if(app.sub_surface_sand_filter !=null){%>checked<%}%>> Sub-surface connection</p></td>
+							<td><p class="allcaps"><input type="checkbox" <%if(app.moving !=null){%>checked<%}%>> Othes</p> (Specify) <p class="underline "></p></td>
+						</tr>
+					</tbody>
+					<tbody>
+						<tr class="first-td last-td">
+							<td colspan="3">Prepared by: <p class="underline prepared"></p></td>
+						</tr>
+					</tbody>
+				</table> 
+			</td>
+		</tr>
+		<tr>
+			<td class="tdinside">
+				<p class="title">Box 3</p>
+				@obo:print_professional_box( title: 'Design Professional, Plans and Specifications', professional: app.designprofessional, role:'Sanitary Engineer' )
+			</td>
+			<td class="tdinside">
+				<p class="title">Box 4</p>
+				@obo:print_professional_box( title: 'Supervisor / In-Charge of Sanitary works', professional: app.supervisor, role: 'Sanitary Engineer' )
+			</td>
+		</tr>
+		<!-- second row. 283 -->
+		<tr>
+			<td class="tdinside">
+				<p class="title">Box 5</p>
+				@obo:print_owner_box( title: '<b>BUILDING OWNER</b>', owner: app.owner )
+			</td>
+			<td class="tdinside">
+				<p class="title">Box 6</p>
+				@obo:print_owner_box( title: 'WITH MY CONSENT: <b>LOT OWNER</b>', owner: app.lotowner )
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+

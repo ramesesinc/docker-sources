@@ -1,0 +1,90 @@
+<script>
+\$put("searchproperty", new function() {
+	
+	var self = this;
+	this.refno;
+	this.reftype;
+	this.mode = "askref";
+	this.error;
+	this.info;
+
+	var orgcode = "${PARAMS.info.id}";
+
+	this.search = function() {
+		var svc = Service.lookup( orgcode + ":TDService");
+		return svc.verifyTaxDec( {refno: this.refno}, function(s,o) {
+			if( s.status == "ERROR" ) {
+				self.error = s.msg;
+			}
+			else {
+				self.error = null;
+				self.info = o;	
+				self.mode = "viewinfo"
+			}
+			self._controller.refresh();
+		});
+	}
+
+});
+</script>
+<style>
+	.caption-class { width:200px;  }
+	.indented-caption { width:100px; padding-left:20px; }	
+</style>
+
+
+<div r:context="searchproperty" r:visibleWhen="#{error!=null}">
+	<label r:context="searchproperty" style="color:red;">#{error}</label>
+</div>
+
+<div style="padding-top:0px;"  r:context="searchproperty" r:visibleWhen="#{mode=='askref'}">
+	<div class="form">
+		<p>Search Property</p>
+		<input type="radio" r:context="searchproperty" r:name="reftype" value="tdno">&nbsp;By Tax Dec No<br>
+		@wx:text(caption:'TD No', context:'searchproperty', name:'refno', required:true, captionClass:'+indented-caption', depends:'reftype', visibleWhen:'#{reftype == \'tdno\' }')
+
+		<input type="radio" r:context="searchproperty" r:name="reftype" value="pin">&nbsp;By PIN<br>
+		@wx:text(caption:'PIN', context:'searchproperty', name:'refno', required:true, captionClass:'+indented-caption', depends:'reftype', visibleWhen:'#{reftype == \'pin\' }')
+
+		<input type="radio" r:context="searchproperty" r:name="reftype" value="lotno">&nbsp;By Lot No<br>
+		@wx:text(caption:'Lot No', context:'searchproperty', name:'refno', required:true, captionClass:'+indented-caption', depends:'reftype', visibleWhen:'#{reftype == \'lotno\' }')
+
+		<input type="radio" r:context="searchproperty" r:name="reftype" value="titleno">&nbsp;By Title No<br>
+		@wx:text(caption:'Title No', context:'searchproperty', name:'refno', required:true, captionClass:'+indented-caption', depends:'reftype', visibleWhen:'#{reftype == \'titleno\' }')
+	</div>
+	@wx:button(caption: 'Submit', context:'searchproperty', name:'search')
+</div>
+
+
+<div class="control-group" r:context="searchproperty" r:visibleWhen="#{mode=='viewinfo'}">
+	  <h3>Tax Declaration Information</h3>
+	  <div class="form">
+	  	@wx:label(caption:'TD No', context:'searchproperty', expr: '#{info.tdno}' )
+	  	@wx:label(caption:'Owner', context:'searchproperty', expr: '#{info.owner.name}' )
+	  	@wx:label(caption:'Address', context:'searchproperty', expr: '#{info.owner.address}' )
+		@wx:label(caption:'PIN', context:'searchproperty', expr: '#{info.pin}' )
+		@wx:label(caption:'Title No', context:'searchproperty', expr: '#{info.titleno}' )
+		@wx:label(caption:'Classification', context:'searchproperty', expr: '#{info.classcode}' )
+		@wx:label(caption:'Lot No', context:'searchproperty', expr: '#{info.cadastrallotno}' )
+		@wx:label(caption:'Area [sqm]', context:'searchproperty', expr: '#{info.areasqm}' )
+		@wx:label(caption:'Market Value', context:'searchproperty', expr: '#{info.totalmv}' )
+		@wx:label(caption:'Assessed Value', context:'searchproperty', expr: '#{info.totalav}' )
+	  </div>
+
+	   <h3>Billing Information</h3>
+	  <div class="form">
+	  	@wx:label(caption:'Period covered', context:'searchproperty', expr: '#{info.bill.period}' )
+	  	@wx:label(caption:'Amount Due', context:'searchproperty', expr: '#{info.bill.amtdue}' )
+	  </div>
+	  	
+	  <h3>Last Payment Information</h3>	
+	  <div class="form">
+	  	@wx:label(caption:'Receipt No', context:'searchproperty', expr: '#{info.lastpayment.receiptno}' )
+		@wx:label(caption:'Receipt Date', context:'searchproperty', expr: '#{info.lastpayment.receiptdate}' )
+		@wx:label(caption:'Amount Paid', context:'searchproperty', expr: '#{info.lastpayment.amount}' )
+		@wx:label(caption:'Paid By', context:'searchproperty', expr: '#{info.lastpayment.paidby.name}' )
+	  </div>
+
+</div>
+
+

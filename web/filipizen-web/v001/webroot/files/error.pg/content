@@ -1,0 +1,9 @@
+<h4 style="padding:10px;color:#fff;">
+An error occured.
+</h4>
+
+<pre>
+<%
+println ERROR?.message
+%>
+</pre> 

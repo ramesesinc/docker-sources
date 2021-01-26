@@ -1,0 +1,107 @@
+import com.rameses.annotations.*;
+import treasury.facts.*;
+
+class WaterworksCompromisePersistenceTaskInterceptor {
+	
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("WorkflowTaskService")
+	def taskSvc;
+
+	@Service("ControlnoGeneratorService")
+    def controlNoSvc;
+
+	@Service("Var")
+	def var;
+
+	@DataContext("waterworks_account")
+	def acctEm;
+
+	@DataContext("waterworks_compromise")
+	def compromiseEm;
+
+	@DataContext("waterworks_compromise_task")
+	def compromiseTaskEm;
+
+	@DataContext("waterworks_compromise_billitem")
+	def compromiseBillitemEm;
+
+	@DataContext("waterworks_compromise_fee")
+	def compromiseFeeEm;
+
+	@DataContext("vw_waterworks_compromise")
+	def vwCompromiseEm;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_compromise'}")
+	void beforeCreateCompromise( evt ) {
+		def p = evt.args[0]; 
+		def pattern = var.waterworks_compromise_controlno_format;
+		if(!pattern) throw new Exception("Please specify waterworks_compromise_controlno_format in sys_var");
+		p.controlno = controlNoSvc.getNextNo(pattern);
+	}
+
+	@After(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'waterworks_compromise'}")
+	void afterCreateCompromise( evt ) {
+		def p = evt.args[0];
+		def result = evt.result; 
+
+		//save the billitems first
+		p.billitems.each { bi->
+			bi.amtpaid = 0;
+			bi.parentid = result.objid;
+			compromiseBillitemEm.create( bi );
+		}
+		def cnt = compromiseBillitemEm.find([parentid: result.objid]).select("c:{COUNT(*)}").val();
+		//start the workflow
+		def wf = [:];
+		wf.processname = 'waterworks_compromise';
+		wf.refid = result.objid;
+		wf.startdate = dateSvc.serverDate;
+		taskSvc.start( wf );
+
+	}
+
+	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'waterworks_compromise'}")
+	void beforeRemoveCompromise( evt ) {
+		def o = evt.args[0];
+		def comp = vwCompromiseEm.find([objid: o.objid]).first();
+		if( comp.task.state !='draft')
+			throw new Exception("Application can only be deleted on the draft state");
+		compromiseBillitemEm.find( [parentid: comp.objid]).delete();	
+		compromiseEm.find([objid: comp.objid]).update([taskid: "{NULL}", acctinfoid:"{NULL}"]);
+		compromiseTaskEm.find([refid: comp.objid]).delete();
+	}
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname == 'waterworks_compromise' && args[0].action== 'send-for-initial-payment' }")
+	void beforeSendForInitialPayment( evt ) {
+		def refid = evt.args[0].refid;
+		def comp = vwCompromiseEm.find([objid: refid]).first();
+
+		def itemid = "WATER_COMPROMISE_DOWNPAYMENT";
+		//find first if it exists
+		def dp = compromiseFeeEm.find( [parentid: comp.objid, itemid: itemid] ).first();
+		if( !dp ) {
+			//insert the downpayment into compromise fees so it can be collected
+			def m = [:];
+			m.parentid = comp.objid;
+			m.item = [objid: itemid];
+			m.amount = comp.downpayment;
+			m.amtpaid = 0;
+			m.itemtype = "downpayment";
+			compromiseFeeEm.create( m );		
+		}
+	}
+
+	@Before(pattern="WorkflowTaskService.signal", eval="#{ args[0].processname == 'waterworks_compromise' && args[0].action == 'send-for-approval' }")
+	void beforeSendForApproval( evt ) {
+		def refid = evt.args[0].refid;
+		if( evt.args[0].taskstate == "for-review" ) {
+			def comp = vwCompromiseEm.find([objid: refid]).first();
+			if( comp.downpayment !=null && comp.downpayment > 0 ) {
+				throw new Exception("You cannot send this for approval because there is downpayment to be paid. Please select Send for Initial Payment instead")
+			}
+		}
+	}
+
+} 

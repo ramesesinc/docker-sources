@@ -1,0 +1,16 @@
+<schema>
+	<element tablename="online_building_permit_professional">
+		<field name="objid" primary="true" prefix="OBOBPPROF"/>
+		<field name="appid" required="true"/>
+		<field name="profession" required="true"/>
+		<field name="entityid" required="true" />
+
+		<!-- link to actual reference -->
+		<complex name="entity" ref="online_building_permit_entity" jointype="many-to-one">
+			<key field="entityid" target="objid" />
+		</complex>	
+
+		<complex name="prc" serializer="default" type="object" caption="PRC" required="true"/>
+		<complex name="ptr" serializer="default" type="object" caption="PTR" required="true"/>
+	</element>
+</schema>

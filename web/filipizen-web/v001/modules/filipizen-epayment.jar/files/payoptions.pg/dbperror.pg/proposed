@@ -1,0 +1,6 @@
+<%
+	def status = PARAMS.responseCode; 
+	def paymentrefid = PARAMS.referenceCode; 
+%>
+
+DISPLAY ERROR HERE

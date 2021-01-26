@@ -1,0 +1,157 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import enterprise.utils.*;
+import java.rmi.server.*;
+import com.rameses.rules.common.*;
+import java.text.*;
+import vehicle.facts.*;
+
+public class VehicleAssessmentService  {
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext("vehicle_application")
+	def appEm;
+
+
+	@DataContext("vehicle_application_fee")
+	def feeEm;	
+
+	@DataContext("vehicle_application_info")
+	def infoEm;	
+
+	@DataContext("vehicle_itemaccount")
+ 	def itemAcctEm;	
+
+	@Service("BillingRuleService")
+	def billingRuleSvc;
+
+	@Service("VehicleBillingService")
+	def vehicleBillingSvc;
+
+
+	void saveBillItems( def appid, def items ) {
+		feeEm.find( [appid: appid]).delete();
+
+		def itemMap = [:];
+		def findAcct = { id->
+			if(!itemMap.containsKey(id)) {
+				itemMap.put( id, itemAcctEm.find( [objid:id]).first());
+			}
+			return itemMap.get(id);
+		}
+		items.each {
+			def m = [:];
+			m.item = findAcct( it.billcode );
+			m.year = it.year;
+			m.amount = it.amount;
+			m.amtpaid = 0;
+			m.appid = appid;
+			feeEm.create( m );
+		}
+	}
+
+	void saveInfos( def appid, def infos ) {
+		infoEm.find( [appid: appid]).delete();
+		infos.each {
+			def m = [:];
+			m.appid = appid;
+			m.name = it.name;
+			if( it.datatype == 'boolean' ) m.booleanvalue = it.value;
+			else if( it.datatype == 'decimal' ) m.decimalvalue = it.value;
+			else if( it.datatype == 'integer' ) m.integervalue = it.value;
+			else it.stringvalue = m.value;
+			m.type = [objid: it.name];
+			infoEm.create( m );
+		}
+	}
+
+	@ProxyMethod
+	public def execute( def req ) {
+		def app = appEm.find( [objid: req.params.appid ] ).first();
+		int start_renew_year = app.appyear; 
+
+		//find the last year renewed
+		if(app.apptype == 'RENEW') {
+			def xu = [xappid: app.objid]
+			def last = appEm.find( [franchiseid: app.franchise.objid ] ).where( "NOT(objid = :xappid) AND apptype IN ('NEW','RENEW') AND task.state ='end' ", xu ).orderBy("appyear DESC").first();
+			if(last.appyear < (app.appyear-1) ) {
+				start_renew_year = last.appyear + 1;
+			}			
+		}
+
+		//run the rules first to test the infos
+		def facts = [];
+		facts << new vehicle.facts.VehicleApplication( app );
+		facts << new vehicle.facts.VehicleFranchise( app );;
+		facts << new vehicle.facts.VehicleUnit( app.unit );
+		facts << new vehicle.facts.VehicleAssessYear( year: app.appyear );
+
+		if( start_renew_year != app.appyear ) {
+			(start_renew_year..(app.appyear-1)).each {
+				facts << new VehicleAssessYear( year: it );
+			} 
+		}
+
+		req.factBuilder = new treasury.utils.FactBuilder();
+		req.factBuilder.variableInfoProvider = new DefaultVariableInfoProvider(
+			schemaName:"vehicle_variable"
+		);
+		req.factBuilder.facts.addAll( facts );
+
+		def res = billingRuleSvc.execute(req);
+		if(res.askinfos) return res;
+
+
+		saveInfos( app.objid, res.infos );
+		saveBillItems( app.objid, res.billitems );
+		return [
+			infos: [],
+			billitems: res.billitems
+		]
+		/*
+		def infos = res.infos;
+		if( infos ) saveInfos( app.objid, infos );
+
+		def billitems = [];
+		//loop thru each assessment if any, for renewals that have delinquencies
+		def aList = assessmentEm.find( [appid: app.objid ] ).list();
+		if( !aList) {
+			throw new Exception("There is no assessment defined for this application");
+		}
+		else if( aList.size() > 1 ) {
+			aList.each { af->
+				req.factBuilder.facts.clear();
+				vehicleFact.appyear = af.year;
+				req.factBuilder.facts.addAll( facts );			
+				res = billingRuleSvc.execute(req);
+				res.billitems.each { bi->
+					billitems <<  [itemid: bi.billcode, parent: af, amount: bi.amount, year: af.year];
+				}
+			}
+		}
+		else {
+			def ai = aList[0];
+			res.billitems.each {
+				billitems << [itemid: it.billcode, parent: ai, amount: it.amount, year: ai.year ];
+			}
+		}
+
+		//store billitems and appinfos into the database;
+		saveBillItems( aList, billitems );
+
+		return [
+			infos: res.infos,
+			billitems: billitems
+		];
+		*/
+	}
+
+	@ProxyMethod
+	public def getItems( def o ) {
+		return feeEm.where( "appid = :appid", [appid: o.appid ] ).orderBy("year, item.sortorder" ).list();
+	}
+
+
+}

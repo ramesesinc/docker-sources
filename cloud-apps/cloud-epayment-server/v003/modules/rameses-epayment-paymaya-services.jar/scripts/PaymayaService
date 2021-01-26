@@ -1,0 +1,53 @@
+import com.rameses.annotations.*;
+import com.rameses.common.*;
+import com.rameses.services.extended.*;
+import com.rameses.http.BasicHttpClient
+import com.rameses.osiris3.server.JsonUtil
+
+class PaymayaService {
+	@DataContext('payment_partner')
+	def em_partner
+
+	def webhook
+
+	@ProxyMethod
+	public void registerWebhook() {
+		def partner = em_partner.find([objid: 'PAYMAYA']).first()
+		def info = partner.info
+		if (!info || ! info.webhook) return 
+
+		def data = [:]
+		data.name = 'CHECKOUT_SUCCESS'
+		data.callbackUrl = info.webhook.callbackurl
+		def jsonData = JsonUtil.toString(data)
+
+		def http = new BasicHttpClient()
+		def retval = http.post(info.webhook.url, jsonData, info.webhook.header)
+		if (retval.responsecode == 200) {
+			webhook = JsonUtil.toMap(retval.data)
+			println 'webhook => ' + webhook
+		} else {
+			println 'Error: ' + JsonUtil.toMap(retval.error)
+		}
+	}
+
+	@ProxyMethod
+	public void registerCustomizations() {
+		def partner = em_partner.find([objid: 'PAYMAYA']).first()
+		def info = partner.info
+		if (!info || ! info.custom) return 
+
+		def jsonData = JsonUtil.toString(info.custom.data)
+		def http = new BasicHttpClient()
+		def retval = http.post(info.custom.url, jsonData, info.custom.header)
+		if (retval.responsecode != 200) {
+			println 'Error: ' + JsonUtil.toMap(retval.error)
+		}
+	}
+
+	@ProxyMethod
+	public void postPayment(data) {
+		println 'PaymayaWebhookService.postPayment => ' + data
+	}
+
+}

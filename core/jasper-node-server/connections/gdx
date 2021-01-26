@@ -1,0 +1,3 @@
+{
+	"app.host"	    : "${app_server_ip}:3000"
+}

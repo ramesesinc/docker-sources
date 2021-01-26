@@ -1,0 +1,316 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import obo.facts.*;
+import java.text.*;
+
+public class OnlineOccupancyPermitService  {
+
+	@DataContext("online_occupancy_permit")
+	def appEm;
+
+	@DataContext("online_occupancy_permit_rpu")
+	def rpuEm;
+
+	@DataContext("online_occupancy_permit_entity")
+	def entityEm;
+
+	@DataContext("online_occupancy_permit_professional")
+	def professionalEm;
+
+	@DataContext("online_occupancy_permit_costitem")
+	def permitCostItemEm;
+
+	@DataContext("vw_online_occupancy_permit_professional")
+	def vwProfessionalEm;
+
+	@DataContext("obo_costitem")
+	def costItemEm;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service(dynamic=true)
+	def dynamicSvc;
+
+
+	@ProxyMethod
+	public def moveNextStep( def o ) {
+		if(!o.appid) throw new Exception("appid is required in determining the next step");
+		def app = appEm.find( [objid: o.appid] ).first();
+		def step = app.step;
+
+		//check if step is professional but does not have any entry
+		if( step == 3 ) {
+			boolean hasItems = professionalEm.find( [appid: o.appid ] ).exists();
+			if( !hasItems ) throw new Exception("Please add at least one professional");
+		}
+
+		def nextStep = step + 1;
+		if( nextStep == 2 ) {
+			if(app.applicantid) nextStep = 3; 
+		}
+		//compare next step if less than existing then you can update otherwise stay the same
+		if(app.step < nextStep ) {
+			appEm.find( [objid: o.appid] ).update([step: nextStep]);			
+		}
+		else {
+			nextStep = app.step;
+		}
+		return [step:nextStep];
+	}
+
+	@ProxyMethod
+	public def create(def o) {
+		def kg = new KeyGen();
+		o.objid = "OP"+ kg.generateAlphanumKey(o.orgcode+"-",8);
+		o.dtfiled = dateSvc.getServerDate();
+		o.step = 1;
+		def locationid = o.remove("locationid");
+		def applicantid = o.remove("applicantid");
+
+		def app = appEm.create( o );
+		o.rpus.each {
+			it.appid = app.objid;
+			rpuEm.create( it ); 
+		}
+		o.entities.each {
+			it.appid = app.objid;
+			entityEm.create( it );
+		}
+		o.professionals.each{
+			it.appid = app.objid;
+			professionalEm.create(it);
+		}
+
+		//include also all cost items so it is already prepared
+		costItemEm.where("1=1").list().each {
+			def z = [appid: app.objid];
+			z.item = [objid: it.objid];
+			z.amount = 0;
+			permitCostItemEm.create(z);
+		}
+
+		appEm.find([objid: app.objid]).update([applicantid: applicantid, locationid: locationid ]);
+
+		/*
+		def emailSvc = dynamicSvc.lookup(o.orgcode+":EmailService");
+		app.tokenid = "MYTOKEN " + new UID();
+		emailSvc.send( app );
+		*/
+		return app;
+	}
+
+	@ProxyMethod
+	public def update( def o ) {
+		def app = appEm.update( o );
+		return app;
+	}
+
+	@ProxyMethod
+	public def findCurrentInfo( def o ) {
+		appEm.find( [objid: o.appid ] ).select("orgcode,step").first();
+	}
+
+	@ProxyMethod
+	public def getApplication(def o ) {
+		def app = appEm.find([objid: o.appid ] ).first();
+		if(o.loadall == true ) {
+			app.rpus = rpuEm.find( [appid: o.appid] ).list();	
+		}
+
+		if(o.include_costitems == true ) {
+			app.costitems = permitCostItemEm.find( [appid: app.objid ] ).list();
+			app.amount = app.costitems.sum{ it.amount };
+		}
+		return app;
+	}
+
+	@ProxyMethod
+	public def updateCostItems( def o ) {
+		o.costitems.each {
+			permitCostItemEm.find( [objid: it.objid] ).update( [amount: it.amount ] );
+		}
+		def res= [:];
+		res.items = permitCostItemEm.find( [appid: o.appid ] ).list();
+		res.amount = res.items.sum{it.amount};
+		return res;
+	}
+
+
+
+	/*==============================================================================
+	*
+	* PROFESSIONAL SUPPORT 
+	*
+	==============================================================================*/
+	@ProxyMethod
+	public def getProfessionalList( def o ) {
+		return professionalEm.select("objid,entity.objid,entity.name,entity.address.text,profession,prc.*")
+				.find([appid: o.appid])
+				.list();
+	}
+
+	@ProxyMethod 
+	public def getProfessional(def o) {
+		return professionalEm.find( [objid: o.objid]).first();
+	}
+
+	@ProxyMethod 
+	public def saveProfessional(def o) {
+		o.entity.appid = o.appid;
+		o.entity = saveEntity(o.entity);
+		o.entityid = o.entity.objid; 
+		if(o.objid) {
+			return professionalEm.find( [objid: o.objid]).update( o );
+		}
+		else {
+			return professionalEm.create( o );
+		}
+	}
+
+	@ProxyMethod
+	public void removeProfessional( def o) {
+		professionalEm.find( [objid: o.objid]).delete();
+
+		//check first the main app if entity is neither a lot owner or applicant before deleting
+		def entityid = o.entity.objid;
+		boolean b = appEm.find( [applicantid: entityid] ).exists();
+		if(b) return;
+		b = rpuEm.find( [ownerid: entityid] ).exists();
+		if(b) return;
+		entityEm.find( [objid: entityid ]).delete();
+	}
+
+
+
+	/*==============================================================================
+	*
+	* DESIGN PROFESSIONAL SUPPORT 
+	*
+	==============================================================================*/
+
+	@ProxyMethod
+	public def getDesignProfessionals( o ) {
+		def app = appEm.read([objid: o.appid])
+		if (!app) throw new Exception('Application does not exist or has been deleted.');
+		return [
+			objid: app.objid,
+			profarchitect: app.profarchitect,
+			profcivil: app.profcivil,
+			profelectrical: app.profelectrical,
+			profmechanical: app.profmechanical,
+			profsanitary: app.profsanitary,
+			profplumbing: app.profplumbing,
+			profelectronic: app.profelectronic,
+			profinterior: app.profinterior,
+		]
+	}
+
+	@ProxyMethod
+	public void updateDesignProfessional( o ) {
+		def info = [:]
+		info[o.name + 'id'] = o.prof.objid
+		appEm.find([objid: o.appid]).update(info)
+	}
+
+
+	/*==============================================================================
+	*
+	* SUPERVISOR SUPPORT 
+	*
+	==============================================================================*/
+
+	@ProxyMethod
+	public def getSupervisors( o ) {
+		def app = appEm.read([objid: o.appid])
+		if (!app) throw new Exception('Application does not exist or has been deleted.');
+		return [
+			objid: app.objid,
+			supervisorelectrical: app.supervisorelectrical,
+			supervisormechanical: app.supervisormechanical,
+			supervisorsanitary: app.supervisorsanitary,
+			supervisorplumbing: app.supervisorplumbing,
+			supervisorelectronic: app.supervisorelectronic,
+			supervisorinterior: app.supervisorinterior,
+		]
+	}
+
+	@ProxyMethod
+	public void updateSupervisor( o ) {
+		def info = [:]
+		info[o.name + 'id'] = o.prof.objid
+		appEm.find([objid: o.appid]).update(info)
+	}
+
+
+
+	@ProxyMethod
+	public def getLookupProfessionalList( def o ) {
+		return vwProfessionalEm.find([appid: o.appid]).list();
+	}	
+
+
+
+	//This is called by the local client
+	@ProxyMethod
+	public def getOnlineSubmission(def parm) {
+		def appid = parm.appid;
+		def app = appEm.find([objid: appid ] ).first();
+		//remove the object links so it will not add to the load
+		app.remove( "applicant");
+		app.remove( "location");
+		app.remove( "occupancytype");
+
+		//add the entities, locations, professionals
+		app.entities = entityEm.find( [appid: appid ]).list();
+
+
+		app.rpus = locationEm.find( [appid: appid] ).list();
+		app.rpus.each{ it.remove("owner") };
+		app.professionals = professionalEm.find( [appid:appid] ).list();
+		app.professionals.each{ it.remove("entity") }
+		
+
+		app.ancillaries = ancillaryEm.find([appid: appid]).list();
+		app.ancillaries.each{ it.remove("type"); it.remove("designprofessional"); it.remove("supervisor"); }
+		
+
+		app.infos = appInfoEm.find( [appid: appid ] ).list();
+		app.infos.each { it.remove("type") };
+		app.requirements = reqEm.find( [appid: appid ]).list();
+
+		app.trackingno = app.remove("objid");
+		return app;
+	}
+
+	def formatAddress( def addr ) {
+		def lst = [];
+		lst << [addr.unitno, addr.bldgno, addr.bldgname ].findAll{it!=null}.join(" ");
+		lst << [addr.street, addr.subdivision ].findAll{it!=null}.join(",");
+		lst << [addr.barangay?.name, addr.citymunicipality, addr.province ].findAll{it!=null}.join(",");
+		return lst.findAll{it}.join(",");		
+	}
+
+	def formatPersonalName( def v ) {
+		return v.lastname + ", " + v.firstname + " " + ((v.middlename!=null)?v.middlename.substring(0,1)+'.': '');
+	}
+
+	//reusable method of saving entity
+	def saveEntity(def o) {
+		if(o.resident==null) o.resident = 0;
+		if( !o.entitytype ) o.entitytype = 'INDIVIDUAL';
+		if( o.entitytype == 'INDIVIDUAL' ) o.name = formatPersonalName(o);
+
+		if(!o.objid) {
+			def v = [appid: o.appid];
+			v.putAll(o);
+			v.address.text = formatAddress(o.address);
+			return entityEm.create(v);
+		}
+		else {
+			o.address.text = formatAddress(o.address);
+			return entityEm.find( [objid: o.objid] ).update( o );
+		}
+	}	
+}

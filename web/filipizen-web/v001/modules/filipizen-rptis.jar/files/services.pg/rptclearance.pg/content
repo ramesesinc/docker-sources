@@ -1,0 +1,111 @@
+<style>
+	.caption-class { width:200px; }
+	.w300 { width:300px; }
+	.initial-caption {font-weight:bold; width:100px;}
+</style>
+
+<script>
+\$put( "rptclearance", new function() {
+
+		var self = this;
+		this.error;
+		this.mode;
+		this.info;
+		this.payorderdetails;
+		this.show_owner_name = true;
+    	this.show_owner_address = true;
+		this.orgcode = "${PARAMS.info.id}";    	
+		this.lgu = {title:"${PARAMS.info.title}", group: "${PARAMS.info.group.title}"};
+
+		this.loadInfo = function() {
+			var svc = Service.lookup(this.orgcode + ":TDService");
+			var params = {refno : this.refno };
+			return svc.verifyTaxDec( params, function(s,o) {
+				if( s.status == "ERROR" ) {
+					self.error = s.msg;
+				}
+				else {
+					self.error = null;
+					self.mode = "viewinfo";
+					self.payorderdetails = o;
+					self.info = o;
+				}
+				self._controller.refresh();				
+			});
+		}
+
+		this.viewInitial = function() {
+			self.mode = "initial";
+		}
+
+		this.onload = function() {
+			this.refno = WindowUtil.getParameter("refno");
+			if(this.refno) {
+				this.loadInfo(); 
+			}
+			else {
+				this.mode = "initial";
+			}	
+		}
+
+		this.createPaymentOrder = function() {
+			var svc = Service.lookup(self.orgcode + ":EPaymentService");
+		    var pp = {};
+		    pp.refno = this.refno;
+		    pp.orgcode = self.orgcode;
+		    pp.origin = "filipizen";
+		    pp.txntype = "rptclearance";
+		    return svc.createPaymentOrder( pp, function(s,o) {
+		        if( s.status == "ERROR" ) {
+		          alert("error " + s.msg );
+		        }
+		        else {
+		          var refno = o.objid;
+		          WindowUtil.load( "/epayment/paymentorder", {refno: refno});          
+		        }  
+		    });
+		}
+
+	})
+</script>
+
+<div r:context="rptclearance" r:visibleWhen="#{error!=null}">
+	<label r:context="rptclearance" style="color:red;">#{error}</label>
+</div>
+
+<div style="padding-top:0px;"  r:context="rptclearance" r:visibleWhen="#{mode=='initial'}" style="display:none;">
+	<div class="form">
+		@wx:text(caption:'Tax Declaration No', context:'rptclearance', name:'refno', required:true)
+	</div>
+	@wx:button(caption: 'Submit', context:'rptclearance', name:'loadInfo')
+</div>
+
+<div r:context="rptclearance" r:visibleWhen="#{mode=='viewinfo'}"  style="display:none;">
+
+	<label r:context="rptclearance" r:visibleWhen="#{info.bill.amtdue > 0 }" style="font-size:15px;">
+	  	There is still an unpaid balance of #{info.bill.amtdue}. You need to settle this first before proceeding.<br>
+	  	Click <a href="/partners/${PARAMS.name}/services/rptis/billing?refno=#{info.tdno}" target="rptis:billing">here</a> to pay online
+	</label>
+	
+	<div class="form" style="padding-top:20px;">
+		<p>Please verify if the following info is correct</p>
+		@wx:label(caption:'TD No', context:'rptclearance', expr: '#{info.tdno}' )
+		@wx:label(caption:'Owner', context:'rptclearance', expr: '#{info.owner.name}' )
+		@wx:label(caption:'Address', context:'rptclearance', expr: '#{info.owner.address}' )
+		@wx:label(caption:'PIN', context:'rptclearance', expr: '#{info.pin}' )
+		@wx:label(caption:'Title No', context:'rptclearance', expr: '#{info.titleno}' )
+		@wx:label(caption:'Classification', context:'rptclearance', expr: '#{info.classcode}' )
+		@wx:label(caption:'Lot No', context:'rptclearance', expr: '#{info.cadastrallotno}' )
+		@wx:label(caption:'Area [sqm]', context:'rptclearance', expr: '#{info.areasqm}' )
+		@wx:label(caption:'Market Value', context:'rptclearance', expr: '#{info.totalmv}' )
+		@wx:label(caption:'Assessed Value', context:'rptclearance', expr: '#{info.totalav}' )
+
+		@wx:text(caption:'Purpose', context:'rptclearance', name:'purpose', required:true, inputClass:'+w300', 
+			hint: 'Specify purpose of requesting clearance', visibleWhen: '#{info.bill.amtdue <= 0 }')
+	</div>
+	<br>
+	@wx:button(caption: 'Cancel', context:'rptclearance', name:'viewInitial', attrs: [immediate: true] )
+	@wx:button(caption: 'Submit', context:'rptclearance', name:'createPaymentOrder1', visibleWhen:'#{info.bill.amtdue <= 0 }' )
+</div>
+
+

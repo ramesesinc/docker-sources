@@ -1,0 +1,51 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class EPaymentService  {
+
+    @Service(value="OnlinePaymentService", connection="local-epayment-server")
+    def localSvc;
+
+    @Service(value="epayment/CloudPaymentService", connection="cloud-server")
+    def cloudSvc;
+
+    @ProxyMethod
+    public def createPaymentOrder(def params) {
+        if(!params.refno) throw new Exception("Please indicate a billing refno");
+        if(!params.orgcode) throw new Exception("Please include orgcode"); 
+        if(!params.txntype) throw new Exception("Please include txntype"); 
+        try {
+            def po = localSvc.createPaymentOrder( params );
+            po.orgcode = params.orgcode;
+            po.refno = params.refno;
+            po.origin = params.origin;
+            cloudSvc.createPaymentOrder( po );
+
+            //activate the state. activated means it is actually updated in the cloud.
+            localSvc.activatePaymentOrder( [objid:po.objid] );
+            return po;
+        }
+        catch(e) {
+            throw e;
+        }
+    }
+
+    @ProxyMethod
+    public def getBilling( def params ) {
+        if(!params.refno) throw new Exception("Please indicate a billing refno");
+        def bill = localSvc.getBilling(  params );
+        if(!bill) throw new Exception("No record found for " + params.refno);
+        if(bill.status == 1 ) throw new Exception( bill.message );
+        return bill;
+    }
+
+    @ProxyMethod
+    public def getReceipt( def o ) {
+        def rct = localSvc.getReceipt( o );
+        return rct;
+    }
+
+}
+

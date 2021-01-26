@@ -1,0 +1,207 @@
+import com.rameses.annotations.*;
+
+class CloudPaymentService {
+	
+	@Service 
+	def self;
+
+	@DataContext('paymentorder')
+	def po_db;
+
+	@DataContext('paymentorder_paid')
+	def po_paid_db;
+
+	@DataContext('paymentorder_cancelled')
+	def po_cancelled_db;
+
+	@DataContext('payment_partner_option')
+	def optionEm;
+
+	@DataContext('payment')
+	def pay_db;
+
+	@DataContext('payment_partner')
+	def paypartner_db;
+
+	@Service(dynamic=true) 
+	def remoteSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@XConnection("gdx-mq")
+	def gdx;
+
+	@ProxyMethod 
+	public def createPaymentOrder( param ) {
+		//get the web fee of partner here. either store it in payment database or field in partner.
+		//my suggestion is create a table in this domain, not the partner.	
+
+		param.webfee = 0.0; 
+
+		def df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		if ( param.txndate instanceof java.util.Date ) {
+			param.txndate = df.format( param.txndate );	
+		}
+
+		return po_db.create( param );
+	} 
+
+	@ProxyMethod 
+	public def cancelPaymentOrder( params ) {
+		def po = po_db.find([ objid: params.objid ]).first(); 
+		if ( po?.objid ) {
+			po_cancelled_db.create( po ); 
+			po_db.find([ objid: po.objid ]).delete(); 
+			params.action = "epayment:cancel-payment-order";
+			gdx.send( params, params.orgcode ); 
+		} 
+		return "ok"; 
+	} 
+
+	@ProxyMethod
+	public def getPostPaymentParams(def o) {
+		return [paypartner: o.paypartner];		
+	}
+
+	@ProxyMethod
+	public def getPayPartner(def params)  {
+		def po = getPaymentOrder(params)
+		def p = [paymentorder: po, payoption: params.payoption]
+		def payoption = self.getPaymentPartnerOption(p);
+
+		def formaction = payoption.paypartner?.info?.testactionurl; 
+		if (payoption.paypartner?.checkout) {
+			formaction = payoption.paypartner.checkout.redirectUrl;
+			def tokens = formaction.split("=");
+			payoption.paypartner.id = tokens[1];
+			payoption.paypartner.isredirect = true;
+		} 
+		if ( !formaction ) {
+			formaction = payoption.paypartner.actionurl;
+		}
+		payoption.paypartner.formaction = formaction;
+		return payoption.paypartner;
+	}
+
+	@ProxyMethod
+	public def postPartnerPayment(params) {
+		if (!params.paypartnerid) throw new Exception("paypartnerid is required.");
+		if (!params.paymentrefid) throw new Exception("paymentrefid is required.");
+
+		def pmt = postPayment(params);
+		def po = po_paid_db.find([objid: pmt.paymentrefid]).first();
+		pmt.orgcode = pmt.info.orgcode;
+		pmt.particulars = pmt.info.particulars;
+		pmt.paypartnercode = pmt.paypartnerid;
+		pmt.paidby = po?.paidby;
+		pmt.email = po?.email;
+		return pmt;
+	}
+
+	@ProxyMethod 
+	public def postPayment( def parms ) {
+		if ( !parms.paypartnerid ) throw new Exception("paypartnerid is required in postPayment"); 
+		if ( !parms.paymentrefid ) throw new Exception("paymentrefid is required in postPayment"); 
+
+		def po = po_db.find([ objid: parms.paymentrefid ]).first(); 
+		if ( !po?.objid ) throw new Exception("'"+ parms.paymentrefid +"' payment order not found"); 
+
+		//call params here. must intercept
+		def payPartner = paypartner_db.find([ objid: parms.paypartnerid ]).first();
+		if ( !payPartner?.objid ) throw new Exception("'"+ parms.paypartnerid +"' payment partner not found"); 
+		if ( payPartner.info == null ) payPartner.info = [:]; 
+
+		def orgcode = po.orgcode;
+		def partInfo = optionEm.find([ partnerid: orgcode, paypartnerid: parms.paypartnerid ]).first(); 
+		if ( partInfo?.info ) payPartner.info.putAll( partInfo.info ); 
+
+		parms.paypartner = payPartner;
+
+		def pmt = self.getPostPaymentParams( parms ); 
+		if ( !pmt ) throw new Exception("Error in post payment. Parameters passed in posting payment must not be empty"); 
+		if ( !pmt.paypartnerid ) throw new Exception("Error in post payment. paypartnerid is required");
+
+		//update the payment order here
+		pmt.partner = [objid: pmt.paypartnerid];
+		pmt.txndate = dateSvc.getServerDate();
+		pmt.orgcode = po.orgcode;
+		pmt.paymentrefid = po.objid;
+		if (!po.particulars) {
+			po.particulars = po.txntypename;
+		}
+
+		//transfer to paymentorder_paid 
+		po_paid_db.create( po );
+		po_db.find([ objid: po.objid ]).delete();
+
+		//we use partnerid to refer to pay partner so as not to disrupt existing code in the lgu.
+		def pay = pay_db.create( pmt );
+
+		pay.txntype = po.txntype
+		pay.orgcode	= orgcode; 
+		pay.partnerid = payPartner.objid; 
+		pay.partnercode = payPartner.code;
+		pay.refno = po.refno; 
+		pay.origin = po.origin;
+		pay.txntypename = po.txntypename;
+
+		pay.action = "epayment:post-payment";
+		gdx.send( pay, orgcode );
+
+		//This is returned to give feedback to the web page.
+		pmt.info = po;
+		return pmt;
+	} 
+
+	//this is called back by the gdx-client. we only move the payment order if payment successful downstairs
+	@ProxyMethod 
+	public void updatePaymentReceipt( pmt ) {
+		//update the payment reference
+		def payinfo = pay_db.find([ paymentrefid: pmt.paymentrefid ]).select('objid').first(); 
+		if ( !payinfo?.objid ) throw new Exception(""+ pmt.paymentrefid +" payment reference number does not exist"); 
+
+		def m = [ receiptid: pmt.receiptid, receiptno: pmt.receiptno, receiptdate: pmt.receiptdate ]; 
+		m.each{ k,v-> 
+			if ( !v ) throw new Exception('Error in updatePaymentReceipt. '+ k +' parameter is required'); 
+		} 
+		pay_db.find([ objid: payinfo.objid ]).update( m ); 
+	} 
+
+	@ProxyMethod
+	public def getPaymentOrder( param ) {
+		def o =  po_db.find( [objid: param.objid ]  ).first();
+		if( o ) {
+			if(o.webfee==null) o.webfee = 0;
+			o.total = o.amount + o.webfee;
+			if(o.payment?.objid) o.paid = true;			
+		}
+		return o;
+	}
+
+	@ProxyMethod
+	public def getPaymentPartner(def o ) {
+		return paypartner_db.find( o ).first();
+	}
+
+	@ProxyMethod
+	public def getPaymentPartnerOptions( param ) {
+		return optionEm.find([ partnerid : param.partnerid ]).list(); 
+	}
+
+	@ProxyMethod
+	public def getPaymentPartnerOption( param ) {
+		def paypartneroption = optionEm.find( [objid : param.payoption ] ).first(); 
+		def paypartner = paypartneroption.paypartner;
+		if( paypartneroption.info ) {
+			paypartner.info.putAll( paypartneroption.remove("info") );
+		}		
+		return paypartneroption;
+	}
+
+	@ProxyMethod
+	public def getUnpostedPaymentList( def o ) {
+		return pay_db.getUnpostedPaymentList([orgcode: o.orgcode]);
+	}
+
+} 

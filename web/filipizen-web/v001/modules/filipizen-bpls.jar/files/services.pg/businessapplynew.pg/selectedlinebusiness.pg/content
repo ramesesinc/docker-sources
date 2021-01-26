@@ -1,0 +1,95 @@
+<%
+   def selectedbusiness = [];
+    selectedbusiness << [title:"A", selectname:"ACCOUNTING & AUDITING", no:1];
+
+
+
+  def groups = selectedbusiness.collect{ it.title }.findAll{( it )}.unique().sort{ it }  
+
+%>
+ <section id="services" class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+               <div class="container">
+                        <br>
+                        <br>
+                        <div class="stepwizard">
+                            <div class="stepwizard-row setup-panel">
+                              <div class="stepwizard-step">
+                                <a href="#step-1" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                                <p>Step 1</p>
+                              </div>
+                              <div class="stepwizard-step">
+                                <a href="#step-2" type="button" class="btn btn-primary btn-circle" >2</a>
+                                <p>Step 2</p>
+                              </div>
+                              <div class="stepwizard-step">
+                                <a href="/partners/${PARAMS.name}/services/business/businessapplynew/lineofbusiness" type="button" class="btn  btn-default btn-circle" disabled="disabled">3</a>
+                                <p>Step 3</p>
+                              </div>
+                              <div class="stepwizard-step">
+                                <a href="#step-4" type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                                <p>Step 4</p>
+                              </div>
+                            </div>
+                        </div>
+                        
+                        <br>
+                        <br>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th colspan="5">Line of Business</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%
+                            groups.each{ k -> 
+                               def v = selectedbusiness.findAll{( it.title==k )}.sort{ it.title }
+                            %>  
+                            <%v.each{o->%>
+                                <tr>
+                                    <td class="col-sm-1 col-md-1"></td>
+                                    <td class="" colspan="2">${o.selectname}</td>
+                                    <td class="col-sm-1 col-md-1 text-center"></td>
+                                    <td class="col-sm-1 col-md-1">
+                                    <button type="button" class="btn-remove">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button></td>
+                                </tr>
+                                <%}%>  
+                            <%}%> 
+                                <tr>
+                                    <td colspan="2">
+                                        <br>
+                                        <a href="/partners/${PARAMS.name}/services/business/businessapplynew/lineofbusiness" type="button" class="btn btn-next nextBtn btn-lg pull-left">
+                                        Back
+                                        </a>
+                                        <a href="/partners/${PARAMS.name}/services/business/businessapplynew/businessinfo" type="button" class="btn btn-next nextBtn btn-lg pull-left">
+                                        Next
+                                        </a>
+                                        
+                                        
+                                    </td>
+                                    
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <br>
+                                        <a href="/partners/${PARAMS.name}/services/business/businessapplynew/lineofbusiness" type="button" class="btn btn-next nextBtn btn-lg pull-right">
+                                            Add more business
+                                        </a>
+                                    </td>
+
+                                </tr>
+                        </tbody>
+                    </table>
+                </div>
+             </div>
+        </div>
+    </div>
+ </section>
+
+
+

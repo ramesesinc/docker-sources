@@ -1,0 +1,3 @@
+provider=redis-cache
+redis.host=${redis_ip}
+redis.port=6379

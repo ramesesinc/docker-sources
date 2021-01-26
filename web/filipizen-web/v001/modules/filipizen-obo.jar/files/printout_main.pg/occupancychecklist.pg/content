@@ -1,0 +1,128 @@
+<%def app = PARAMS.app; %>
+
+<style type="text/css">
+	body{font-size: 14px;}
+	p {display: block !important;}
+	li::before {content:none;display: table-cell;text-align: right;padding-right: 15px;}
+</style>
+
+<table  width="100%">
+	<tr>
+		<td style="width:200px;">logo</td>
+		<td style="text-align:left">
+			<h3 style="text-align:left">Republic of the Philippines</h3>
+			<h3 style="text-align:left">${app.org.formalname}</h3>
+			<h2 style="text-align:left">Office of the Building Official</h2>
+			<h1 style="text-align:left"><b>ONE-STOP SHOP FOR CONSTRUCTION PERMITS</b></h1>
+			<p></p>
+		</td>
+	</tr>
+	<tr>
+		<td  colspan="2" style="text-align:center">
+			<p>Checklist pf requirements</p>
+			<p>Certificate of occupancy</p>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<table>
+				<tr>
+					<td style="width:20px;"><input type="checkbox"></td>
+					<td><p>Three (3) copies of duty accomplished Applicaiton form of Certificate of Occupancy</p></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox"></td>
+					<td><p>Three (3) copies of duly accomplished and notarized form for Certificate of Completion</p></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox"></td>
+					<td><p>Three (3) sets of As-Built Plans showing the deviations made from the approved building plans, prepared, signed and sealed over the printed names of the duly licensed and registered professionals who signed the approved building plans </p></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox"></td>
+					<td><p>Three (3) sets of As-Built Plans showing the deviations made from the approved building plans, prepared, signed and sealed over the printed names of the duly licensed and registered professionals who signed the approved building plans </p></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="text-align:center">
+			<br>
+		<p >I HEREBY CERTIFY as a duly licensed Geodetic Engineer that the newly constructed/renovated/repaired ________________________________ is within the boundaries of Lot ____________________, Psd-¬__________, located at ____________________, Legazpi City and did not encroach any adjoining property.</p>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<div style="width:200px;float:right;margin-right:20px;margin-bottom:30px;">
+				<p style="width:200px;border-bottom:1px solid #000;padding-top:50px;text-align:center">November 23, 2019</p>
+				<p style="text-align:center">Geodetic Engineer</p>
+				<p>PRC No. :</p>
+				<p>PTR No. :</p>
+				<p>Issued on :</p>
+				<p>Issued at :</p>
+				<p>Date :</p>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<table>
+				<tr>
+					<td style="width:20px;"><input type="checkbox"></td>
+					<td><p>Three (3) sets of As-Built Plans showing the deviations made from the approved building plans, prepared, signed and sealed over the printed names of the duly licensed and registered professionals who signed the approved building plans </p></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox"></td>
+					<td><p>Three (3) sets of As-Built Plans showing the deviations made from the approved building plans, prepared, signed and sealed over the printed names of the duly licensed and registered professionals who signed the approved building plans </p></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="text-align:center">
+			<br>
+		<p>I HEREBY CERTIFY that the newly constructed/renovated/repaired ________________________________ with Building Permit No. ____________________ issued on ____________________, was completed in accordance with the approved plans and specifications, and in conformance with the provisions of the National Building Code of the Philippines, Accessibility Law and other pertinent laws/referral codes.</p><br>
+		<p>FURTHER CERTIFIES that the building was completed to be structurally sound, aesthetically functional and generally safe for occupancy for the purpose it was built.</p>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<div style="width:200px;float:right;margin-right:20px;margin-bottom:30px;">
+				<p style="width:200px;border-bottom:1px solid #000;padding-top:50px;text-align:center">November 23, 2019</p>
+				<p style="text-align:center">Civil Engineer or Architect</p>
+				<p>PRC No. :</p>
+				<p>PTR No. :</p>
+				<p>Issued on :</p>
+				<p>Issued at :</p>
+				<p>Date :</p>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<table>
+				<tr>
+					<td style="width:20px;"><input type="checkbox"></td>
+					<td><p>Photographs of the completed structure showing front, sides and rear areas </p></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox"></td>
+					<td><p>Photographs of the completed structure showing front, sides and rear areas</p></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<div style="margin-top:30px;">
+				<p><b>NOTE:</b></p>
+				<ul>
+					<li>The contents of all design plans/drawings, specifications and other documents prepared by the respective design professionals must be based from the requirements as prescribed by the provisions of Rule III, Section 302 (Application for Permits) of the Implementing Rules and Regulations of the National Building Code of the Philippines (PD 1096) and the latest Zoning Ordinance of the City</li>
+					<li>Only COMPLETE and COMPLIANT applications will be accepted</li>
+					<li>“SIMPLE STRUCTURES,” under JMC 2018-01, are defined as structures with a maximum floor area of 1,500 sq. m., which covers the following types of structures: (a) Single dwelling residential of not more than three (3) storeys; (b) Commercial buildings of not more than two (2) storeys; (c) Renovation within a mall with issued Building Permit; and (d) Warehouse storing non-hazardous substance.</li>
+				</ul>
+			</div>
+		</td>
+	</tr>
+
+</table>

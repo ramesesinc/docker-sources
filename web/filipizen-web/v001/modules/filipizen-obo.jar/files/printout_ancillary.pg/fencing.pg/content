@@ -1,0 +1,110 @@
+<%def app = PARAMS.app; %>
+<table  width="100%" class="tblscope">
+	<tr class="first-td">
+		<td colspan="9"><p class="allcaps-bold">Scope of work</p></td>
+	</tr>
+	<tr>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" onclick="return false;"> New Construction</p></td>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" onclick="return false;"> REPAIR</p> <p class="underline repair"></p></td>
+		<td colspan="3"><p class="allcaps"><input type="checkbox" onclick="return false;"> OTHERS (Specify)</p>  <p class="underline civilothers"></p></td>
+	</tr>
+	<tr >
+		<td colspan="3"><p class="allcaps"><input type="checkbox" onclick="return false;"> Erection</p></td>
+		<td colspan="3" rowspan="2" valign="top"><p class="allcaps"><input type="checkbox" onclick="return false;"> Demolition</p> <p class="underline demolition"></p></td>
+		<td colspan="3" rowspan="2" valign="top"><p class="underline others">&nbsp;</p></td>
+	</tr>
+	<tr class="last-td">
+		<td colspan="3"><p class="allcaps"><input type="checkbox" onclick="return false;"> Addition</p></td>
+	</tr>
+	
+</table>
+
+<table cellpadding="0" cellspacing="0" width="100%">
+	<tbody>
+		<tr>
+			<td class="tdinside">
+				<p class="title">Box 2</p>
+				@obo:print_professional_box( title: 'Design Professional, Plans and Specifications', professional: app.designprofessional, role:'ARCHITECT OR CIVIL ENGINEER' )
+			</td>
+			<td class="tdinside">
+				<p class="title">Box 3</p>
+				@obo:print_professional_box( title: 'Full-time inspector and supervisor of works', professional: app.supervisor, role: 'ARCHITECT OR CIVIL ENGINEER' )
+			</td>
+		</tr>
+		<!-- second row. 283 -->
+		<tr>
+			<td style="padding:0px"><p class="title">Box 4 (TO BE ACCOMPLISHED BY THE APPLICANT)</p></td>
+		</tr>
+		<tr>
+			<td class="tdinside">
+				@obo:print_owner_box( title: '<b>BUILDING OWNER</b>', owner: app.owner )
+			</td>
+			<td class="tdinside">
+				@obo:print_owner_box( title: 'WITH MY CONSENT: <b>LOT OWNER</b>', owner: app.lotowner )
+			</td>
+		</tr>
+		<tr>
+			<td class="tdinside" colspan="2">
+				<p class="title"><b>Box 5</b></p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr>
+						<td colspan="4">Republic of the Philippines ) S.S.</td>
+					</tr>
+					<tr>
+						<td colspan="4">City of Legazpi __________)</td>
+					</tr>
+					<tr>
+						<td colspan="4" style="text-indent:30px;"><p>BEFORE, at the City/Municipality of ________________________________, on _____________________________ personally appeared the following:</p>
+						</td>
+					</tr>
+					<tr>
+						<td align="center"><p class="underline civilothers"></p></td>
+						<td align="center"><p class="underline civilothers"></p></td>
+						<td align="center"><p class="underline civilothers"></p></td>
+						<td align="center"><p class="underline civilothers"></p></td>
+					</tr>
+					<tr>
+						<td align="center"><p>APPLICANT</p></td>
+						<td align="center"><p>CTC No.</p></td>
+						<td align="center"><p>Date Issued</p></td>
+						<td align="center"><p>Place Issued</p></td>
+					</tr>
+					<tr>
+						<td align="center"><p class="underline civilothers"></p></td>
+						<td align="center"><p class="underline civilothers"></p></td>
+						<td align="center"><p class="underline civilothers"></p></td>
+						<td align="center"><p class="underline civilothers"></p></td>
+					</tr>
+					<tr>
+						<td align="center"><p>LICENSED  ARCHITECT OR CIVIL ENGINEER</p></td>
+						<td align="center"><p>CTC No.</p></td>
+						<td align="center"><p>Date Issued</p></td>
+						<td align="center"><p>Place Issued</p></td>
+					</tr>
+					<tr>
+						<td colspan="4"><p>whose signature appear herein above, known to me to be same persons who executed this standard prescribed form and aknowledge to me that the same is thier free and voluntary and deed.</p><br>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4" style="text-indent:30px;"><p>WITHNESS MY HAND SEAL on the date and place above written.</p><br>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<p>Doc No.</p> <p class="underline civilothers"></p><br>
+							<p>Page No.</p> <p class="underline civilothers"></p><br>
+							<p>Book No.</p> <p class="underline civilothers"></p><br>
+							<p>Series No.</p> <p class="underline civilothers"></p><br>
+						</td>
+						<td colspan="2" align="center"><p class="underline civilothers"></p><br><p>NOTARY PUBLIC (Until December_____________)</p></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+

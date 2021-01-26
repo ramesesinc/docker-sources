@@ -1,0 +1,392 @@
+<%def app = PARAMS.app; %>
+<style type="text/css">
+	.header div{
+		display: inline-block;
+	}
+</style>
+
+	<div class="header-container">
+		<div class="formno">
+			<p>NBC FORM NO. B-01</p>
+		</div>
+		<div class="header">
+			<div>
+				<img src="/res/obo/lgu/legazpi_logo.png" style="width:100px;">
+			</div>
+			<div>
+				<h3>Republic of the Philippines</h3>
+				<h3>${app.org.formalname}</h3>
+				<h3>${app.org.province}</h3>
+				<br>
+				<h2>Office of the Building Official</h2>
+				<h1><b>${PAGE.title}</b></h1>
+			</div>
+			<div>
+				<img src="/res/obo/lgu/legazpi_oscp_logo.png" style="width:115px;">
+			</div>
+		</div>
+	</div>	
+
+	<br><br>
+	<table align="center" width="100%">
+		<tr>
+			<td>Application No.
+				<table class="smallBox">
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>
+			</td>
+			<td>Area No 
+				<table class="smallBox">
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<br>
+
+	<table align="center" width="100%">
+		<tr>	
+			<td>
+			<p class="title"><b>Box 1 (To be accomplished in print print by the owner/application)</b></p>
+			<table align="center" class="boxpermit" width="100%">
+				<tbody>
+					<tr>
+						<td width="15%">owner/Applicant</td>
+						<td colspan="2">last name</td>
+						<td colspan="3">firstname</td>
+						<td colspan="1">M.I</td>
+						<td colspan="2" class="tdborder">TIN</td>
+					</tr>
+					<tr class="trborder">
+						<td></td>
+						<td colspan="2"><label class="data">${app.applicant?.lastname}</label></td>
+						<td colspan="3"><label class="data">${app.applicant?.firstname}</label></td>
+						<td colspan="1"><label class="data">${app.applicant?.middleinitial}</label></td>
+						<td colspan="2" class="tdborder"><label class="data">${app.applicant?.tin ? app.applicant?.tin : '&nbsp;'}</label></td>
+					</tr>
+				</tbody>
+				<tbody>
+					<tr>
+						<td colspan="2">For construction Owned</td>
+						<td colspan="3" class="tdborder">form of ownership</td>
+						<td colspan="4" class="tdborder"> use or character of occupancy</td>
+					</tr>
+					<tr>
+						<td colspan="2"><label class="data">${app.applicant?.name}</label></td>
+						<td colspan="3" rowspan="2" class="tdborder"><label class="data">${app.applicant?.entitytype}</label></td>
+						<td colspan="4" rowspan="2" class="tdborder"><label class="data">${app.occupancytype?.title} -  ${app.occupancytype?.division?.objid}</label></td>
+					</tr>
+					<tr class="trborder">
+						<td colspan="9">By an enterprise</td>
+					</tr>
+					
+				</tbody>
+				<tbody>
+					<tr>
+						<td>address no.</td>
+						<td> street </td>
+						<td colspan="2">Barangay</td>
+						<td colspan="3">City/Municipality</td>
+						<td>Zip Code</td>
+						<td class="tdborder">Telephone No.</td>
+					</tr>
+					<tr class="trborder">
+						<td colspan="2"><label class="data">${app.applicant?.streetaddress ? app.applicant.streetaddress : ''} </label></td>
+						<td colspan="2"><label class="data"><label class="data">${app.applicant?.address?.barangay?.name ? app.applicant.address.barangay.name : '&nbsp;'}</label></td>
+						<td colspan="3"><label class="data">${app.applicant?.address?.citymunicipality ? app.applicant.address.citymunicipality : '&nbsp;'}</label></td>
+						<td><label class="data">${app.applicant?.address?.zipcode ? app.applicant.address.zipcode : '&nbsp;'}</label></td>
+						<td class="tdborder"><label class="data">${app.applicant?.phoneno ? app.applicant.phoneno : '&nbsp;'}</label></td>
+					</tr>
+				</tbody>
+				<tbody>
+					<tr>
+						<td colspan="2">Location of Construction:</td>
+						<td colspan="2">Lot No. <label class="underline data">${app.location?.lotno ? app.location.lotno : '&nbsp;'}</label></td>
+						<td  colspan="2">Blk No. <label class="underline data">${app.location?.blockno ? app.location.blockno : '&nbsp;'}</label></td>
+						<td colspan="2">TCT No.  <label class="underline data">${app.location?.tctno ? app.location.tctno : '&nbsp;'}</label></td>
+						<td >Tax Dec No. <label class="underline data">${app.location?.tdno ? app.location.tdno : '&nbsp;'}</label></td>
+					</tr>
+					<tr class="trborder trlocation">
+						<td colspan="3">Street <label class="underline data">${app.location?.street ? app.location.street : '&nbsp;'}</label></td>
+						<td colspan="3">Barangay <label class="underline data">${app.location?.barangay?.name ? app.location.barangay.name : '&nbsp;'}</label></td>
+						<td colspan="3">City/Municipality <label class="underline data">${app.org?.formalname ? app.org.formalname : '&nbsp;'}</label></td>
+					</tr>
+					<tr>
+						<td colspan="9"><b>Scope of work</b></td>
+					</tr>
+					<tr>
+						<td colspan="3"><input type="checkbox" onclick="return false;" ${app.worktypeinfo.new_construction ? 'checked': ''}> New Construction</td>
+						<td colspan="4"><input type="checkbox" onclick="return false;" ${app.worktypeinfo.renovation ? 'checked': ''}> Renovation</td>
+						<td colspan="2"><input type="checkbox" onclick="return false;" ${app.worktypeinfo.raising ? 'checked': ''}> Raising</td>
+					</tr>
+					<tr>
+						<td colspan="3"><input type="checkbox" onclick="return false;" ${app.worktypeinfo.erection ? 'checked': ''}> Erection</td>
+						<td colspan="4"><input type="checkbox" onclick="return false;" ${app.worktypeinfo.conversion ? 'checked': ''}> Conversion</td>
+						<td colspan="2"><input type="checkbox" onclick="return false;" ${app.worktypeinfo.accessory ? 'checked': ''}> Accessory Building/Structure</td>
+					</tr>
+					<tr>
+						<td colspan="3"><input type="checkbox" onclick="return false;" ${app.worktypeinfo.addition ? 'checked': ''}> Addition</td>
+						<td colspan="4"><input type="checkbox" onclick="return false;" ${app.worktypeinfo.repair ? 'checked': ''}> Repair</td>
+						<td colspan="2"><input type="checkbox" onclick="return false;" ${app.worktypeinfo.other ? 'checked': ''}> Other (specify) <label class="underline"></td>
+					</tr>
+					<tr class="last-td trborder">
+						<td colspan="3"><input type="checkbox" onclick="return false;" ${app.worktypeinfo.alteration ? 'checked': ''}> Alteration</td>
+						<td colspan="6"><input type="checkbox" onclick="return false;" ${app.worktypeinfo.moving ? 'checked': ''}> Moving</td>
+					</tr>
+					<tr>
+						<td colspan="9"><b>Use or Character of Occupancy</b></td>
+					</tr>
+					<tr>
+						<td colspan="3"><input type="checkbox" onclick="return false;"> Group A : Residential, Dwellings</td>
+						<td colspan="4"><input type="checkbox" onclick="return false;"> Group F : Industrial</td>
+						<td colspan="2"><input type="checkbox" onclick="return false;"> Others (Specify)</td>
+					</tr>
+					<tr>
+						<td colspan="3"><input type="checkbox" onclick="return false;"> Group B : Residential Hotel, Apartment</td>
+						<td colspan="6"><input type="checkbox" onclick="return false;"> Group G : Industrial Storage and Hazardous</td>
+					</tr>
+					<tr>
+						<td colspan="3"><input type="checkbox" onclick="return false;"> Group C : Educational, Recreational</td>
+						<td colspan="6"><input type="checkbox" onclick="return false;"> Group H : Recreational, Assembly Occupant Load Less than 1000</td>
+					</tr>
+					<tr>
+						<td colspan="3"><input type="checkbox" onclick="return false;"> Group D : Institutional</td>
+						<td colspan="6"><input type="checkbox" onclick="return false;"> Group I : Recreational, Assembly Occupant Load 1000 or More</td>
+					</tr>
+					<tr class="trborder">
+						<td colspan="3"><input type="checkbox" onclick="return false;"> Group E : Business and Mercantile</td>
+						<td colspan="6"><input type="checkbox" onclick="return false;"> Group J : Agricultural, Accessory</td>
+					</tr>
+					<tr>
+						<td colspan="5">Occupancy Classified ________________________ </td>
+						<td colspan="4">Total Estimate cost P ________________________ </td>
+					</tr>
+					<tr>
+						<td colspan="5">Number of Units ________________________ </td>
+						<td colspan="4">Proposed Date of Construction ________________________ </td>
+					</tr>
+					<tr class="last-td">
+						<td colspan="5">Total Floor Area ________________________ SQUARE METERS</td>
+						<td colspan="4">Expected date of completion ________________________ </td>
+					</tr>
+				</tbody>
+			</table>
+			</td>
+			<td style="padding:0px">
+				<p>Do not Fill-up (NSO USE ONLY)</p>
+					<table border="1" class="boxpermit sidebox" width="100%" height="95%">
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="fill"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+						</tr>
+						<tr>
+							<td class="fill"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="fill"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+						</tr>
+						<tr>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+						</tr>
+						<tr>
+							<td class="fill"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+						</tr>
+						<tr>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td class="fill"></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+			</td>
+		</tr>
+	</table>
+		
+	<table align="center" width="100%">
+			<tr>
+				<td colspan="2">
+					<p class="title"><b>Box 2</b></p>
+					<table class="boxpermit"  width="100%">
+						<tr class="trborder">
+							<td colspan="3"><b>Full-time inspector and supervisor of construction works (Representing the owner)</b></td>
+						</tr>
+						<tr  class="trborder">
+							<td align="center" rowspan="4" class="signature"><p class="underline ownerbox data"></p><br><p><b>Architect or Civil Engineer</b></p> <br><p>(Signed and Sealed Over Printed Name)</p><br><p>Date </p></td>
+							<td colspan="2" class="tdborder">Address</td>
+						</tr>
+						<tr  class="trborder">
+							<td class="tdborder">PRC No.</td>
+							<td class="tdborder">Validity</td>
+						</tr>
+						<tr  class="trborder">
+							<td class="tdborder">PTR No.</td>
+							<td class="tdborder">Daye Issued</td>
+						</tr>
+						<tr>
+							<td class="tdborder">Issued at</td>
+							<td class="tdborder">TIN</td>
+						</tr>
+					</table>
+				</td>
+			</tr>	
+			<!-- second row -->
+			<tr>
+				<td>
+					<p class="title">Box 3</p>
+					@obo:print_owner_box( title: '<b>BUILDING OWNER</b>', owner: app.owner )
+				</td>
+				<td>
+					<p class="title">Box 4</p>
+				@obo:print_owner_box( title: 'WITH CONSENT: <b>LOT OWNER</b>', owner: app.lotowner )
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<p class="title"><b>Box 5</b></p>
+					<table class="boxpermit" align="center" width="100%">
+						<tr class="trborder" style="height:40px;">
+							<td>Republic of the Philippines ) S.S.</td>
+							<td colspan="3">City of Legazpi __________)</td>
+						</tr>
+						<tr style="height:60px;">
+							<td colspan="4"><p>BEFORE, at the City/Municipality of ________________________________, on _____________________________ personally appeared the following:</p>
+							</td>
+						</tr>
+						<tr>
+							<td><label class="undeline"></label><p>APPLICANT</p></td>
+							<td><label class="undeline"></label><p>CTC No.</p></td>
+							<td><label class="undeline"></label><p>Date Issued</p></td>
+							<td><label class="undeline"></label><p>Place Issued</p></td>
+						</tr>
+						<tr>
+							<td><label class="undeline"></label><p>LICENSED  ARCHITECT OR CIVIL ENGINEER</p></td>
+							<td><label class="undeline"></label><p>CTC No.</p></td>
+							<td><label class="undeline"></label><p>Date Issued</p></td>
+							<td><label class="undeline"></label><p>Place Issued</p></td>
+						</tr>
+						<tr>
+							<td colspan="4"><p>whose signature appear herein above, known to me to be same persons who executed this standard prescribed form and aknowledge to me that the same is thier free and voluntary and deed.</p><br>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2"><p>Doc No.</p>
+							<p>Page No.</p>
+							<p>Book No.</p>
+							<p>Series No.</p></td>
+							<td colspan="2"><p>NOTARY PUBLIC (Until December_____________)</p></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+	</table>
+

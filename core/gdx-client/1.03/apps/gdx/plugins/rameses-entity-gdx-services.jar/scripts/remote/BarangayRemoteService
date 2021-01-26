@@ -1,0 +1,25 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import java.text.*;
+
+public class BarangayRemoteService {
+
+
+	@Service(value="BarangayService", connection="main-server")
+	def bgySvc;
+	
+	@ProxyMethod
+	public def fetchList(p) {
+		def list = bgySvc.getList([:]);
+		return list.collect{ [name:it.name, objid:it.objid] };
+	}
+
+	@ProxyMethod
+	public def loadList(p) {
+		return [];
+	}
+
+
+}

@@ -1,0 +1,78 @@
+<%
+  def info = (PARAMS.info ? PARAMS.info : [:]);
+  def menus = ANUBIS.getFiles('/data'); 
+  menus = menus.sort{ it.sortorder }
+
+  menus.each {
+    def items = ANUBIS.getFolder("/data", it.module).allowedChildren;
+    items.each { bb->
+      if( info.excludeservices ) {
+        bb.active = (!bb.pagename.matches(info.excludeservices.toString()) );
+      }
+      else if( info.includeservices ) { 
+        bb.active = ( bb.pagename.matches(info.includeservices.toString()) );  
+      }
+      else {
+        bb.active = false;    
+      }
+      bb.active = true;
+    }
+    it.folders = items;
+  }
+
+  def paths = REQUEST.pathInfo.split('/');
+  def ctxname = (paths.length > 1 ? ('/'+ paths[1]) : ''); 
+%>
+
+<div class="${info.name}-lgu">
+  <div class="container">
+    <div class="partners-container">
+        <div class="row">
+          <%menus.each { o->  %>
+            <div class="col-md-3 col-xs-12 data">
+              <h4>${o.title}</h4>
+              <ul class="select">
+                <%o.folders.each { p->%>
+                  <li>
+                  <%if( p.active != false ){ %>
+                    <a href="data/${o.module}/${p.pagename}" class="allowed-menuitem ${p.active}-active">${p.title}</a> 
+                  <%}%> 
+                  <%if( p.active == false ){ %>
+                    ${p.title}
+                  <%}%>  
+                  </li>
+                <%}%>
+              </ul> 
+            </div>
+          <%}%>
+        </div>  
+    </div>
+  </div>
+</div>
+
+<style>
+.partners-container {
+  margin-bottom: 200px;
+  margin-top: 50px;
+}
+.data h4 {
+  color: #27ae60;
+  font-weight: bold;
+  font-size: 19px;
+  line-height: 25px;
+  margin-bottom: 0;
+}
+.select{
+  padding:0px;
+}
+.select li {
+  list-style-type: none;
+}
+.select li a {
+  text-decoration:none
+}
+.select li a:hover {
+  text-decoration:underline;
+  color:#555555;
+}
+</style>

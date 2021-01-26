@@ -1,0 +1,6 @@
+The lastest build version is 2.5.01.01.01
+
+Build Dependency Releases: 
+
+   2.5.01        - enterprise-server
+   2.5.01.01     - enterprise-common-server

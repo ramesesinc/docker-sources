@@ -1,0 +1,174 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import obo.facts.*;
+import java.text.*;
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+
+public class BuildingApplicationFeeService  {
+
+	@Service("BillingRuleService")
+	def billingRuleSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("BuildingApplicationInfoService")
+	def infoSvc;
+
+	@DataContext("obo_itemaccount")
+	def itemAcctEm;
+
+	@DataContext("vw_building_application")
+	def vwAppEm;
+
+	@DataContext("building_application")
+	def appEm;
+
+	//this is for subapplications
+	@DataContext("building_application_subdoc")
+	def subdocEm;
+
+	@DataContext("building_application_fee")
+	def feeEm;
+
+	@DataContext("building_application_rpu")
+	def rpuEm;
+
+	public def assess(o) {
+
+		def vapp = vwAppEm.find( [objid: o.appid ] ).first();
+
+        if(! vapp.zoneclass?.objid )
+            throw new Exception("Please specify a zone class first");
+
+		def occ = vapp.occupancytype;
+		def infos = [];
+		def factBuilder = new FactBuilder();
+		factBuilder.facts << new BuildingApplication( vapp ); 
+        factBuilder.facts << new OccupancyType( occ );
+		factBuilder.variableInfoProvider = new DefaultVariableInfoProvider(
+			schemaName:"obo_variable",
+			createDecimalFact: { return new OboDecimalInfo() },
+			createIntegerFact: { return new OboIntegerInfo() },
+			createBooleanFact: { return new OboBooleanInfo() }
+		);
+
+		if( o.parentid ) {
+			def sd = subdocEm.find([objid: o.parentid ] ).first();	
+			//this is for subapplications
+			factBuilder.facts << new BuildingSubdoc( doctype: sd.doctype.objid );
+			infos = infoSvc.getInfos( [parentid: o.parentid ] );
+		}
+		else {
+			//this is for applications
+			infos = infoSvc.getInfos( [appid: o.appid ] );	
+			//load count of RPUs
+			def rpu = new RpuCount();
+			rpu.byownercount = rpuEm.find( [appid: o.appid ] ).select("c:{COUNT( DISTINCT ownerid )}").val();
+			rpu.totalcount = rpuEm.find( [appid: o.appid ] ).select("c:{COUNT(*)}").val();
+			factBuilder.facts << rpu;
+			factBuilder.facts << new BuildingSubdoc( doctype: "BUILDING_PERMIT" );
+		}
+
+		def req = [:];
+		req.factBuilder = factBuilder;
+		req.rulename = "oboassessment";
+		req.params = [infos: infos];
+		req.include_items = false;
+
+		def res = billingRuleSvc.execute( req );
+
+		def items = [];
+		res.billitems.findAll{ it.billcode && it.item == null && it.amount > 0 }.each {
+			def p = itemAcctEm.find( [objid: it.billcode ] ).first();
+			it.item = p;
+			if(o.parentid) it.parentid = o.parentid;
+			it.amtpaid = 0;
+			it.appid = o.appid;
+			it.sortorder = (p.sortorder == null ? 100 : p.sortorder);
+			items << it;			
+		};
+		if(!o.savefees) {
+			return [items:items];
+		}
+		else {
+			return saveFees( [appid:o.appid, parentid:o.parentid, items: items] );
+		}
+	}
+
+	//update the data and store the amounts in application and subdoc
+	def updateTotals( def o ) {
+		def result = [:];
+
+		//update the amount in the application also
+		def total =  feeEm.find([appid:o.appid]).select("c:{SUM(amount)}").val();
+		if( total == null) total = 0;
+		appEm.find( [objid:o.appid]).update( [amount: total] );
+
+		if( o.parentid ) {
+			total =  feeEm.find([parentid:o.parentid]).select("c:{SUM(amount)}").val();
+			if(total==null) total = 0; 
+			subdocEm.find( [objid:o.parentid]).update( [amount: total] );
+		}
+		return [amount: total];
+	}
+
+	@ProxyMethod
+	public def getFees( def o ) {
+		return feeEm.find([appid: o.appid ]).orderBy("item.sortorder").list();
+	}
+
+
+	//This will save the fees and returns the total
+	@ProxyMethod
+	public def saveFees(o) {
+		o.items.each {
+			//delete if there are existing items
+			def zz = feeEm.find( [appid: o.appid, itemid: it.item.objid ] ).delete();
+			if( zz ) feeEm.find( [objid: zz.objid] ).delete();
+			feeEm.create( it );
+		}
+		return updateTotals( o );
+	}
+
+
+	@ProxyMethod
+	public def saveFee(def o ) {
+		if(!o.appid) throw new Exception("appid is required in saveFee");
+		if(o.objid) {
+			feeEm.find( [objid: o.objid] ).update( o );
+		}
+		else {
+			feeEm.create( o );
+		}
+		return updateTotals( o );
+	}
+
+	@ProxyMethod
+	public def removeFee(def o ) {
+		def z = [:];
+		if(o.objid) {
+			def b = feeEm.find( [objid:o.objid] ).first();
+			z.appid = b.appid;
+			z.parentid = b.parentid;
+			feeEm.find( [objid: o.objid] ).delete();
+		}
+		return updateTotals( z );
+	}
+
+	@ProxyMethod
+	public def clearFees(def o ) {
+		if(!o.appid) throw new Exception("appid is required in clearFees");
+		if( o.parentid ) {
+			feeEm.find( [parentid: o.parentid ]).delete();
+		}
+		else {
+			feeEm.find( [appid: o.appid ] ).where( "parentid IS NULL" ).delete();
+		}
+		return updateTotals( o );
+	}
+
+}

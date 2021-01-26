@@ -1,0 +1,58 @@
+<%def app = PARAMS.app; %>
+<table class="boxpermit" style="width:99.5%">
+	<tbody>
+		<tr class="trborder">
+			<td colspan="3"><p class="allcaps-bold">${OPTIONS.title}</p></td>
+		</tr>
+		<tr>
+			<td colspan="3" align="center">
+				<p class="underline signature data">${app?.designprofessional?.firstname} ${app?.designprofessional?.middlename}. ${app?.designprofessional?.lastname}</p> 
+				Date <p class="underline signature-date"></p>
+			</td>
+		</tr>
+		<tr>
+			<td align="center" colspan="3"><p><b>${OPTIONS.role}</b></p></td>
+		</tr>
+		<tr class="trborder last-td">
+			<td align="center" colspan="3"><p>(Signed and Sealed Over Printed Name)</p></td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr class="trborder">
+			<td colspan="3"><p>Address : <label class="data">${app?.designprofessional?.address?.text}</label></p></td>
+		</tr>
+		<tr class="trborder">
+			<td>PRC No.: <label class="data">${app?.designprofessional?.prc?.idno}</label></td>
+			<td class="tdborder" colspan="2"><p>Validity : <label class="data">${app?.designprofessional?.prc?.dtvalid}</label></p></td>
+		</tr>
+
+		<%if(! OPTIONS.role.equalsIgnoreCase('architect')) {%>
+			<tr class="trborder">
+				<td>PTR No.: <label class="data">${app?.designprofessional?.ptr?.idno}</label></td>
+				<td class="tdborder" colspan="2"><p>Date Issued : <label class="data">${app?.designprofessional?.ptr?.dtissued}</label></p></td>
+			</tr>
+			<tr class="trborder">
+				<td><p>Issued at: <label class="data">${app?.designprofessional?.ptr?.placeissued}</label></p></td>
+				<td class="tdborder" colspan="2">TIN : <label class="data">${app?.designprofessional?.ptr?.tin}</label></td>
+			</tr>
+		<%}%>
+
+		<%if(OPTIONS.role.equalsIgnoreCase('architect')) {%>
+			<tr class="trborder">
+				<td>IAPOA No. <label class="data"></label></td>
+				<td class="tdborder">O.R.No. : <label class="data"></label></td>
+				<td class="tdborder"><p>Date Issued : <label class="data"></label></p></td>
+			</tr>
+			<tr class="trborder">
+				<td><p>PTR No.: <label class="data">${app?.designprofessional?.ptr?.idno}</label></p></td>
+				<td class="tdborder"><p>Place Issued : <label class="data">${app?.designprofessional?.ptr?.placeissued}</label></p></td>
+				<td class="tdborder">Date Issued : <label class="data">${app?.designprofessional?.ptr?.dtissued}</label></td>
+			</tr>
+			<tr>
+				<td colspan="3" >TIN : <label class="data">${app?.designprofessional?.tin}</label></td>
+			</tr>
+
+		<%}%>
+
+	</tbody>
+</table>

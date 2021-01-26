@@ -1,0 +1,7 @@
+<schema>
+	<element tablename="barangay">
+		<field name="objid" primary="true"/>
+		<field name="name" />
+		<field name="parentid" />
+	</element>
+</schema>

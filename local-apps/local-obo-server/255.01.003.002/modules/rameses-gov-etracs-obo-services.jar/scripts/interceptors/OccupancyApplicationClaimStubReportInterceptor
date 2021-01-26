@@ -1,0 +1,34 @@
+import com.rameses.annotations.*; 
+
+class OccupancyApplicationClaimStubReportInterceptor {
+	
+	@DataContext("vw_occupancy_application")
+	def appEm;
+
+	@DataContext("occupancy_application_task")
+	def taskEm;
+
+	@After(pattern="FormReportService.getData", eval="#{args[0].reportid == 'occupancy_application_claimstub' }")
+	public void getClaimStubReport( def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		def id = p.parameters.objid;
+
+		def ea = appEm.find( [objid: id ] ).first();
+		ea.location = ea.bldgpermit.location;
+		ea.title = ea.bldgpermit.title;
+
+
+		def r = taskEm.find( [refid: id, state: 'receiving'] ).orderBy("startdate DESC").first();
+		if( r ) {
+			ea.startdate = r.startdate;
+			ea.enddate = r.enddate;
+			ea.receiver = r.assignee;		
+		};
+		ea.permittype =  "OCCUPANCY PERMIT";
+		result.data = ea;
+	}	
+
+
+
+}

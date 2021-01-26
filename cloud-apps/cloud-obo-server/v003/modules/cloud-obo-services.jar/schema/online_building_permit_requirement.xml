@@ -1,0 +1,14 @@
+<schema>
+	<element tablename="online_building_permit_requirement">
+		<field name="objid" primary="true" prefix="OBOBPREQ"/>
+		<field name="appid" />
+		<field name="parentid" />
+		<field name="typeid" />
+		<field name="status" />
+
+		<complex name="type" ref="obo_requirement_type" jointype="many-to-one" required="false">
+			<key field="typeid" target="objid" />	
+		</complex>	
+	</element>
+</schema>
+

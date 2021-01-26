@@ -1,0 +1,45 @@
+import com.rameses.annotations.*; 
+
+class BuildingApplicationTransmittalInterceptor {
+	
+	@DataContext("building_application_transmittal")
+	def transmittalEm;
+
+	@DataContext("vw_building_application")
+	def appEm;
+
+	@DataContext("building_application_requirement")
+	def reqEm;
+
+	@DataContext("building_evaluation_finding")
+	def findingEm;
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'building_application_transmittal' }")
+	public void getBuildingPermitVerificationChecklistReport( def evt ) {
+		def p = evt.args[0];
+		def result = evt.result;
+		def transmittalid = p.parameters.transmittalid;
+		if(!transmittalid) throw new Exception("transmittalid is required in requirement checklist report")
+
+		def t = transmittalEm.find([objid: transmittalid]).first();
+		if(!t) throw new Exception("Transmittal " + transmittalid + " not found ");
+		//check if requirement or finding transmittal.
+
+		def ea = appEm.find( [objid: t.appid ] ).first();
+		ea.receiver = t.createdby;
+		ea.transmittalno = t.objid;
+		ea.transmittaltype = t.type;
+		ea.permittype =  "BUILDING PERMIT";
+
+		if(t.type == "requirement") {
+			ea.items = reqEm.find( [transmittalid : t.objid ] ).orderBy("type.sortorder").list(); 
+		}
+		else {
+			ea.items = findingEm.find( [transmittalid : t.objid ] ).orderBy("type.sortorder").list(); 
+		}
+
+		result.data = ea;
+	}	
+
+
+}

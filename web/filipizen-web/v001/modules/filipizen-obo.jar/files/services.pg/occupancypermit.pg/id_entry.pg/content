@@ -1,0 +1,85 @@
+
+<script>
+\$put("id_entry", new function() {
+
+	var self = this;	
+	this.onselect;
+  this.entry = {};
+  this.idtypes;
+  this.idtype;
+
+	this.select = function() {
+		self.onselect( self.entry );
+		return "_close";
+	}
+
+  this.onload = function() {
+      <%if(!PARAMS.idtype) {%>
+      this.idtypes = [];
+      this.idtypes.push( {name:'ctc', title:'Community Tax Certficate', caption: 'CTC No'} );    
+      this.idtypes.push( {name:'drivers', title:'Drivers License', caption: 'License No'} );  
+      this.idtypes.push( {name:'sss', title:'SSS', caption: 'SSS No'} );
+      this.idtypes.push( {name:'gsis', title:'GSIS', caption: 'GSIS No'} );
+
+      this.idtypes.push( {name:'umid', title:'UMID', caption: 'UMID No'} );
+      this.idtypes.push( {name:'passport', title:'PASSPORT', caption: 'Passport No.'} );
+      this.idtypes.push( {name:'tin', title:'TIN', caption: 'TIN'} );
+
+
+      <%}%>
+      <%if(PARAMS.idtype) {%>
+      this.entry.type = { name: '${PARAMS.idtype}', title: '${PARAMS.idtitle}', caption:'${PARAMS.idcaption}' } 
+      <%}%>
+      if( this.entry == null ) this.entry = {};
+  }
+
+});
+</script>
+
+<style>
+  .entry-label-class { width: 150px; }
+</style>
+
+<div>
+  <%if(!PARAMS.idtype) {%>
+  <div>
+      <label class="entry-label-class">Select Type</label>
+      <select r:context="id_entry" r:caption="Type" r:name="entry.type" r:items="idtypes" r:required="true" r:itemLabel="title" r:compareKey="name"
+        r:allowNull="true" r:emptyText="-select type-"></select>
+  </div>
+  <div>
+    <label class="entry-label-class" r:depends="entry.type" r:context="id_entry">
+      #{entry.type.caption}
+    </label>
+    <input type="text" r:context="id_entry" r:caption="ID No" r:name="entry.idno" r:required="true" />
+  </div>
+  <%}%>
+
+  <%if(PARAMS.idtype) {%>  
+    <label class="entry-label-class" r:depends="entry.type" r:context="id_entry">
+      ${PARAMS.idcaption}
+    </label>
+    <input type="text" r:context="id_entry" r:caption="ID No" r:name="entry.idno" r:required="true"/>
+  <%}%>
+
+  <div>
+    <label class="entry-label-class">Date Issued *</label>
+    <input type="text" r:context="id_entry" r:caption="Date Issued" r:name="entry.dtissued" r:datatype="date" r:required="true"/>
+  </div>
+  <div> 
+    <label class="entry-label-class">Place Issued *</label>
+    <input type="text" r:context="id_entry" r:caption="Place Issued" r:name="entry.placeissued" r:required="true" />
+  </div>
+  <%if( PARAMS.show_validitydate ) {%>
+    <div>
+      <label class="entry-label-class">Validity Date *</label>
+      <input type="text" r:context="id_entry" r:caption="Validity Date" r:name="entry.dtvalid" r:datatype="date" r:required="true" />
+    </div>
+  <%}%>
+</div>
+      
+
+<div style="padding-top:20px;txt-align:right;">
+  <input type="submit" r:context="id_entry" r:name="_close" value="Close" r:immediate="true"/>
+  <input type="submit" r:context="id_entry" r:name="select" value="OK"/>
+</div>

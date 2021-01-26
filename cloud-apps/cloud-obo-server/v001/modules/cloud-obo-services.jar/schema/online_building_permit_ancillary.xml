@@ -1,0 +1,24 @@
+<schema>
+	<element tablename="online_building_permit_ancillary">
+		<field name="objid" primary="true" prefix="OBOBPANC"/>
+		<field name="appid" required="true"/>
+		<field name="state" required="true"/>
+		<field name="permittypeid" required="true"/>
+		<field name="designprofessionalid"/>
+		<field name="supervisorid"/>
+
+		<complex name="type" ref="obo_permit_type" jointype="many-to-one">
+			<key field="permittypeid" target="objid" />
+		</complex>  
+
+		<complex name="designprofessional" ref="vw_online_building_permit_professional" jointype="many-to-one" required="false">
+			<key field="designprofessionalid" target="objid" />
+		</complex>  
+		<complex name="supervisor" ref="vw_online_building_permit_professional" jointype="many-to-one"  required="false">
+			<key field="supervisorid" target="objid" />
+		</complex>  
+		<complex name="worktypes" type="list" serializer="default" />
+
+	</element>
+</schema>
+

@@ -1,0 +1,73 @@
+import com.rameses.annotations.*;
+
+class EORPaymentResolverService {
+
+    @Env 
+    def env; 
+
+    @Service(value="epayment/CloudPaymentSupportService", connection="cloud-server")
+    def cloudSupportSvc;
+
+    @Service('EPaymentService')
+    def paymentSvc; 
+
+    @DataContext('eor_paymentorder')
+    def po_db; 
+
+    @DataContext('eor_paymentorder_paid')
+    def po_paid_db; 
+
+    @DataContext('eor_paymentorder_cancelled')
+    def po_cancel_db; 
+
+
+    @ProxyMethod 
+    public def verifyPayment( po ) {
+        if ( !po.objid ) throw new Exception("'objid' parameter is required"); 
+        if ( !po.controlno ) throw new Exception("'controlno' parameter is required"); 
+
+        def m = [ controlno: po.controlno, paymentrefid: po.objid ]; 
+        m.findBy = [ objid: po.objid, orgcode: env.ORGID ]; 
+
+        return cloudSupportSvc.verifyPayment( m ); 
+    } 
+
+
+    @ProxyMethod 
+    public def postPayment( pay ) {
+        if ( !pay.objid ) throw new Exception("'objid' parameter is required"); 
+
+        return paymentSvc.postPayment( pay ); 
+    }   
+
+
+    @ProxyMethod 
+    public def moveToCancelled( param ) { 
+        if ( !param.objid ) throw new Exception("'objid' parameter is required"); 
+
+        def findby = [ objid: param.objid ]; 
+        def test = po_cancel_db.find( findby ).select('objid').first();  
+        if ( test?.objid ) return test; 
+
+        test = po_paid_db.find( findby ).select('objid').first();  
+        if ( test?.objid ) return [msg: 'PAYMENT_ORDER_PAID']; 
+
+        test = po_db.find( findby ).select('objid').first();  
+        if ( !test?.objid ) return [msg: 'PAYMENT_ORDER_NOT_FOUND']; 
+
+        def post_update = { 
+            def rec = po_db.find( findby ).first(); 
+            po_db.find( findby ).delete(); 
+            return po_cancel_db.create( rec );  
+        }
+
+        def po = cloudSupportSvc.moveToCancelled([ paymentrefid: param.objid ]); 
+        if ( po?.objid ) return post_update(); 
+
+        if ( po?.msg == 'PAYMENT_ORDER_NOT_FOUND' ) {
+            return post_update(); 
+        }
+
+        return po; 
+    } 
+}

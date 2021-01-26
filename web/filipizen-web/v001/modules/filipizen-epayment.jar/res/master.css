@@ -1,0 +1,249 @@
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+body {
+  position: relative;
+  margin: 0;
+  padding-bottom: 16rem;
+  min-height: 100%;
+}
+html, body {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+}
+header {
+  font-weight: normal;
+  font-variant: normal;
+}
+header .btn {
+  padding: 8px 8px 10px 8px;
+  min-width: 84px;
+  font-size: 12px;
+}
+header #main-menu > ul > li > a:focus {
+  outline: 1px solid #777;
+}
+header > div {
+  position: relative;
+  background: #fff;
+  box-shadow: 0 -1px rgba(0, 0, 0, 0.1) inset;
+}
+header div > div.containerCentered {
+  padding: 21px 0;
+  height: 30px;
+  -webkit-transition: height 0.2s ease-out;
+  transition: height 0.2s ease-out;
+}
+a{
+  color: #555555;
+}
+.slogan {
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    font-size: 35px;
+    font-weight: bold;
+    line-height: 40px;
+    margin-bottom: 0;
+}
+.filipizen-img-logo {
+  display: inline-block;
+  width: 136px;
+  height: 43px;
+  overflow: hidden;
+  text-indent: -999em;
+  background: transparent url(/res/logo-filipizen-topnav.svg) center center no-repeat;
+  background-image: url(/res/logo-filipizen-topnav.svg)\9;
+  background-size: 124px 33px;
+  vertical-align: middle;
+  padding: 5px;
+  margin-top: -10px;
+}
+a:hover, a:focus {
+    color: #f4f4f4;
+    text-decoration: underline;
+}
+.btn-login {
+  display: inline-block;
+  padding: 9px 15px 10px;
+  margin-bottom: 0;
+  background-color: #009cde;
+  border-color: #357ebd;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1.4545em;
+  -webkit-font-smoothing: antialiased;
+  color: #fff;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.btn-login:hover{
+  color: #ffffff;
+}
+.editorial-cell {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1.5em;
+  width: 100%;
+  margin-top: 160px;
+  border-radius: 20px;
+}
+.parallax-bg{
+  float: right;
+  margin-top: 30px;
+}
+.parallax-bg img{
+  display: block;
+  left: 0;
+  z-index: -1;
+  -webkit-transform: translate3d(0, -20px, 0);
+  transform: translate3d(0, -20px, 0);
+}
+.editorial-container {
+    height: 547.44px;
+    line-height: 37.85714285714286em;
+}
+.sub-slogan {
+  padding:20px 0px;
+  font-size: 20px;
+  line-height: 1.333em;
+}
+
+.header-location{
+  background-color: #2c3e50;
+  color: #ffffff;
+  padding: 30px;
+ 
+}
+.header-location h1{
+   margin-bottom: 0px;
+}
+.con-contaner{
+height: 100%
+}
+.full-body{
+  height: 100%;
+}
+.navbar {
+    margin-bottom: 0;
+    text-transform: uppercase;
+}
+.navbar-inverse {
+    background-color: transparent;
+    border-color: none;
+}
+.navbar-inverse {
+    background-color: #ecf0f1;
+}
+.navbar-brand {
+    float: left;
+    padding: 8px 8px;
+    font-size: 18px;
+    line-height: 20px;
+}
+#blackbar {
+    margin-top: -1px;
+    height: 65px;
+    background: #2c3e50;
+}
+#blackbar .brand img {
+    float: left;
+    height: 39px;
+    position:static;
+    top: 16px;
+}
+#blackbar .brand {
+    display: block;
+    width: 213px;
+    height: 33px;
+    margin-top: 11px;
+    margin-bottom: 18px;
+    margin-left: 0px;
+}
+
+#toolbar {
+    background: transparent;
+    font: normal small "Lucida Grande",Verdana,sans-serif;
+    height: 20px
+}
+#toolbar div.toolbar-menu {
+    background: transparent;
+    padding: 4px 2px;
+    margin: 0 auto;
+}
+#toolbar #toolbar-user {
+    float: right;
+    padding-top: 5px;
+}
+#toolbar a {
+    color: #555555;
+    font-size: 10pt;
+    display: block;
+}
+#lgu-nav .text-links {
+    float: left;
+    margin: 3px 0 0 0;
+}
+.partners-content{
+  margin-top: 60px;
+}
+.float-right{
+  float: right;
+}
+.online_1 a, .online_1 span{
+  color: #3875d7 !important;
+}
+.online_1 a:hover{
+   color: #3875d7 !important;
+   text-decoration: underline;
+}
+.online_0{
+  color: #555555;  
+  /*pointer-events: none;*/
+  cursor: default;
+} 
+.online_0 a:hover{
+  color: #555555;
+  text-decoration: none;
+} 
+
+.box p span{
+  padding-left: 1px;
+    padding-right: 5px;
+    color: #a9a7a7;
+    font-size: 14px;
+}
+.box h4{
+    font-weight: bold;
+    font-size: 19px;
+    line-height: 25px;
+    margin-bottom: 0;
+    text-align: left;
+    color: #27ae60;
+}
+.box p {
+    margin: 0px;
+}
+.footer {
+    margin-top: 40px;
+    bottom: 0 !important;
+    width: 100%;
+}
+.footer {
+    background: #ecf0f1;
+    border-top: 3px solid #2c3e50;
+    border-bottom: 1px solid #ccc;
+    padding-top: 10px;
+    position: fixed;
+    padding-bottom: 0px;
+}
+.footer-links{
+  text-align: center;
+  padding-left: 0px;
+}
+

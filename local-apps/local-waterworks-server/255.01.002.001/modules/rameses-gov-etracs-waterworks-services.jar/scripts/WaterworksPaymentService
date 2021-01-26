@@ -1,0 +1,107 @@
+import com.rameses.annotations.*;
+
+class WaterworksPaymentService {
+
+	@DataContext("waterworks_payment")
+	def paymentEm;
+
+	@DataContext("waterworks_consumption")
+	def consEm;
+
+	@DataContext("waterworks_otherfee")
+	def otherFeeEm;
+
+	@DataContext("waterworks_credit")
+	def creditEm;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@ProxyMethod 
+	public def postPayment( param ) {
+		def rct = param;
+		if(!rct.billitems) throw new Exception("Please include billitems");
+		if(!rct.acctid ) throw new Exception("acctid is required");
+
+		if(!rct.reftype) rct.reftype = "cashreceipt";
+		if(!rct.txndate) rct.txndate = dateSvc.getServerDate();
+		if(!rct.txnmode) rct.txnmode = "CAPTURE";
+		if(!rct.refno) rct.refno = rct.receiptno;
+		if(!rct.refdate ) rct.refdate = rct.receiptdate;
+
+
+		//post to the ledgers. discount should only be applied once
+		def billitems = rct.billitems;
+		billitems.each {
+			if(it.reftype == 'waterworks_consumption') {
+				consEm.find( [objid: it.refid ]  ).update( [amtpaid: "{amtpaid + :amt}", discount: it.discount ] , [amt: it.amount]  );
+			}
+			else if( it.reftype == 'waterworks_otherfee') {
+				otherFeeEm.find( [objid: it.refid ] ).update( [amtpaid: "{amtpaid + :amt}", discount: it.discount ], [amt: it.amount] );
+			}
+			else if( it.reftype == 'waterworks_credit' ) {
+				def c = [:];
+				c.acctid = rct.acctid;
+				c.refid = rct.objid;
+				c.refdate = rct.receiptdate;
+				c.refno = rct.receiptno;
+				c.reftype = "cashreceipt";
+				if( it.amount > 0 ) {
+					c.dr = it.amount;
+					c.cr = 0;
+				}
+				else {
+					c.dr = 0;
+					c.cr = it.amount * -1;
+				}
+				c = creditEm.create( c );
+				it.refid = c.objid;
+			}
+			else {
+				throw new Exception("Waterworks post payment error! there must be a reftype in billitems");
+			}
+		}
+
+		//post only at the last so the credit refid can be applied.
+		def pmt = [:];
+		pmt.txndate = rct.txndate;
+		pmt.acctid = rct.acctid;
+		pmt.refdate = rct.refdate;
+		pmt.refno = rct.refno;
+		pmt.reftype = rct.reftype;
+		pmt.refid = rct.objid;
+		pmt.amount = rct.amount;
+		pmt.voided = 0;
+		pmt.txnmode = rct.txnmode;
+		pmt.remarks = rct.remarks;
+		pmt.items = rct.billitems.collect{ [refid: it.refid, reftype:it.reftype, amount: it.amount, discount: it.discount, surcharge: it.surcharge, interest: it.interest, remarks: it.remarks]  };
+		paymentEm.create( pmt );
+
+	}
+
+	@ProxyMethod 
+	public def voidPayment( param ) {
+		//check first if we can still void the transaction
+		def pmt = paymentEm.find( [refid: param.receipt.objid  ]).first(1);
+		if(!pmt) throw new Exception("payment not found");
+
+		if(!pmt.items) throw new Exception("payment items not found!");
+
+		pmt.items.each {
+			if(it.reftype == "waterworks_consumption") {
+				consEm.find( [objid: it.refid ] ).update( [amtpaid: "{amtpaid - :amt}", discount: 0 ], [amt: it.amount] );
+			}
+			else if(it.reftype == "waterworks_otherfee"  ) {
+				otherFeeEm.find( [objid: it.refid ] ).update( [amtpaid: "{amtpaid - :amt}", discount: 0 ], [amt: it.amount] );
+			}
+			else if( it.reftype == "waterworks_credit" ) {
+				//remove tax credit from ledger
+				creditEm.find( [objid: it.refid] ).delete();
+			}
+		}
+		paymentEm.find( [objid: pmt.objid] ).update( [voided: 1 ] );
+
+	}
+
+
+}

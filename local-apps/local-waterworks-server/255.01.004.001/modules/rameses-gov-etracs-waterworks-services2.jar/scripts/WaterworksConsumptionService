@@ -1,0 +1,84 @@
+import com.rameses.annotations.*;
+
+class WaterworksConsumptionService {
+
+    @Service("WaterworksComputationService")
+    def compSvc;
+       
+    @DataContext("vw_waterworks_bill")
+    def vwBillEm;
+
+    @DataContext("waterworks_consumption")
+    def consumptionEm;
+
+    @DataContext("waterworks_bill")
+    def billEm;
+
+    @ProxyMethod
+    public def calcItems( def o ) {
+        if(!o.acctid) throw new Exception("acctid is required in WaterworksConsumptionService.calcItems");
+        if(!o.meterstate) throw new Exception("meterstate is required in WaterworksConsumptionService.calcItems");
+        if(!o.items) throw new Exception("items is required in WaterworksConsumptionService.calcItems" );
+
+        def z = [:];
+        z.acctid = o.acctid;
+        z.meterstate = o.meterstate;
+
+        o.items.each { 
+            if( it.prev ) {
+                def pp = [:];
+                pp.putAll( z );
+                z.prevreading = it.prev.reading;
+                z.reading = it.reading;
+        
+                def res = compSvc.compute(z);
+                if(res.volume) it.volume = res.volume;
+                if(res.amount) it.amount = res.amount;                
+            }
+            else {
+                it.volume = 0;
+                it.amount = 0;
+            }
+        }
+
+        return o.items;
+    }
+
+    @ProxyMethod
+    public void saveItems( def o ) {
+
+        if(!o.billid) throw new Exception("meterstate is required in WaterworksConsumptionService.calcItems");
+        if(!o.items) throw new Exception("items is required in WaterworksConsumptionService.calcItems" );
+
+        def bill = vwBillEm.find( [objid: o.billid ]).first();
+        if(!bill) throw new Exception("bill not found");
+
+        o.items.each {
+            if( it.year == bill.period.year && it.month == bill.period.month ) {
+                it.readingdate = bill.period.readingdate;
+            }
+            if(!it.objid) {
+                it.txnmode = "CAPTURE";
+                it.acctid = bill.acctid;
+                it.billid = bill.objid;
+                it.meterid = bill.meter.objid;
+                consumptionEm.create(it);
+            }
+            else {
+                consumptionEm.find([objid:it.objid]).update(it);                
+            }
+        }
+
+        //find and update the current consumption
+        def currentItem = o.items.find{ it.year == bill.period.year && it.month == bill.period.month };
+        billEm.find( [objid: bill.objid ]).update( [consumptionid: currentItem.objid ]);
+
+        //we remove deleted items passed
+        if( o.deleteditems ) {
+            o.deleteditems.each {
+                 consumptionEm.find([objid:it.objid]).delete();
+            }
+        }
+    }    
+
+}

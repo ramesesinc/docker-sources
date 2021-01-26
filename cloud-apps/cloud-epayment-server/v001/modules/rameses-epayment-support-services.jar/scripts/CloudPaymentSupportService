@@ -1,0 +1,164 @@
+import com.rameses.annotations.*;
+
+class CloudPaymentSupportService {
+
+	@Service 
+	def self;
+
+	@DataContext('paymentorder')
+	def po_db;
+
+	@DataContext('paymentorder_paid')
+	def po_paid_db;
+
+	@DataContext('paymentorder_cancelled')
+	def po_cancelled_db;
+
+	@DataContext('payment')
+	def pay_db;
+
+	@DataContext('payment_partner')
+	def paypartner_db;
+
+	@XConnection("gdx-mq")
+	def gdx;
+
+	@Service("DateService")
+	def dateSvc;
+
+
+	@ProxyMethod
+	public def getPayPartners() {
+		return paypartner_db.where('1=1').list(); 
+	} 
+
+	@ProxyMethod 
+	public def notifyPayment( param ) { 
+		if ( !param.controlno ) 
+			return [msg: "'controlno' parameter is required"]; 
+
+		def po = po_paid_db.find([ controlno: param.controlno ]).first();
+		if ( !po ) {
+			po = po_cancelled_db.find([ controlno: param.controlno ]).first();
+			if ( po ) {
+				return [msg: 'Payment Order is already cancelled']; 
+			}
+
+			po = po_db.find([ controlno: param.controlno ]).first();
+			if ( po ) {
+				return [msg: 'Payment Order is still unpaid']; 
+			}
+
+			return [msg: 'Payment Order not found'];
+		}
+
+		def pay = pay_db.find([ paymentrefid: po.paymentrefid ]).first();
+		if ( !pay ) return [msg: 'Payment transaction not found for controlno '+ po.controlno +' with paymentrefid '+ po.paymentrefid];
+
+		def paypart = paypartner_db.find([ objid: pay.paypartnerid ]).first();
+		if ( !paypart ) return [msg: 'Pay Partner record not found for '+ pay.paypartnerid]; 
+
+		pay.partnerid = paypart.objid; 
+		pay.partnercode = paypart.code;
+		pay.txntype = po.txntype; 
+		pay.orgcode	= po.orgcode; 
+		pay.refno = po.refno; 
+		pay.origin = po.origin; 
+		pay.txntypename = po.txntypename;
+		pay.action = "epayment:post-payment";
+		gdx.send( pay, po.orgcode ); 
+		return [msg: 'Successfully notified']; 
+	}
+
+	@ProxyMethod 
+	public def postPayment( param ) { 
+		if ( !param.controlno ) 
+			return [msg: "'controlno' parameter is required"]; 
+		if ( !param.amount ) 
+			return [msg: "'amount' parameter is required"]; 
+		if ( !param.paypartnerid ) 
+			return [msg: "'paypartnerid' parameter is required"]; 
+		if ( !param.traceid ) 
+			return [msg: "'traceid' parameter is required"]; 
+		if ( !param.tracedate ) 
+			return [msg: "'tracedate' parameter is required"]; 
+
+		def amount = toNumber( param.amount ); 
+		if ( !amount ) return [msg: 'Invalid value for amount']; 
+
+		def tracedate = toDate( param.tracedate ); 
+		if ( !tracedate ) return [msg: 'Invalid value for tracedate']; 
+
+		def paypart = paypartner_db.find([ objid: param.paypartnerid ]).first();
+		if ( !paypart ) return [msg: 'Pay Partner record not found for '+ param.paypartnerid]; 
+
+		def po = po_paid_db.find([ controlno: param.controlno ]).first();
+		if ( po ) return [msg: 'Payment Order is already paid'];
+
+		po = po_cancelled_db.find([ controlno: param.controlno ]).first();
+		if ( po ) return [msg: 'Payment Order is already cancelled']; 
+
+		po = po_db.find([ controlno: param.controlno ]).first();
+		if ( !po ) return [msg: 'Payment Order not found for control number '+ param.controlno]; 
+
+		def pay = pay_db.find([ paymentrefid: po.paymentrefid ]).first();
+		if ( pay ) return [msg: 'Payment transaction found for control number '+ po.controlno +' with paymentrefid '+ po.paymentrefid];
+
+		def rundate = dateSvc.getServerDate(); 
+
+		po_paid_db.create( po ); 
+
+		pay = [:]; 
+		pay.putAll( po ); 
+		pay.remove('objid');
+		pay.paypartnerid = paypart.objid;
+		pay.partner = [objid: paypart.objid];
+		pay.txndate = rundate; 
+		pay.traceid = param.traceid; 
+		pay.tracedate = param.tracedate; 
+		pay = pay_db.create( pay ); 
+
+		po_db.find([ objid: po.objid ]).delete(); 
+
+		pay.partnerid = paypart.objid; 
+		pay.partnercode = paypart.code;
+		pay.txntype = po.txntype; 
+		pay.orgcode	= po.orgcode; 
+		pay.refno = po.refno; 
+		pay.origin = po.origin;  
+		pay.txntypename = po.txntypename; 
+		pay.action = "epayment:post-payment"; 
+		gdx.send( pay, po.orgcode ); 
+		return pay; 
+	} 
+
+
+	private def toNumber( value ) {
+		try {
+			if ( value instanceof String ) {
+				value = new BigDecimal( value ); 
+			}
+
+			def formatter = new java.text.DecimalFormat('0.0000'); 
+			return new BigDecimal( formatter.format( value )); 
+		} catch(Throwable t) {
+			return null; 
+		} 
+	}
+
+	private def toDate( value ) {
+		try {
+			if ( value.toString().matches('[0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2}')) {
+				return value; 
+			}
+
+			if ( value.toString().matches('[0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2} [0-9]{2,2}:[0-9]{2,2}:[0-9]{2,2}')) {
+				return value; 
+			}
+
+			return null; 
+		} catch(Throwable t) {
+			return null; 
+		} 
+	}
+}

@@ -1,0 +1,12 @@
+import com.rameses.annotations.*;
+
+public class OnlineBusinessBillingService {
+
+	@Service(value="OnlineBusinessBillingService", connection="bpls")
+	def bplsSvc;
+
+	@ProxyMethod
+	public def getBilling( data ) { 
+		return bplsSvc.getBilling( data );
+	}
+}

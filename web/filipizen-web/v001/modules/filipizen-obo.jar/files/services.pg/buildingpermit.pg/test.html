@@ -1,0 +1,140 @@
+
+
+        <div class="bread-group breadcrumb">
+            <a href="#" class="breadcrumb-link bread-color">Snippets</a>
+            <a href="#" class="breadcrumb-link bread-color">Breadcrumbs</a>
+            <a href="#" class="breadcrumb-link bread-color">Default</a>
+            
+            <a href="#" class="breadcrumb-link bread-color">Breadcrumbs</a>
+            <a href="#" class="breadcrumb-link bread-color">Default</a>
+            
+            <a href="#" class="breadcrumb-link bread-color">Breadcrumbs</a>
+            <a href="#" class="breadcrumb-link bread-color">Default</a>
+        </div>
+
+
+
+<style>
+.bread-group>.breadcrumb-link:last-child:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.bread-group>.breadcrumb-link:first-child:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.bread-group-vertical>.breadcrumb-link, .bread-group>.breadcrumb-link {
+    position: relative;
+    float: left;
+}
+.bread-group>.breadcrumb-link:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+    border-radius: 0;
+}
+
+.bread-group>.breadcrumb-link:first-child {
+    margin-left: 0;
+}
+.bread-color {
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
+.breadcrumb-link {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-decoration:none;
+}
+/** The Magic **/
+.breadcrumb .breadcrumb-link:not(:last-child):after {
+  content: " ";
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 17px solid transparent;
+  border-bottom: 17px solid transparent;
+  border-left: 10px solid white;
+  position: absolute;
+  top: 50%;
+  margin-top: -17px;
+  left: 100%;
+  z-index: 3;
+}
+.breadcrumb .breadcrumb-link:not(:last-child):before {
+  content: " ";
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 17px solid transparent;
+  border-bottom: 17px solid transparent;
+  border-left: 10px solid white;
+  position: absolute;
+  top: 50%;
+  margin-top: -17px;
+  margin-left: 1px;
+  left: 100%;
+  z-index: 3;
+}
+
+/** The Spacing **/
+.breadcrumb .breadcrumb-link {
+  padding:6px 12px 6px 24px;
+}
+.breadcrumb .breadcrumb-link:first-child {
+  padding:6px 6px 6px 10px;
+}
+.breadcrumb .breadcrumb-link:last-child {
+  padding:6px 18px 6px 24px;
+}
+
+
+.breadcrumb .breadcrumb-link.bread-color:not(:last-child):after {
+  border-left: 10px solid #337ab7;
+}
+
+.breadcrumb .breadcrumb-link.bread-color:hover:not(:last-child):after {
+  border-left: 10px solid #3276b1;
+}
+.breadcrumb .breadcrumblink.bread-color:hover:not(:last-child):before {
+  border-left: 10px solid #285e8e;
+}
+
+
+
+</style>
+
+
+
+<style>
+label {margin-bottom: 0px;}
+.breadcrumb {padding: 0px;background: #D4D4D4;list-style: none; overflow: hidden;margin-top: 20px;}
+.breadcrumb>li+li:before {padding: 0;}
+.breadcrumb label { float: left; }
+.breadcrumb a.nav-selected { background: #2c3e50; }
+.breadcrumb a.nav-selected:after {border-left: 30px solid #2c3e50;}
+.breadcrumb a.nav-active { background: #7c8c9c;}
+.breadcrumb a.nav-active:after {border-left: 30px solid #7c8c9c;}
+.nav-inactive:hover,.nav-inactive:visited, .nav-inactive:focus { background-color:none; text-decoration:none;color:#ffffff;}
+.breadcrumb label a {color: white;text-decoration: none; padding: 2px 12px 2px 55px;position: relative; display: block;float: left;}
+.breadcrumb label a:after { content: " "; width: 0; height: 0;border-top: 50px solid transparent;border-bottom: 50px solid transparent;border-left: 30px solid hsla(0, 0%, 83%, 1);position: absolute;top: 50%;margin-top: -50px; left: 100%;z-index: 2; }	
+.breadcrumb label a:before { content: " "; display: block; width: 0; height: 0;border-top: 50px solid transparent; border-bottom: 50px solid transparent;border-left: 30px solid white;position: absolute;top: 50%;margin-top: -50px; margin-left: 1px;left: 100%;z-index: 1; }	
+
+</style>

@@ -1,0 +1,35 @@
+<%def app = PARAMS.app; %>
+<table class="boxpermit" style="width:99.5%">
+		<tbody>
+			<tr class="trborder">
+				<td colspan="3"><p class="allcaps-bold">${OPTIONS.title}</p></td>
+			</tr>
+			<tr>
+				<td colspan="3" align="center">
+					<p class="underline signature data">${OPTIONS.name}</p> 
+					Date <p class="underline signature-date"></p>
+				</td>
+			</tr>
+			<tr class="trborder last-td">
+				<td align="center" colspan="3"><p>(Signed and Sealed Over Printed Name)</p></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr class="trborder">
+				<td colspan="3"><p>Address : <label class="data">${OPTIONS.address}</label></p></td>
+			</tr>
+			<tr class="trborder">
+				<td>PRC No.: <label class="data">${OPTIONS.prcno}</label></td>
+				<td class="tdborder" colspan="2"><p>Validity : <label class="data">${OPTIONS.prcvalidity}</label></p></td>
+			</tr>
+
+				<tr class="trborder">
+					<td>PTR No.: <label class="data">${OPTIONS.ptrno}</label></td>
+					<td class="tdborder" colspan="2"><p>Date Issued : <label class="data">${OPTIONS.ptrdtissued}</label></p></td>
+				</tr>
+				<tr class="trborder">
+					<td><p>Issued at: <label class="data">${OPTIONS.ptrpalceissued}</label></p></td>
+					<td class="tdborder" colspan="2">TIN : <label class="data">${OPTIONS.tin}</label></td>
+				</tr>
+		</tbody>
+	</table>

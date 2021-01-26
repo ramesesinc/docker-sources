@@ -1,0 +1,47 @@
+import com.rameses.annotations.*;
+
+class WaterworksPostCreditService {
+	
+	@Service("WaterworksBillingService")
+	def billingSvc;
+
+	@Service("WaterworksPaymentService")
+	def paySvc;
+
+	@ProxyMethod
+	public def post( def b ) {
+
+		//post credit payment
+		def m = [:];
+		m.acctid = b.acctid;
+		m.request_action = "creditpayment";
+		m.amtpaid = b.amtpaid;
+
+		//get billing first before posting
+		def res = billingSvc.getBilling( m );
+
+		def cr = res.billitems.find{ it.reftype == 'waterworks_credit' };
+		if(cr) {
+			cr.amount = (m.amtpaid - cr.amount) * -1; 
+			cr.total = cr.amount;
+			cr.refno = b.refno;
+			cr.refdate = b.refdate;
+		}
+
+		//check if there is remainder credit. If there is we replace the amount with amtpaid less that amount in negative value so it
+		//will be posted in the credit side of the credit ledger
+
+		def bill = [:];
+		bill.acctid = b.acctid;
+		bill.billitems = res.billitems;
+		bill.objid = b.refid;
+		bill.refno = b.refno;
+		bill.refdate = b.refdate;
+		bill.reftype = "billing";
+		bill.amount = m.amtpaid;
+		bill.txnmode = "ONLINE";
+		paySvc.postPayment( bill );
+	}
+
+
+}

@@ -1,0 +1,9 @@
+<schema>
+	<element tablename="obo_signature">
+		<field name="objid" primary="true" />
+		<field name="user_name" />		
+		<field name="displayname" />
+		<field name="signature" />
+		<field name="position" />		
+	</element>
+</schema>	

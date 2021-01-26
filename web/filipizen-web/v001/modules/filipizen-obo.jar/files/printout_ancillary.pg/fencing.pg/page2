@@ -1,0 +1,177 @@
+<table>
+	<tr class="first-td">
+		<td>
+			<p class="title"><b>Box 6 (To be accomplished by the design professional)</b></p>
+			<table class="boxpermit" align="center" width="100%">
+				<tr>
+					<td colspan="2">Measurements:___________________________ Length in meters</td>
+					<td>_____________________Height in meters</td>
+				</tr>
+				<tr>
+					<td valign="top">Types of fencing:</td>
+					<td>
+						<p><input type="checkbox"> INDIGENOUS MATERIALS </p>
+						<p><input type="checkbox"> R.C (Reinforced Concrete) </p>
+						<p><input type="checkbox"> R.C and CONC. HOLLOW BLOCKS </p>
+						<p><input type="checkbox"> R.C and BRICKS </p>
+						<p><input type="checkbox"> R.C and INTERLINK/CYCLONE WIRE </p>
+					</td>
+					<td>
+						<p><input type="checkbox"> R.C STEEL MATTING </p>
+						<p><input type="checkbox"> R.C BARBED WIRE </p>
+						<p><input type="checkbox"> OTHERS (Specify)____________</p>
+						<p><input type="checkbox"> _________________________</p>
+						<p><input type="checkbox"> __________________________ </p>
+					</td>
+				</tr>
+			</table>	
+		</td>
+	</tr>
+		<tr>
+			<td>
+				<p class="title"><b>Box 7 (To be accomplished by the processing and evaluation division)</b></p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr class="trborder" style="height:30px;">
+						<td colspan="6" align="center"><p class="allcaps-bold">Progress Flow</p></td>
+					</tr>
+					<tr class="trborder allcaps-bold">
+						<td class="tdborder" rowspan="2"></td>
+						<td align="center" class="tdborder" colspan="2">in</td>
+						<td align="center" class="tdborder" colspan="2">out</td>
+						<td align="center" class="tdborder" rowspan="2">Processed by:</td>
+					</tr>
+					<tr class="trborder allcaps-bold">
+						<td align="center" class="tdborder">Date</td>
+						<td align="center" class="tdborder">Time</td>
+						<td align="center" class="tdborder">Date</td>
+						<td align="center" class="tdborder">Time</td>
+					</tr>
+					<tr class="trborder">
+						<td>LINE AND GRAVE (GEODETIC)</td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+					</tr>
+					<tr class="trborder">
+						<td>CIVIL/STRUCTURAL</td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+					</tr>
+					<tr class="trborder">
+						<td>ELECTRICAL</td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+					</tr>
+					<tr class="trborder">
+						<td>Others (Specify)</td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+					</tr>
+					<tr class="trborder">
+						<td style="height:20px"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+					</tr>
+					<tr class="trborder" style="height:30px;">
+						<td colspan="6" align="center"><b>SSESSED FEES</b></td>
+					</tr>
+					<tr class="trborder">
+						<td class="tdborder"></td>
+						<td align="center" class="tdborder"><b>Amount Due</b></td>
+						<td align="center" class="tdborder"><b>O.R. Number</b></td>
+						<td align="center" class="tdborder"><b>Date Paid</b></td>
+						<td align="center" class="tdborder" colspan="2"><b>Procssed By</b></td>
+					</tr>
+					<tr class="trborder">
+						<td>LINE AND GRAVE (GEODETIC)</td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder" colspan="2"></td>
+					</tr>
+					<tr class="trborder">
+						<td>CIVIL/STRUCTURAL</td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder" colspan="2"></td>
+					</tr>
+					<tr class="trborder">
+						<td>ELECTRICAL</td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder" colspan="2"></td>
+					</tr>
+					<tr class="trborder">
+						<td>Others (Specify)</td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder" colspan="2"></td>
+					</tr>
+					<tr>
+						<td style="height:20px"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder"></td>
+						<td align="center" class="tdborder" colspan="2"></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p class="title"><b>Box 8 (To be accomplished by the building official )</b></p>
+				<table class="boxpermit" align="center" width="100%">
+					<tr style="height:80px;">
+						<td align="left"><p class="allcaps-bold">Action Taken</p></td>
+					</tr>
+					<tr>
+						<td><p class="allcaps-bold">Permit is hereby issued subject to the following:</p></td>
+					</tr>
+					<tr>
+						<td>
+							<ol>
+								<li>hat under Article 1723 of the Civil Code of the Philippines, the engineer or architect who drew up the plans and specifications is liable fordamages if within fifteen (15) years from the completion of the structure, it should collapse due to defect in the plans or specifications ordefects in the ground. The engineer or architect who supervises the construction shall be solidarily liable with the contractor should the edifice collapse due to defect in the construction or the use of inferior materials.</li>
+								<li>That the proposed construction/erection/addition, etc. shall be in conformity with the provisions of the "National Building Code" (P.D. 1096) and its Implementing Rules and Regulations.
+									<ol>
+										<li>hat prior to commencement of the proposed projects and construction an actual relocation survey shall be conducted by responsible licensed Geodetic Engineer.</li>
+										<li>That before commencing the excavation the person making or causing the excavation to be made shall verify in writing the owner of adjoining building not less than ten (10) days before such excavation is to be made and show how the adjoining building should be protected.</li>
+										<li>That the owner of the fence shall engage the services of responsible licensed Architect or Civil Engineer to undertake the full time inspection and supervision of the construction work</li>
+										<li>That there shall be kept at the jobsite at all times a logbook wherein the actual progress of construction including test conducted,
+weather condition and other pertinent data are to be recorded, same shall be made available for scrutiny and comments by the OBO representative during the conduct of his/her inspection pursuant to Section 207 of the National Building Code.</li>
+									</ol>
+								</li>
+							</ol>
+						</td>
+					</tr>
+					<tr style="height:80px;">
+						<td><p class="allcaps-bold">Permit Issued by:</p></td>
+					</tr>
+					<tr class="last-td">
+						<td align="center">
+							<p class="underline bldgofficial"></p><br>
+							<p class="allcaps-bold">Local building official</p><br>
+							<p>(Signature over Printed Name)</p><br>
+							<p>Date</p><p class="underline bldgofficial-date"></p>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>

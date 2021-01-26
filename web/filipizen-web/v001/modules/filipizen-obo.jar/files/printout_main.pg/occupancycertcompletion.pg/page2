@@ -1,0 +1,92 @@
+<%def app = PARAMS.app; %>
+<% 
+def svc = SERVICE.lookup("OnlineOccupancyPermitService", "obo");
+def occupancy = svc.getApplication([appid:PARAMS.appid]);
+if ( occupancy == null ) occupancy = [:]; 
+
+%>
+<style type="text/css">
+.signature {
+	    padding: 25px 70px 0px 70px;
+}
+</style>
+<center><b>DESIGN PROFESSIONAL, PLANS AND SPECIFICATIONS:</b></center>
+<br>
+<table width="100%">
+	<tr>
+		<td style="width:50%">	
+			@obo:certification_completion( title: 'ARCHITECTURAL', name: occupancy?.profarchitect?.name, address: occupancy?.profarchitect?.address?.text, prcno: occupancy?.profarchitect?.prc?.idno, prcvalidity: occupancy?.profarchitect?.prc?.dtvalid, ptrno: occupancy?.profarchitect?.ptr?.idno, ptrdtissued: occupancy?.profarchitect?.ptr?.dtissued, ptrpalceissued: occupancy?.profarchitect?.ptr?.placeissued, tin: occupancy?.profarchitect?.tin)
+		</td>
+		<td style="width:50%">
+			@obo:certification_completion( title: 'CIVIL/STRUCTURAL', name: occupancy?.profcivil?.name, address: occupancy?.profcivil?.address?.text, prcno: occupancy?.profcivil?.prc?.idno, prcvalidity: occupancy?.profcivil?.prc?.dtvalid, ptrno: occupancy?.profcivil?.ptr?.idno, ptrdtissued: occupancy?.profcivil?.ptr?.dtissued, ptrpalceissued: occupancy?.profcivil?.ptr?.placeissued, tin: occupancy?.profcivil?.tin)
+		</td>
+	</tr>
+</table>
+<br>
+<table width="100%">
+	<tr>
+		<td style="width:50%">	
+			@obo:certification_completion( title: 'ELECTRICAL',name: occupancy?.profelectrical?.name, address: occupancy?.profelectrical?.address?.text, prcno: occupancy?.profelectrical?.prc?.idno, prcvalidity: occupancy?.profelectrical?.prc?.dtvalid, ptrno: occupancy?.profelectrical?.ptr?.idno, ptrdtissued: occupancy?.profelectrical?.ptr?.dtissued, ptrpalceissued: occupancy?.profelectrical?.ptr?.placeissued, tin: occupancy?.profelectrical?.tin)
+		</td>
+		<td style="width:50%">
+			@obo:certification_completion( title: 'MECHANICAL', name: occupancy?.profmechanical?.name, address: occupancy?.profmechanical?.address?.text, prcno: occupancy?.profmechanical?.prc?.idno, prcvalidity: occupancy?.profmechanical?.prc?.dtvalid, ptrno: occupancy?.profmechanical?.ptr?.idno, ptrdtissued: occupancy?.profmechanical?.ptr?.dtissued, ptrpalceissued: occupancy?.profmechanical?.ptr?.placeissued, tin: occupancy?.profmechanical?.tin  )
+		</td>
+	</tr>
+</table>
+<br>
+<table width="100%">
+	<tr>
+		<td style="width:50%">	
+			@obo:certification_completion( title: 'SANITARY', name: occupancy?.profsanitary?.name, address: occupancy?.profsanitary?.address?.text, prcno: occupancy?.profsanitary?.prc?.idno, prcvalidity: occupancy?.profsanitary?.prc?.dtvalid, ptrno: occupancy?.profsanitary?.ptr?.idno, ptrdtissued: occupancy?.profsanitary?.ptr?.dtissued, ptrpalceissued: occupancy?.profsanitary?.ptr?.placeissued, tin: occupancy?.profsanitary?.tin  )
+		</td>
+		<td style="width:50%">
+			@obo:certification_completion( title: 'PLUMBING', name: occupancy?.profplumbing?.name, address: occupancy?.profplumbing?.address?.text, prcno: occupancy?.profplumbing?.prc?.idno, prcvalidity: occupancy?.profplumbing?.prc?.dtvalid, ptrno: occupancy?.profplumbing?.ptr?.idno, ptrdtissued: occupancy?.profplumbing?.ptr?.dtissued, ptrpalceissued: occupancy?.profplumbing?.ptr?.placeissued, tin: occupancy?.profplumbing?.tin  )
+		</td>
+	</tr>
+</table>
+<br>
+<table width="100%">
+	<tr>
+		<td style="width:50%">	
+			@obo:certification_completion( title: 'ELECTRONICS', name: occupancy?.profelectronics?.name, address: occupancy?.profelectronics?.address?.text, prcno: occupancy?.profelectronics?.prc?.idno, prcvalidity: occupancy?.profelectronics?.prc?.dtvalid, ptrno: occupancy?.profelectronics?.ptr?.idno, ptrdtissued: occupancy?.profelectronics?.ptr?.dtissued, ptrpalceissued: occupancy?.profelectronics?.ptr?.placeissued, tin: occupancy?.profelectronics?.tin  )
+		</td>
+		<td style="width:50%">
+			@obo:certification_completion( title: 'INTERIOR DESIGN', name: occupancy?.profinterior?.name, address: occupancy?.profinterior?.address?.text, prcno: occupancy?.profinterior?.prc?.idno, prcvalidity: occupancy?.profinterior?.prc?.dtvalid, ptrno: occupancy?.profinterior?.ptr?.idno, ptrdtissued: occupancy?.profinterior?.ptr?.dtissued, ptrpalceissued: occupancy?.profinterior?.ptr?.placeissued, tin: occupancy?.profinterior?.tin  )
+		</td>
+	</tr>
+</table>
+<br>
+<center><b>SUPERVISORS OF SPECIALTY WORKS:</b></center>
+<table width="100%">
+	<tr>
+		<td style="width:50%">	
+			@obo:certification_completion( title: 'ELECTRICAL WORKS', name: occupancy?.supervisorelectrical?.name, address: occupancy?.supervisorelectrical?.address?.text, prcno: occupancy?.supervisorelectrical?.prc?.idno, prcvalidity: occupancy?.supervisorelectrical?.prc?.dtvalid, ptrno: occupancy?.supervisorelectrical?.ptr?.idno, ptrdtissued: occupancy?.supervisorelectrical?.ptr?.dtissued, ptrpalceissued: occupancy?.supervisorelectrical?.ptr?.placeissued, tin: occupancy?.supervisorelectrical?.tin )
+		</td>
+		<td style="width:50%">
+			@obo:certification_completion( title: 'MECHANICAL WORKS', name: occupancy?.supervisormechanical?.name, address: occupancy?.supervisormechanical?.address?.text, prcno: occupancy?.supervisormechanical?.prc?.idno, prcvalidity: occupancy?.supervisormechanical?.prc?.dtvalid, ptrno: occupancy?.supervisormechanical?.ptr?.idno, ptrdtissued: occupancy?.supervisormechanical?.ptr?.dtissued, ptrpalceissued: occupancy?.supervisormechanical?.ptr?.placeissued, tin: occupancy?.supervisormechanical?.tin )
+		</td>
+	</tr>
+</table>
+<br>
+<table width="100%">
+	<tr>
+		<td style="width:50%">	
+			@obo:certification_completion( title: 'SANITARY WORKS', name: occupancy?.supervisorsanitary?.name, address: occupancy?.supervisorsanitary?.address?.text, prcno: occupancy?.supervisorsanitary?.prc?.idno, prcvalidity: occupancy?.supervisorsanitary?.prc?.dtvalid, ptrno: occupancy?.supervisorsanitary?.ptr?.idno, ptrdtissued: occupancy?.supervisorsanitary?.ptr?.dtissued, ptrpalceissued: occupancy?.supervisorsanitary?.ptr?.placeissued, tin: occupancy?.supervisorsanitary?.tin )
+		</td>
+		<td style="width:50%">
+			@obo:certification_completion( title: 'PLUMBING WORKS', name: occupancy?.supervisorplumbing?.name, address: occupancy?.supervisorplumbing?.address?.text, prcno: occupancy?.supervisorplumbing?.prc?.idno, prcvalidity: occupancy?.supervisorplumbing?.prc?.dtvalid, ptrno: occupancy?.supervisorplumbing?.ptr?.idno, ptrdtissued: occupancy?.supervisorplumbing?.ptr?.dtissued, ptrpalceissued: occupancy?.supervisorplumbing?.ptr?.placeissued, tin: occupancy?.supervisorplumbing?.tin )
+		</td>
+	</tr>
+</table>
+<br>
+<table width="100%">
+	<tr>
+		<td style="width:50%">	
+			@obo:certification_completion( title: 'ELECTRONICS WORKS', name: occupancy?.supervisorelectronics?.name, address: occupancy?.supervisorelectronics?.address?.text, prcno: occupancy?.supervisorelectronics?.prc?.idno, prcvalidity: occupancy?.supervisorelectronics?.prc?.dtvalid, ptrno: occupancy?.supervisorelectronics?.ptr?.idno, ptrdtissued: occupancy?.supervisorelectronics?.ptr?.dtissued, ptrpalceissued: occupancy?.supervisorelectronics?.ptr?.placeissued, tin: occupancy?.supervisorelectronics?.tin )
+		</td>
+		<td style="width:50%">
+			@obo:certification_completion( title: 'INTERIOR DESIGN WORKS', name: occupancy?.supervisorinterior?.name, address: occupancy?.supervisorinterior?.address?.text, prcno: occupancy?.supervisorinterior?.prc?.idno, prcvalidity: occupancy?.supervisorinterior?.prc?.dtvalid, ptrno: occupancy?.supervisorinterior?.ptr?.idno, ptrdtissued: occupancy?.supervisorinterior?.ptr?.dtissued, ptrpalceissued: occupancy?.supervisorinterior?.ptr?.placeissued, tin: occupancy?.supervisorinterior?.tin )
+		</td>
+	</tr>
+</table>
+<br><br><br>

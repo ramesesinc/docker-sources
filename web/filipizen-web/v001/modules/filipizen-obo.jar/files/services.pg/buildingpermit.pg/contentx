@@ -1,0 +1,201 @@
+<script src="/res/partner/proxy-service.js"></script>
+
+<%
+	def svc = SERVICE.lookup("OnlineBuildingPermitService", "obo");
+
+	def list = [];
+	list << [step:0, name:'initial', caption: "Initial"];
+	list << [step:1, name:'location', caption:'Location'];	
+	list << [step:2, name:'applicant', caption:'Applicant'];
+	list << [step:3, name:'professional', caption:'Professionals'];
+	list << [step:4, name:'project', , caption:'Project Details'];
+	list << [step:5, name:'accessories',caption:'Accessories'];
+	list << [step:6, name:'ancillarylist', caption:'Ancillary Permits'];
+	list << [step:7, name:'confirm', caption:'Confirm'];
+	list << [step:8, name:'success', caption:'Success'];				
+
+	def appid = PARAMS.appid;
+	def sappid = (!PARAMS.appid) ? "null" : "\"" + appid + "\""; 
+
+	def err = null;
+
+	def currstep = 0;
+	if( appid !=null ) {
+		def app = svc.findCurrentInfo( [appid: appid] );
+		if(!app) err = "Application no. does not exist";
+		else if( PARAMS.info.id != app.orgcode ) {
+			err = "The application number provided is not for this local government";
+		}	
+		else {
+			currstep = app.step;
+		}
+	}
+%>
+
+<div style="padding:10px">
+
+<%if( err !=null) { %>
+	<label style="color:red;">
+		${err}		
+	</label>
+	<br>
+	<a href="${PAGE.path}">Retry</a>	
+<%}%>
+
+<%if( err == null ) { %>
+
+<script>
+	\$put("app", new function() {
+		var self = this;
+		this.appid = ${sappid};
+		this.orgcode = "${PARAMS.info.id}";
+		this.orgname = "${ PARAMS.info.title.toUpperCase() }";
+		this.province = "${ PARAMS.info.group?.title.toUpperCase() }";
+		this.service = Service.lookup("OnlineBuildingPermitService", "obo");
+		this.maxstep;
+		this.step; //current step
+
+		this.steps = [];
+		<%list.each { %>
+		this.steps.push("${it.name}"); <%}%>
+
+		//called from ancillary
+		this.navigate = function( page, params ) {
+			WindowUtil.loadHash(page, params);
+		} 
+
+		this.moveNextStep = function() {
+			if( self.step != self.maxstep ) {
+				self.step = self.step + 1;
+			}
+			else {
+				var s = self.service.moveNextStep( {appid: self.appid } );
+				self.step = s.step;
+				self.maxstep = s.step;			
+			}
+			window.location.hash = self.steps[self.step];
+		}
+
+		//this is called by initial page
+		this.reload = function( params, hash ) {
+			WindowUtil.load( "${PAGE.path}", params, hash );
+		} 
+
+		this.onload = function() {
+			<%if( !appid) {%>WindowUtil.loadHash("initial");<%}%>
+			<%if(appid) {%>
+				self.maxstep = ${currstep};
+				self.step = ${currstep};
+				window.location.hash = self.steps[self.step];
+			<%}%> 
+		}
+
+		//this will determine the current step to highlight. this is called by onload of hash pages.
+		this.updateStepNavbar = function() {
+			var hash = window.location.hash.substring(1);
+			self.step = self.steps.indexOf( hash );
+			self._controller.refresh();
+		}
+	});
+
+	<%list.each { %>
+   	\$register( {id:'${it.name}',   page:"${PAGE.path}/${it.name}", 	  	context: '${it.name}' } );
+   	<%}%>
+   	\$register( {id:'ancillary',			page:"${PAGE.path}/ancillary", 			 context: 'ancillary' } );
+   	\$register( {id:'professional_lookup',	page:"${PAGE.path}/professional_lookup", context: 'professional_lookup' } );
+	\$register( {id:'occupancytype_lookup', page:"${PAGE.path}/occupancytype_lookup", context: 'occupancytype_lookup' } );   	
+</script>
+
+
+<%if( appid !=null ) { %>
+	<label>(App Tracking No: ${appid})</label> 
+	<br>
+	<div class="breadcrumb">
+	<label r:context="app">
+	<%list.findAll{it.step >0 }.each{ o-> %>
+	<a href="#${o.name}" class="breadcrumb-link #{(maxstep<${o.step})?'nav-inactive':(step==${o.step})?'nav-selected': 'nav-active'}" onclick="return #{(maxstep>=${o.step})?true:false};">${o.caption}</a>
+	<%}%>
+	</label>
+	</div>
+<%}%>
+
+
+<br>
+<div id="content"></div>
+<%}%>
+
+</div>
+
+
+
+<style>
+.breadcrumb-link:last-child:not(:first-child) {border-top-left-radius: 0;border-bottom-left-radius: 0;}
+.breadcrumb-link:first-child:not(:last-child) {border-top-right-radius: 0;border-bottom-right-radius: 0;}
+.bread-group-vertical>.breadcrumb-link, .breadcrumb-link {position: relative;float: left;}
+.breadcrumb-link:not(:first-child):not(:last-child):not(.dropdown-toggle) {border-radius: 0;}
+.breadcrumb-link:first-child {margin-left: 0;}
+.breadcrumb{padding:0px;margin-bottom: 10px;list-style: none;background-color:transparent !important;border-radius: 4px;width:100%;display:block;}
+.breadcrumb-link {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid #ffffff;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color:#ffffff;
+    text-decoration:none;
+    background-color: lightgrey;
+}
+.breadcrumb-link:hover{text-decoration:none;}
+.breadcrumb label .breadcrumb-link:not(:last-child):after {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-left: 10px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -12px;
+    left: 100%;
+    z-index: 3;
+}
+.breadcrumb label .breadcrumb-link:not(:last-child):before {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-left: 10px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -12px;
+    margin-left: 2px;
+    left: 100%;
+    z-index: 3;
+}
+.breadcrumb label .breadcrumb-link {padding:2px 12px 2px 24px;}
+.breadcrumb label .breadcrumb-link:not(:last-child):after {border-left: 10px solid lightgrey}
+.nav-active{background-color:#4db6ac;}
+.breadcrumb label .nav-active:not(:last-child):after {border-left: 10px solid #4db6ac}
+.nav-selected{background-color:#8BC34A;}
+.breadcrumb label .nav-selected:not(:last-child):after {border-left: 10px solid #8BC34A;}
+
+</style>
+
+

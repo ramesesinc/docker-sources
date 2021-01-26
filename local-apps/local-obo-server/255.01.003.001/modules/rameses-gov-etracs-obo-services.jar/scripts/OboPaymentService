@@ -1,0 +1,50 @@
+import com.rameses.annotations.*; 
+
+class OboPaymentService {
+
+	@Service("WorkflowTaskService")
+	def wfSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@DataContext(dynamic=true)
+	def dynaDb;
+
+	@ProxyMethod
+	public void postPayment( o ) { 
+		if(!o.appid) throw new Exception("OboPaymentService.postPayment error. appid is required")
+		if(!o.txntype) throw new Exception("OboPaymentService.postPayment error. txntype is required")
+
+		if(!o.txndate) o.txndate = dateSvc.getServerDate();
+		if(!o.txnmode) o.txnmode = "CAPTURE";
+		if(!o.refno) o.refno = o.receiptno;
+		if(!o.refdate) o.refdate = o.receiptdate;
+		if(!o.reftype) o.reftype = "cashreceipt";
+		if(!o.refid) o.refid = o.objid;
+
+		//create the payment
+		def pmt = [:];
+		pmt.appid = o.appid;
+		pmt.refid = o.refid;
+		pmt.refno = o.refno;
+		pmt.reftype = o.reftype;
+		pmt.refdate = o.refdate;
+		pmt.amount = o.amount;
+		pmt.voided = 0;
+
+		def txntype = o.txntype.toString().trim(); 
+		def pmtEm = dynaDb.lookup( txntype +'_payment' ); 
+		pmtEm.create( pmt );
+
+		def appFeeEm = dynaDb.lookup( txntype +'_fee' );  
+		appFeeEm.find([ appid: o.appid ]).update([ amtpaid: "{amount}" ]); 
+
+		//fire the workflow for release.
+		def m = [:];
+		m.processname = txntype;
+		m.action = "post-payment";
+		m.refid = o.appid;
+		wfSvc.signal( m ); 
+	} 
+} 

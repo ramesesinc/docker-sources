@@ -1,0 +1,208 @@
+
+<%
+	def app = [:];
+	def infos=null;
+	try {
+		def svc = SERVICE.lookup("OnlineBuildingPermitService", "obo");
+	 	app = svc.getAncillaryPermit([ objid: PARAMS.refid ]);
+	 	app.org = [ name:'Legazpi City', formalname: 'City of Legazpi', province: 'Province of Albay'];
+		def parent = svc.getApplication([ appid: app.appid ]);
+		if ( parent) { 
+			app.putAll( parent );
+		}
+
+		app.lotowner  = app.location.owner;
+		app.applicant.middleinitial = (app.applicant.middlename ? app.applicant.middlename.charAt(0) : '');
+
+		infos = svc.getAppInfos( [parentid: PARAMS.refid ] );
+		infos.each {
+			app.put( it.name.toLowerCase(), it.value );	
+		}	
+
+	} catch(Throwable e){
+		app = [:];
+	}
+
+	PARAMS.app = app;
+%>
+
+
+
+<!DOCTYPE html>
+<html lang="en"> 
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<link href="/themes/default/css/obo-ancillary.css?ver=1" type="text/css" rel="stylesheet" />
+	</head>
+	<body>
+
+<style type="text/css">
+.header div{
+	display: inline-block;
+}
+</style>
+
+	<div class="dl">
+	    <div class="container">
+	        <button onclick="window.print();return false;" class="btn btn-print"><i class="fa fa-print"></i>Print</button>
+	    </div>
+	</div>
+	
+		<div class="page">
+			<div class="header-container">
+				<div class="formno">
+					<p>${PAGE.formno}</p>
+				</div>
+				<div class="header">
+					<div>
+						<img src="/res/obo/lgu/legazpi_logo.png" style="width:100px;">
+					</div>
+					<div>
+						<h3>Republic of the Philippines</h3>
+						<h3>${app.org.formalname}</h3>
+						<h3>${app.org.province}</h3>
+						<br>
+						<h2>Office of the Building Official</h2>
+					</div>
+					<div>
+						<img src="/res/obo/lgu/legazpi_oscp_logo.png" style="width:115px;">
+					</div>
+				</div>
+				<center><h1><b>${PAGE.title}</b></h1></center>
+			</div>	
+
+			<br>
+			<table align="center" width="100%">
+				<tr>
+					<td>Application No.
+						<table class="smallBox">
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</td>
+					<td>${PAGE.controlname} 
+						<table class="smallBox">
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</td>
+					<td>Building Permit no
+						<table class="smallBox">
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>	
+					</td>
+				</tr>
+			</table>
+			<br><br><br>
+
+
+
+			<table align="center" width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td colspan="2">
+						<p class="title"><b>Box 1 (To be accomplished in print by the owner/applicant)</b></p>
+						<table align="center" class="boxpermit allcaps" width="100%">
+							<tbody>
+								<tr>
+									<td width="15%">owner/Applicant</td>
+									<td colspan="2">last name</td>
+									<td colspan="3">firstname</td>
+									<td colspan="1">M.I</td>
+									<td colspan="2" class="tdborder">TIN</td>
+								</tr>
+								<tr class="trborder">
+									<td></td>
+									<td colspan="2"><label class="data">${app.applicant?.lastname} </label></td>
+									<td colspan="3"><label class="data">${app.applicant?.firstname}</label></td>
+									<td colspan="1"><label class="data">${app.applicant.middleinitial}</label></td>
+									<td colspan="2" class="tdborder"><label class="data">${app.applicant?.tin}</label></td>
+								</tr>
+							</tbody>
+							<tbody>
+								<tr>
+									<td colspan="2">For construction Owned</td>
+									<td colspan="3" class="tdborder">form of ownership</td>
+									<td colspan="4" class="tdborder"> use or character of occupancy</td>
+								</tr>
+								<tr>
+									<td colspan="2"><label class="data">${app.applicant?.name}</label></td>
+									<td colspan="3" rowspan="2" class="tdborder"><label class="data">${app.applicant?.entitytype}</label></td>
+									<td colspan="4" rowspan="2" class="tdborder"><label class="data">${app.occupancytype?.title} - ${app.occupancytype?.division?.objid}</label></td>
+								</tr>
+								<tr class="trborder">
+									<td colspan="9">By an enterprise</td>
+								</tr>
+							</tbody>
+							<tbody>
+								<tr>
+									<td>address:  no. ,</td>
+									<td> street, </td>
+									<td colspan="2">Barangay,</td>
+									<td colspan="3">City/Municipality</td>
+									<td>Zip Code</td>
+									<td class="tdborder">Telephone No.</td>
+								</tr>
+								<tr class="trborder">
+									<td  class="data">${app.applicant.address?.bldgno}</td>
+									<td  class="data">${app.applicant.address?.street}</td>
+									<td colspan="2" class="data">${app.applicant.address?.barangay?.name}</td>
+									<td colspan="3" class="data">${app.applicant?.address?.citymunicipality}</td>
+									<td class="data">${app.applicant?.zipcode}</td>
+									<td class="tdborder data">${app.applicant?.phoneno}</td>
+								</tr>
+							</tbody>
+							<tbody>
+								<tr>
+									<td colspan="2">Location of Construction:</td>
+									<td colspan="2">Lot No. <label class="underline data">${app.location?.lotno}</label></td>
+									<td  colspan="2">Blk No. <label class="underline data">${app.location?.blockno}</label></td>
+									<td colspan="2">TCT No.  <label class="underline data">${app?.location?.tctno}</label></td>
+									<td >Tax Dec No. <label class="underline data">${app?.location?.tdno}</label></td>
+								</tr>
+								<tr class="trborder trlocation">
+									<td colspan="3">Street <label class="underline data">${app.location?.street}</label></td>
+									<td colspan="3">Barangay <label class="underline data">${app.location.barangay?.name}</label></td>
+									<td colspan="3">City/Municipality <label class="underline data">${app.org?.formalname}</label></td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						${_content}
+					</td>	
+				</tr>
+			</table>
+			<br><br>		
+		</div>
+	</body>
+</html>
+

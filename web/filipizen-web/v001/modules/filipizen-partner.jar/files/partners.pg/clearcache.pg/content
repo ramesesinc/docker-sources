@@ -1,0 +1,6 @@
+<%
+	def cacheSvc = SERVICE.lookup("CacheService");
+	String key = "partner_info:"+PARAMS.name;
+	cacheSvc.removeCache([key:key]);
+%>
+<h1>Cache is cleared!</h1>

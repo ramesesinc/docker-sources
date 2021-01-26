@@ -1,0 +1,13 @@
+import com.rameses.annotations.*;
+
+class RegisterPartnerTask {
+
+	@Service('CloudPartnerRegistrationService')
+	def svc; 
+
+	@Schedule 
+	public void register( task ) { 
+		println 'Start Update Registration...'; 
+		svc.updateRegistration(); 
+	}
+}

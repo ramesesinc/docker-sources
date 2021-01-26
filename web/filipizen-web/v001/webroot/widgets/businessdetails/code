@@ -1,0 +1,71 @@
+                  
+<div class="row">
+	<div class="col-md-12">
+		<div class="row profile-info">
+			<div class="col-md-6">
+				<dl class="dl-horizontal">
+					<dt>BIN</dt>
+					<dd>: <label r:context="app"> #{data.bin} </label></dd>
+					<dt>Owner</dt>
+					<dd>: <label r:context="app"> #{data.ownername} </label></dd>
+					<dt>Owner's Address</dt>
+					<dd>: <label r:context="app"> #{data.owneraddress} </label></dd>
+					<dt>Owner's Phone No.</dt>
+					<dd>: <label r:context="app"> #{data.ownerphoneno} </label></dd>
+					<dt>Owner's Mobile No.</dt>
+					<dd>: <label r:context="app"> #{data.ownermobileno} </label></dd>
+					<dt>Owner's Email Address</dt>
+					<dd>: <label r:context="app"> #{data.owneremail} </label></dd>
+					<br>
+				</dl>
+			</div>			
+			<div class="col-md-6">
+				<dl class="dl-horizontal">
+					<dt>Business Address</dt>
+					<dd>: <label r:context="app"> #{data.businessaddress} </label></dd>
+					<dt>Business Phone No.</dt>
+					<dd>: <label r:context="app"> #{data.phoneno} </label></dd>
+					<dt>Business Mobile No.</dt>
+					<dd>: <label r:context="app"> #{data.mobileno} </label></dd>
+					<dt>Business Email Address</dt>
+					<dd>: <label r:context="app"> #{data.email} </label></dd></dd>
+					<dt>Business Area (in sq. m.)</dt>
+					<dd>: <label r:context="app"> #{data.area_sqm} </label></dd></dd>
+					<dt># of Employees</dt>
+					<dd>: <label r:context="app"> #{data.num_employee} </label></dd>
+					<dt># of Female Employees</dt>
+					<dd>: <label r:context="app"> #{data.num_employee_female} </label></dd>
+					<dt># of Male Employees</dt>
+					<dd>: <label r:context="app"> #{data.num_employee_male} </label></dd>
+					<dt># of Employees Resident</dt>
+					<dd>: <label r:context="app"> #{data.num_employee_resident} </label></dd>
+				</dl>
+				<p></p>
+			</div>
+		</div> <!-- /.row -->
+		<br>
+		<h4><b>If Business Place is Rented;</b></h4>
+		<div class="row profile-info">
+			<div class="col-md-6">
+				<dl class="dl-horizontal">
+					<dt>Lessor's Full Name</dt>
+					<dd>: </dd>
+					<dt>Lessor's Address</dt>
+					<dd>:</dd>
+					<br>
+				</dl>
+			</div>
+			<div class="col-md-6">
+				<dl class="dl-horizontal">
+					<dt>Lessor's Telephone/Mobile No.</dt>
+					<dd>: </dd>
+					<dt>Lessor's Email Address</dt>
+					<dd>:</dd>
+					<br>
+				</dl>
+			</div>		
+		</div> <!-- /.row -->
+	</div>                      	                                     
+</div>
+
+  

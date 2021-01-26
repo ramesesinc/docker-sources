@@ -1,0 +1,10 @@
+.DS_Store
+.vscode
+node_modules
+connections
+_custom
+_res
+push.sh
+public/files/**
+
+.prettierrc

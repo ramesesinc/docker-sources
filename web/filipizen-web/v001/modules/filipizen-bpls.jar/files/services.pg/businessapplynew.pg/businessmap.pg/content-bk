@@ -1,0 +1,108 @@
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBlcVxWw_o27dNlDeyLdvZh8HY4I3bF7kQ&sensor=true&libraries=places"></script>
+
+${_script}
+
+ <section id="services" class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+              <div class="container">
+                  <br>
+                  <br>
+                    <div class="stepwizard">
+                        <div class="stepwizard-row setup-panel">
+                          <div class="stepwizard-step">
+                            <a href="#step-1" type="button" class="btn btn-default btn-circle" disabled="disabled">1</a>
+                            <p>Step 1</p>
+                          </div>
+                          <div class="stepwizard-step">
+                            <a href="#step-2" type="button" class="btn btn-primary btn-circle">2</a>
+                            <p>Step 2</p>
+                          </div>
+                          <div class="stepwizard-step">
+                            <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                            <p>Step 3</p>
+                          </div>
+                          <div class="stepwizard-step">
+                            <a href="#step-4" type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                            <p>Step 4</p>
+                          </div>
+                        </div>
+                    </div>
+                      <form role="form" action="" method="post">
+                        <div class="row setup-content" id="step-1">
+                          <div class="col-md-12">
+                            <div class="col-md-11">
+                              <h3>Search Business Location</h3>
+                                <hr> 
+                                <form onsubmit="return codeAddress()">
+                                  <input type="text" id="address" placeholder = "Brgy., Street, City" class="controls" autofucos/>
+                                  <input type="button" value="Search" onclick="codeAddress();" class="btn btn-primary btn-search"/>
+                                </form>
+                                <a href="/partners/${PARAMS.name}/services/business/applynew/lineofbusiness" class="btn bt-next nextBtn btn-lg pull-right">Next</a>
+                                <br>
+                               <div id="map"></div>
+                             </div>
+                           </div>
+                         </div>
+                      </form>
+                    <br>
+              </div>
+            </div>
+        </div>
+    </div>
+ </section>
+  <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <div  id="map-canvas"></div>
+
+
+<style type="text/css">
+ html, body, #map {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+      .controls {
+        margin-top: 16px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 400px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      .pac-container {
+        font-family: Roboto;
+      }
+
+      #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+
+
+</style>

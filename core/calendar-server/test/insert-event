@@ -1,0 +1,29 @@
+POST http://192.168.1.131:5002/calendar/event/insert HTTP/1.1
+content-type: application/json
+
+{
+   "summary":"Building Inspection Schedule for Occupancy Permit [OCCAPP-202008-00001]",
+
+    "description":"Bldg Permit No: BP-202006-00006<br>Project Title: PROPOSED 2 STOREY RESIDENTIAL BLDG #2<br>Occupancy Class: A1",
+    
+    "location":"930-6 CENTRAL CITY GOGON",
+
+     "start":{"dateTime":"2020-09-10T08:15:00","timeZone":"Asia/Manila"},
+
+      "end":{"dateTime":"2020-09-10T13:15:00","timeZone":"Asia/Manila"},
+
+      "recurrence":["RRULE:FREQ=DAILY;COUNT=1"],
+      
+      "attendees":[
+      	   {"email":"elmonazareno@gmail.com"},
+      	   {"email":"jzamss@gmail.com"}
+       ],
+
+	"reminders": {
+		"useDefault":false,
+    	"overrides":[
+       		{"method":"email","minutes":1440},
+       		{"method":"popup","minutes":10}
+    	]
+  	}
+}

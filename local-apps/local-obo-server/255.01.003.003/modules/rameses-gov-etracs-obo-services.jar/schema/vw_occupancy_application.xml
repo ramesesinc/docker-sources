@@ -1,0 +1,55 @@
+<schema>
+	<element tablename="vw_occupancy_application">
+		<field name="objid" primary="true"/>
+		<field name="appno" />
+		<field name="apptype" />
+		<field name="orgcode" />
+		<field name="trackingno" />
+		<field name="contact_name" />
+		<field name="contact_detail" />
+		<field name="contact_email" />
+		<field name="contact_mobileno" />
+		<field name="dtfiled" />
+		<field name="taskid" />
+		<field name="txnmode" />
+		<field name="totalmaterialcost" type="decimal"/>
+		<field name="totaldirectlaborcost"  type="decimal"/>
+		<field name="totalequipmentcost"  type="decimal"/>
+		<field name="totalothercost"  type="decimal"/>
+
+		<field name="totalprojectcost"  type="decimal"/>
+
+		<field name="firealarmcost" type="decimal" />
+		<field name="sprinklercost" type="decimal" />
+		<field name="lpgpipingcost" type="decimal" />
+		<field name="firesuppcost" type="decimal" />
+
+		<field name="occupancytypeid" />
+		<field name="actualnumunits" />
+		<field name="actualtotalfloorarea" />
+		<field name="actualheight" />
+		<field name="actualnumfloors" />
+		<field name="dtactualstarted" />
+		<field name="dtactualcompleted" />
+
+		<complex name="bldgpermit" ref="vw_building_permit" jointype="many-to-one" required="true">
+			<key field="bldgpermitid" target="objid" />
+		</complex>
+
+		<complex name="applicant" ref="occupancy_application_entity" jointype="many-to-one" required="true">
+			<key field="applicantid" target="objid" />
+		</complex>	
+
+		<field name="task_state" />
+		<field name="task_startdate" />
+		<field name="task_enddate" />
+		<field name="task_assignee_objid" />
+		<field name="task_assignee_name" />
+		<field name="task_actor_objid" />
+		<field name="task_actor_name" />
+		<field name="task_title" />
+	</element>
+</schema>	
+
+
+

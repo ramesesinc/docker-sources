@@ -1,0 +1,38 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import com.rameses.services.extended.*;
+import java.text.*;
+
+public class RemoteEntityProfileService {
+
+	@Service(value="SmtpService", connection="email-sms-server")
+	def smtpSvc;
+
+	@Service(value="EntityProfileService", connection="entity")
+	def profileSvc;
+
+	@Service 
+	def self; 	
+
+	def sendOtp(def o, def subject) {
+		Random rand = new Random(); 
+		def otp = rand.nextInt(10000)+"Ñ"; 
+		def msg = " Your OTP is " + otp;
+		self.sendMail([ to: o.email, subject: subject, message: msg ]);
+		return otp; 
+	}
+
+	@ProxyMethod
+	public def findByIdno(data) {
+		def o = profileSvc.findByIdno( [idno: data.idno] );
+		return o;
+	}
+
+
+	@Async
+	@ProxyMethod 
+	public void sendMail( m ) {
+		smtpSvc.send([ to: m.to, subject: m.subject, message: m.message ]);
+	}
+}

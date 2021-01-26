@@ -1,0 +1,37 @@
+<%
+   def svc = SERVICE.lookup("CloudPaymentService", "epayment");
+   def po = svc.getPaymentOrder([ refno: PARAMS.refno ]);
+   def p = [checkout: true];
+   p.paymentorder = po;
+   p.payoption = PARAMS.payoption;
+   def payoption = svc.getPaymentPartnerOption( p ); 
+   def checkout = payoption.paypartner.checkout;
+   def error = payoption.paypartner.error;
+%>
+
+<style>
+.preloader{ position: absolute;top:0;bottom: 0;left: 0;right: 0;margin: auto;width: 100%;text-align:center;height: 100px;}
+</style>
+
+<div class="preloader">
+   Redirecting to payment partner ... Please wait<br>
+   <img src="/res/epayment/waitingicon.gif" />
+</div>
+
+<form id="posterror" method="POST" action="/epayment/payerror">
+   <input type="hidden" name="agencytitle" value="${payoption.paypartner.caption}" />
+   <input type="hidden" name="paymentrefid" value="${p.paymentorder.paymentrefid}" />
+   <input type="hidden" name="paymentpartnercode" value="${payoption.paypartner.code}" />
+   <input type="hidden" name="errcode" value="${error?.code}" />
+   <input type="hidden" name="message" value="${error?.message}" />
+</form>
+
+<script>
+   <% if (error) {%>
+      \$('#posterror').submit(); 
+   <%} else if (checkout) {%>
+      window.location.replace("${checkout.redirectUrl}");
+   <%}%>
+</script>
+
+

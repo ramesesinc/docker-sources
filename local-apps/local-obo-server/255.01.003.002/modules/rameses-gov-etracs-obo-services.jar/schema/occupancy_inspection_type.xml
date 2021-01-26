@@ -1,0 +1,17 @@
+<schema>
+	<element tablename="occupancy_inspection_type">
+		<field name="objid" primary="true"/>
+		<field name="title" />
+		<field name="type" />
+		<field name="org_objid" />
+		<field name="org_name" />
+		<field name="sortindex" />
+		<field name="required" />
+		<field name="role" />
+		<field name="activationstate" />
+		<field name="optional" />
+		<field name="requirefee" />
+		<field name="permitid" />
+	</element>
+</schema>	
+

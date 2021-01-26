@@ -1,0 +1,218 @@
+<%
+  def NAME = "data";
+  if (OPTIONS.name) NAME = OPTIONS.name;
+
+  def CONTEXT = PAGE.context;
+  if (OPTIONS.context) CONTEXT = OPTIONS.context;
+
+  def editFunc;
+  if (OPTIONS.editfunc) editFunc = OPTIONS.editfunc;
+
+  def proftype;
+  if (OPTIONS.proftype) proftype = OPTIONS.proftype;
+
+  def title = "";
+  if (OPTIONS.title) title = OPTIONS.title;
+%>
+
+
+<!--
+<div class="col-md-7">
+  <div class="row">
+     <div class="col-md-4">
+      <div class="control-group">
+        <label class="control-label box2-label">Last Name</label>
+        <label type="text"  r:context="${CONTEXT}" r:name="${NAME}.lastname">Jason</label>
+      </div>
+    </div> 
+    <div class="col-md-4">
+      <div class="control-group">
+        <label class="control-label box2-label">First Name</label>
+        <label type="text"  r:context="${CONTEXT}" r:name="${NAME}.firstname">Jason</label>
+      </div>
+    </div> 
+     <div class="col-md-4">
+      <div class="control-group">
+        <label class="control-label box2-label">Middle Name</label>
+        <label type="text"  r:context="${CONTEXT}" r:name="${NAME}.middlename">Jason</label>
+      </div>
+    </div> 
+  </div>
+  <div class="col-md-12">
+    <div class="row">
+      <div class="control-group">
+        <label class="control-label box2-label">Address</label>
+        <label type="text"  r:context="${CONTEXT}" r:name="${NAME}.address.text">Jason</label>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="row">
+       <div class="col-md-3">
+        <div class="control-group">
+          <label class="control-label box2-label">CTC No.</label>
+          <label type="text"  r:context="${CONTEXT}" r:name="${NAME}.ctcno">Jason</label>
+        </div>
+      </div> 
+      <div class="col-md-3">
+        <div class="control-group">
+          <label class="control-label box2-label">Place Issued</label>
+          <label type="text"  r:context="${CONTEXT}" r:name="${NAME}.ctcplaceissued">Jason</label>
+        </div>
+      </div> 
+      <div class="col-md-3">
+        <div class="control-group">
+          <label class="control-label box2-label">Date Issued</label>
+          <label type="text"  r:context="${CONTEXT}" r:datatype="date" r:name="${NAME}.ctcdtissued">Jason</label>
+        </div>
+      </div> 
+      <div class="col-md-3">
+        <div class="control-group">
+          <label class="control-label box2-label">Date Expiration</label>
+          <label type="text"  r:datatype="date" r:context="${CONTEXT}" r:name="${NAME}.ctcdtexpiry">Jason</label>
+        </div>
+      </div> 
+    </div>
+  </div>
+</div>
+<div class="col-md-5">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="control-group">
+        <label class="control-label box2-label">PRC No.</label>
+        <label type="text"  r:context="${CONTEXT}" r:name="${NAME}.prcno">Jason</label>
+      </div>
+    </div> 
+    <div class="col-md-6">
+      <div class="control-group">
+        <label class="control-label box2-label">Validity</label>
+        <label type="text"  r:datatype="date" r:context="${CONTEXT}" r:name="${NAME}.prcdtexpiry">Jason</label>
+      </div>
+    </div> 
+  </div>
+  <div class="row">
+     <div class="col-md-6">
+      <div class="control-group">
+        <label class="control-label box2-label">PTR No.</label>
+        <label type="text"  r:context="${CONTEXT}" r:name="${NAME}.ptrno">Jason</label>
+      </div>
+    </div> 
+    <div class="col-md-6">
+      <div class="control-group">
+        <label class="control-label box2-label">Date Issued</label>
+        <label type="text"  r:datatype="date" r:context="${CONTEXT}" r:name="${NAME}.ptrdate">Jason</label>
+      </div>
+    </div> 
+  </div>
+  <div class="row">
+
+     <div class="col-md-6">
+      <div class="control-group">
+          <label class="control-label box2-label">Issued At</label>
+          <label type="text"  r:context="${CONTEXT}" r:name="${NAME}.tin">
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="control-group">
+        <label class="control-label box2-label">TIN</label>
+        <label type="text"  r:context="${CONTEXT}" r:name="${NAME}.tin">Jason</label>
+      </div>
+    </div> 
+  </div>
+</div>
+-->
+<div class="panel panel-default panel-table">
+  <div class="panel-heading">
+    <div class="row">
+      <div class="col col-md-10">
+        <h3 class="panel-permitsHeader">   ${title}<button r:context="${CONTEXT}" r:name="${editFunc}" r:param_proftype="${proftype}" class="btn-box2-edit"><i class="fa fa-pencil"></i></button></h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12 row"> 
+    <div class="col-md-7">
+      <div class="row">
+         <div class="col-md-4">
+          <label class="box2-label">Last Name</label><b>:</b>
+          <label type="text" r:context="${CONTEXT}"  r:name="${NAME}.lastname">Canonoy</label>
+        </div> 
+        <div class="col-md-4">
+          <label class="box2-label">First Name</label><b>:</b>
+          <label type="text" r:context="${CONTEXT}"  r:name="${NAME}.firstname">Jason</label>
+        </div> 
+        <div class="col-md-4">
+          <label class="box2-label-middle">Middle Name</label><b>:</b>
+          <label type="text" r:context="${CONTEXT}"  r:name="${NAME}.middlename">Candole</label>
+        </div> 
+      </div>
+      <div class="col-md-12 row">
+        <label class="box2-label">Address</label><b>:</b>
+        <label type="text" r:context="${CONTEXT}"  r:name="${NAME}.address.text">M.J Cuenco Legazpi City</label>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="row">
+        <div class="col-md-6">
+          <label class="box2-label">PRC No.</label><b>:</b>
+          <label type="text" r:context="${CONTEXT}"  r:name="${NAME}.prcno">23123</label>
+        </div> 
+        <div class="col-md-6">
+          <label class="box2-label">Validity</label><b>:</b>
+          <label type="text"  r:datatype="date" r:context="${CONTEXT}" r:name="${NAME}.prcdtexpiry">09/12/18</label>
+        </div> 
+      </div>
+      <div class="row">
+         <div class="col-md-6">
+          <label class="box2-label">PTR No.</label><b>:</b>
+          <label type="text" r:context="${CONTEXT}"  r:name="${NAME}.ptrno">Jason</label>
+          </div>
+        <div class="col-md-6">
+          <label class="box2-label">Date Issued</label><b>:</b>
+          <label type="text"  r:datatype="date" r:context="${CONTEXT}" r:name="${NAME}.ptrdate"></label>
+        </div> 
+      </div>
+      <div class="row">
+         <div class="col-md-6">
+            <label class="box2-label">Issued At</label><b>:</b>
+            <label type="text" r:context="${CONTEXT}"  r:name="${NAME}.issuedat"></label>
+        </div>
+
+        <div class="col-md-6">
+          <label class="box2-label">TIN</label><b>:</b>
+          <label type="text" r:context="${CONTEXT}"  r:name="${NAME}.tin"></label>
+        </div> 
+      </div>
+    </div>
+  </div>
+  <div class="box-ctc">
+    <div class="col-md-12">
+      <div class="row">
+         <div class="col-md-2">
+          <div class="control-group">
+            <label class="box2-label">CTC No.</label><b>:</b>
+            <label type="text"  r:context="${CONTEXT}" r:name="${NAME}.ctcno"></label>
+          </div>
+        </div> 
+        <div class="col-md-4">
+          <div class="control-group">
+            <label class="box2-label">Place Issued</label><b>:</b>
+            <label type="text"  r:context="${CONTEXT}" r:name="${NAME}.ctcplaceissued"></label>
+          </div>
+        </div> 
+        <div class="col-md-3">
+          <div class="control-group">
+            <label class="box2-label">Date Issued</label><b>:</b>
+            <label type="text" r:context="${CONTEXT}"  r:datatype="date" r:name="${NAME}.ctcdtissued"></label>
+          </div>
+        </div> 
+        <div class="col-md-3">
+          <div class="control-group">
+            <label class="box2-label-expiry">Date Expiration</label><b>:</b>
+            <label type="text" r:context="${CONTEXT}" r:datatype="date"  r:name="${NAME}.ctcdtexpiry"></label>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+</div>

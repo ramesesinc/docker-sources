@@ -1,0 +1,195 @@
+import com.rameses.annotations.*;
+
+class CloudPaymentService {
+	
+	@Service 
+	def self;
+
+	@DataContext('paymentorder')
+	def po_db;
+
+	@DataContext('paymentorder_paid')
+	def po_paid_db;
+
+	@DataContext('paymentorder_cancelled')
+	def po_cancelled_db;
+
+	@DataContext('payment_partner_option')
+	def optionEm;
+
+	@DataContext('payment')
+	def pay_db;
+
+	@DataContext('payment_partner')
+	def paypartner_db;
+
+	@Service(dynamic=true) 
+	def remoteSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@XConnection("gdx-mq")
+	def gdx;
+
+	@ProxyMethod 
+	public def createPaymentOrder( param ) {
+		//get the web fee of partner here. either store it in payment database or field in partner.
+		//my suggestion is create a table in this domain, not the partner.	
+
+		param.webfee = 0.0; 
+		param.objid = param.paymentrefid;
+
+		def df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		param.txndate = df.format(param.txndate);
+
+		return po_db.create( param );
+	} 
+
+	@ProxyMethod 
+	public def cancelPaymentOrder( params ) {
+		def po = po_db.find([ objid: params.refno ]).first(); 
+		if ( po?.objid ) {
+			po_cancelled_db.create( po ); 
+			po_db.find([ objid: po.objid ]).delete(); 
+			params.action = "epayment:cancel-payment-order";
+			gdx.send( params, params.orgcode ); 
+		} 
+		return "ok"; 
+	} 
+
+	@ProxyMethod
+	public def getPostPaymentParams(def o) {
+		return [paypartner: o.paypartner];		
+	}
+
+	@ProxyMethod 
+	public def postPayment( def parms ) {
+		if ( !parms.paypartnerid ) throw new Exception("paypartnerid is required in postPayment"); 
+		if ( !parms.paymentrefid ) throw new Exception("paymentrefid is required in postPayment"); 
+
+		def po = po_db.find([ objid: parms.paymentrefid ]).first(); 
+		if ( !po?.objid ) throw new Exception("'"+ parms.paymentrefid +"' payment order not found"); 
+
+		//call params here. must intercept
+		def payPartner = paypartner_db.find([ objid: parms.paypartnerid ]).first();
+		if ( !payPartner?.objid ) throw new Exception("'"+ parms.paypartnerid +"' payment partner not found"); 
+		if ( payPartner.info == null ) payPartner.info = [:]; 
+
+		def orgcode = po.orgcode;
+		def partInfo = optionEm.find([ partnerid: orgcode, paypartnerid: parms.paypartnerid ]).first(); 
+		if ( partInfo?.info ) payPartner.info.putAll( partInfo.info ); 
+
+		parms.paypartner = payPartner;
+
+		def pmt = self.getPostPaymentParams( parms ); 
+		if ( !pmt ) throw new Exception("Error in post payment. Parameters passed in posting payment must not be empty"); 
+		if ( !pmt.paypartnerid ) throw new Exception("Error in post payment. paypartnerid is required");
+
+		//update the payment order here
+		pmt.partner = [objid: pmt.paypartnerid];
+		pmt.txndate = dateSvc.getServerDate();
+		pmt.orgcode = po.orgcode;
+
+		//transfer to paymentorder_paid 
+		po_paid_db.create( po );
+		po_db.find([ objid: po.objid ]).delete();
+
+		//we use partnerid to refer to pay partner so as not to disrupt existing code in the lgu.
+		def pay = pay_db.create( pmt );
+
+		pay.txntype = po.txntype
+		pay.orgcode	= orgcode; 
+		pay.partnerid = payPartner.objid; 
+		pay.partnercode = payPartner.code;
+		pay.refno = po.refno; 
+		pay.origin = po.origin;
+		pay.txntypename = po.txntypename;
+
+		pay.action = "epayment:post-payment";
+		gdx.send( pay, orgcode );
+
+		//This is returned to give feedback to the web page.
+		pmt.info = po;
+		return pmt;
+	} 
+
+	//this is called back by the gdx-client. we only move the payment order if payment successful downstairs
+	@ProxyMethod 
+	public void updatePaymentReceipt( pmt ) {
+		//update the payment reference
+		def payinfo = pay_db.find([ paymentrefid: pmt.paymentrefid ]).select('objid').first(); 
+		if ( !payinfo?.objid ) throw new Exception(""+ pmt.paymentrefid +" payment reference number does not exist"); 
+
+		def m = [ receiptid: pmt.receiptid, receiptno: pmt.receiptno, receiptdate: pmt.receiptdate ]; 
+		m.each{ k,v-> 
+			if ( !v ) throw new Exception('Error in updatePaymentReceipt. '+ k +' parameter is required'); 
+		} 
+		pay_db.find([ objid: payinfo.objid ]).update( m ); 
+	} 
+
+	@ProxyMethod
+	public def getPaymentOrder( param ) {
+		def o =  po_db.find( [objid: param.refno ]  ).first();
+		if( o ) {
+			if(o.webfee==null) o.webfee = 0;
+			o.total = o.amount + o.webfee;
+			if(o.payment?.objid) o.paid = true;			
+		}
+		return o;
+	}
+
+	@ProxyMethod
+	public def getPaymentPartner(def o ) {
+		return paypartner_db.find( o ).first();
+	}
+
+	@ProxyMethod
+	public def getPaymentPartnerOptions( param ) {
+		return optionEm.find([ partnerid : param.partnerid ]).list(); 
+	}
+
+	@ProxyMethod
+	public def getPaymentPartnerOption( param ) {
+		def paypartneroption = optionEm.find( [objid : param.payoption ] ).first(); 
+		def paypartner = paypartneroption.paypartner;
+		if( paypartneroption.info ) {
+			paypartner.info.putAll( paypartneroption.remove("info") );
+		}		
+		return paypartneroption;
+	}
+
+	@ProxyMethod
+	public def getUnpostedPaymentList( def o ) {
+		return pay_db.getUnpostedPaymentList([orgcode: o.orgcode]);
+	}
+
+	/*************************************************************************************************
+	* This is called when asking to display EOR. This will return the receipt number and orgcode 
+	*************************************************************************************************/
+	@ProxyMethod
+	public def getReceiptInfo( o ) {
+		def findby = null; 
+		def searchkey = null;
+		if ( o.receiptno ) {
+			findby = [receiptno: o.receiptno]; 
+			searchkey = 'receiptno'; 
+		}
+		else if ( o.refno ) {
+			findby = [paymentrefid: o.refno]; 
+			searchkey = 'refno'; 
+		}
+
+		if ( !findby ) 
+			throw new Exception("Please provide receiptno or refno parameter");
+
+		def rct = pay_db.find( findby ).first(); 
+		if ( !rct?.objid ) 
+			throw new Exception("This payment reference does not exist"); 
+
+		if ( !rct?.receiptno )
+			throw new Exception("This transaction does not yet have an associated electronic receipt. If you have a already paid, the OR might still be processed. Please inquire with the agency"); 
+
+		return [ partnerid: rct.orgcode, receiptno: rct.receiptno ];
+	} 
+} 

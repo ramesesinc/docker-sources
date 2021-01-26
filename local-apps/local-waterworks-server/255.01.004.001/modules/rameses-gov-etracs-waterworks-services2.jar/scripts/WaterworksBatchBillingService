@@ -1,0 +1,105 @@
+import com.rameses.annotations.*;
+import com.rameses.functions.*;
+import java.text.*;
+
+class WaterworksBatchBillingService {
+	
+	@Service("WorkflowTaskService")
+	def taskSvc;
+
+	@Service("DateService")
+	def dateSvc;
+
+	@Service("WaterworksBillService")
+	def billSvc;
+
+
+	@DataContext('waterworks_batch_billing')
+	def batchEm; 
+
+	@DataContext('waterworks_account')
+	def acctEm; 
+
+	@ProxyMethod
+	public def create( def o ) {
+		def yrmon = "" + o.period.year + String.format("%02d", o.period.month);
+		o.objid = "WB" + yrmon +"-"+ o.subarea.code;  
+		o.state = 'DRAFT';		
+		o = batchEm.create( o ); 
+
+		def p = [:];
+		p.processname = 'waterworks_batch_billing';
+		p.refid = o.objid;
+		p.startdate = dateSvc.serverDate;
+		taskSvc.start(p);
+		return o;
+	}
+
+	@ProxyMethod
+	public def getAccountsForBilling( def o ) {
+		def e = o.excludeinbatch;
+		if(!e) e = 0;
+		def p = [batchid: o.objid, start: o._start, limit: o._limit, excludeinbatch: e ];
+		
+		if(o.showerronly == true ) {
+			p.filter = "NOT(errmsg IS NULL)";
+		}
+		else {
+			p.filter =  "1=1";
+		}
+		return batchEm.getAccountsForBilling( p );
+	}
+
+	@ProxyMethod
+	public def excludeAccountsInBatch( def o ) {
+		if(!o.items) throw new Exception("Please specify items in excludeAccountsInBatch");
+		o.items.each {
+			acctEm.find( [objid: it ]).update( [excludeinbatch: 1] );
+		}
+	}	
+
+	@ProxyMethod
+	public def includeAccountsInBatch( def o ) {
+		if(!o.items) throw new Exception("Please specify items in includeAccountsInBatch");
+		o.items.each {
+			acctEm.find( [objid: it ]).update( [excludeinbatch: 0] );
+		}
+	}	
+
+
+	@ProxyMethod
+	public def processBills( def o ) {
+		def batch = batchEm.find( [objid: o.objid]).first();
+		def m = [_start: 0, _limit: 20 ];			
+		m.batchid = o.objid;
+		def list = batchEm.getAccountIdsForProcessing( m );
+		int i = 1;
+		list.each {
+			def b = [:];
+			b.acctid = it.acctid;
+			b.batchid = batch.objid;	
+			b.billno = batch.objid + "-" + String.format("%05d", (i++));
+			b.period = batch.period;
+			billSvc.createBill( b );
+		}
+		return [processed: list.size()];
+	}
+	
+	@ProxyMethod
+	public def getProcessInfo( def o ) {
+		return [totalcount: 1000, status: 0, batchid: o.objid, counter: 0 ];
+	}
+
+	@ProxyMethod
+	public def processTest( def o ) {
+		if( o.counter > o.totalcount ) {
+			o.status = 1;
+		}
+		else {
+			o.counter = o.counter + 10;
+		}
+		return o;		
+	}
+
+
+} 

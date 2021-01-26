@@ -1,0 +1,16 @@
+amount: "784.69"
+date: "Tue Jul 02 15:05:47 PHT 2019"
+disableEmailClient: "true"
+interceptor: "verify"
+merchantName: "LGU TAGBILARAN - IPG"
+message: "Successful approval/completion."
+referenceCode: "1370007JJ01K3WC05Y"
+retrievalReferenceCode: "918315029952"
+securityToken: "7984b5f6ea871546db601f3d1f424136ee6a0161"
+serviceChargeFee: "15.69"
+serviceChargeFeeText: "PHP15.69"
+serviceFeeLabel: "Service Fee"
+serviceType: "Business Permit"
+total: "800.3800000000001"
+
+http://localhost:9080/payoptions/dbpsuccess?referenceCode=1370007JJ01K3WC05Y&retrievalReferenceCode=918315029952&securityToken=7984b5f6ea871546db601f3d1f424136ee6a0161&amount=800.3800000000001&date=Tue Jul 02 15:05:47 PHT 2019

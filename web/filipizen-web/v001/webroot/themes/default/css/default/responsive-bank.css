@@ -1,0 +1,52 @@
+
+
+body {
+font-size: 14px;
+}
+
+*[role="form"] {
+max-width: 530px;
+padding: 15px;
+margin: 0 auto;
+
+border-radius: 0.3em;
+}
+
+*[role="form"] h2 {
+margin-left: 5em;
+margin-bottom: 10px;
+}
+
+.form-control {
+height: 54px;
+font-size: 17px;
+text-transform: uppercase;
+
+}
+
+.btn {
+font-size: 28px;
+
+}
+.text-uppercase{
+	text-transform: uppercase;
+}
+/*pc monitor */
+@media (min-device-width: 1200px){ 
+
+	body{
+		font-size: 14px;
+	}
+	.form-control {
+	height: 34px;
+	font-size: 14px;
+
+	}
+
+	.btn {
+	font-size: 14px;
+
+	}
+
+}
+

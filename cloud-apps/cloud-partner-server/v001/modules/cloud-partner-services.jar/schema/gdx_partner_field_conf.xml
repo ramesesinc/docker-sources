@@ -1,0 +1,8 @@
+<schema>
+	<element tablename="partner_field_conf">
+		<field name="objid" primary="true"/>
+		<field name="partnerid" required="true"/>
+		<field name="txntype" required="true"/>
+		<field name="exclude" required="true"/>
+	</element>
+</schema>

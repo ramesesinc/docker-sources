@@ -1,0 +1,92 @@
+
+<script type="text/javascript">
+\$put("professional", new function() {
+    var self = this;
+    var app = \$get("app").code;
+
+    this.mode;
+    this.selectedItem;
+
+    this.professionals = [];
+    this.professionals.push({name:'supervisorelectrical', title:'ELECTRICAL WORKS'});
+    this.professionals.push({name:'supervisormechanical', title:'MECHANICAL WORKS'});
+    this.professionals.push({name:'supervisorsanitary', title:'SANITARY WORKS'});
+    this.professionals.push({name:'supervisorplumbing', title:'PLUBMING WORKS'});
+    this.professionals.push({name:'supervisorelectronic', title:'ELECTRONIC WORKS'});
+    this.professionals.push({name:'supervisorinterior', title:'INTERIOR DESIGN WORKS'});
+
+    this.loadSupervisors = function() {
+        var supervisor = app.service.getSupervisors( {appid: app.appid } ); 
+        this.professionals.forEach(function(p){
+            p.appid = app.appid;
+            p.prof = supervisor[p.name];
+        });
+    }
+
+    this.lookupProfessional = function() {
+        var h = function(v) {
+            self.selectedItem.prof = v;
+            app.service.updateSupervisor(self.selectedItem);
+        }
+        return new PopupOpener( "professional_lookup", 
+            { appid: app.appid, onselect: h }, 
+            {width:'700', height:'300', title: 'Lookup Professional'}  
+        );
+    }
+
+    this.onload = function() {
+        this.loadSupervisors();
+        self.mode = "view-list";
+        app.updateStepNavbar();
+    }
+
+    this.finish = function() {
+        if(confirm("You are about to complete this application. Once submitted you cannot make any more changes. Continue?")) {
+            app.service.moveNextStep( {appid: app.appid } );
+            window.location.reload();
+        }
+    }
+
+
+
+});
+
+</script>
+
+
+
+
+<legend>List of Supervisors of Specialty Works</legend>
+
+<div  r:context="professional" r:visibleWhen="#{mode == 'view-list'}">
+  <table r:context="professional" r:items="professionals" r:varName="item" r:name="selectedItem" 
+    style="width:100%;" border="1px solid" cellpadding="3px">
+    <thead>
+      <tr>
+        <td>Signatory</td>        
+        <td>Name</td>
+        <td>Profession</td>        
+        <td>PRC No</td>
+        <td>Address</td>
+        <td>Actions</td>        
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>#{item.title}</td>        
+        <td>#{item.prof.name}</td>
+        <td>#{item.prof.profession}</td>        
+        <td>#{item.prof.prc.idno}</td>
+        <td>#{item.prof.address.text}</td>
+        <td>
+          <a href="#" r:context="professional" r:name="lookupProfessional" class="link-edit-action">Assign</a> 
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  @wx:button( caption:'Finish', context:'professional', name:'finish')
+</div>
+
+
+

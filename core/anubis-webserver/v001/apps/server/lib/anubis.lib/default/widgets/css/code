@@ -1,0 +1,7 @@
+<% 
+    def flavor = "default" 
+    def themeName = THEME.name ? THEME.name : "default";
+    def ver = (OPTIONS.ver ? OPTIONS.ver : 1)
+
+%>
+<link href="/themes/${themeName}/css/${flavor}/${OPTIONS.value}.css?ver=${ver}" type="text/css" rel="stylesheet" />

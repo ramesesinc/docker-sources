@@ -1,0 +1,14 @@
+html
+	head
+		title= $title
+	body
+		h1= 'List of Partners'
+		table(border=1, cellpadding=5, cellspacing=0)
+			tr
+				th Partner
+				th Consumer
+
+			each partner in partners
+				tr
+					td= partner.channel
+					td= partner.consumer

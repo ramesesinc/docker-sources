@@ -1,0 +1,128 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import obo.facts.*;
+import java.text.*;
+
+public class OboMiscListService  {
+
+	@DataContext("obo_occupancy_type")
+	def occTypeEm;
+
+	@DataContext("obo_occupancy_type_group")
+	def occGroupEm;
+
+	@DataContext("obo_occupancy_type_division")
+	def occDivisionEm;
+
+	
+	@DataContext("obo_work_type")
+	def workTypeEm;
+
+	@DataContext("obo_permit_type")
+	def permitTypeEm;
+
+	@DataContext("obo_variable_type")
+	def itemTypeEm;
+
+	@DataContext("obo_variable")
+	def itemEm;
+
+	@DataContext("obo_costitem")
+	def costItemEm;
+
+	@DataContext("vw_obo_occupancy_type")
+	def vwOccTypeEm;
+
+	@ProxyMethod
+	public def getOccupancyTypeGroups() {
+		def list = occGroupEm.where( '1=1' ).list();
+		list.each {
+			it.description = it.objid + ' ' + it.title.toLowerCase();
+		}
+		return list;
+	}	
+
+	@ProxyMethod
+	public def getOccupancyTypeDivisions(def o) {
+		def list = occDivisionEm.where( 'groupid=:groupid', [groupid: o.groupid] ).list();
+		list.each {
+			it.description = it.objid + ' ' + it.title.toLowerCase();
+		}
+		return list;
+	}	
+
+	@ProxyMethod
+	public def getOccupancyTypes(def o ) {
+		def list = occTypeEm.find( [divisionid: o.divisionid ] ).orderBy("objid").list();
+		list.each {
+			it.description = it.title.toLowerCase();
+		}
+		return list;
+	}	
+
+	@ProxyMethod
+	public def getAccessoryOccupancyTypes() {
+		def list = vwOccTypeEm.where( "group.objid = 'J' " ).list();
+		list.each {
+			it.description = it.title.toLowerCase();
+		}
+		return list;
+	}
+
+	@ProxyMethod
+	public def getWorkTypes() {
+		return workTypeEm.select("name,description").where("typeid IS NULL").orderBy("idx").list();
+	}
+
+	@ProxyMethod
+	public def getWorkTypes(def o) {
+		if(!o.typeid ) throw new Exception("Please specify typeid in getWorkTypes");
+		return workTypeEm.select("name,description").where("typeid = :typeid", o ).orderBy("idx").list();
+	}
+
+	@ProxyMethod
+	public def getItemTypes() {
+		return itemTypeEm.where("1=1").list();
+	}
+
+	@ProxyMethod
+	public def getItems(def o) {
+		def str = " typeid = :typeid ";
+		def prm = [typeid: o.type];  
+		return itemEm.where(str, prm).orderBy("sortorder").list();
+	}
+
+	@ProxyMethod
+	public def getAccessoryInfos() {
+		return itemEm.where("type.accessory = 1").orderBy("sortorder").list();
+	}
+
+	@ProxyMethod
+	public def getMainPermitTypes() {
+		return permitTypeEm.find( [type: 'MAIN' ] ).orderBy("sortorder").list();
+	}
+
+	@ProxyMethod
+	public def getAncillaryPermitTypes() {
+		return permitTypeEm.find( [type: 'ANCILLARY' ]).orderBy("sortorder").list();
+	}
+
+	
+	@ProxyMethod
+	public def getPermitTypes() {
+		return permitTypeEm.where( "1=1" ).orderBy("sortorder").list();
+	}
+
+
+	@ProxyMethod
+	public def getCostItems() {
+		return  costItemEm.where("1=1").list();
+	}
+
+	/* To do 
+	public def getRequirementList( def o ){;}
+	*/
+
+
+}

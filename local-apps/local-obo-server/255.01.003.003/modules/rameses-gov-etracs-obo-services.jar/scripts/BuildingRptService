@@ -1,0 +1,71 @@
+import com.rameses.annotations.*;
+import com.rameses.util.*;
+import java.rmi.server.*;
+import obo.facts.*;
+import java.text.*;
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+
+public class BuildingRptService  {
+
+	@DataContext("building_application_rpu")
+	def rpuEm;
+
+	@DataContext("building_application_entity")
+	def entityEm;
+
+	@DataContext("building_application")
+	def appEm;
+
+	@Service(value="RPTCertificationOnlineService", connection="local-rpt-server")
+	def rptSvc;
+
+	@ProxyMethod
+	public def generateDocs( def o ) {
+		def app = appEm.find( [objid: o.appid ]).first();
+		def list =  rpuEm.find( [appid: o.appid] ).list();
+		
+		list.each {
+			def u = [:];
+			def params = [:];
+			params.entityid = entityEm.find( [objid: it.ownerid] ).first()?.profileid;
+			if(!params.entityid ) 
+				throw new Exception("entityid is required in BuildingRptService.generateDocs");
+
+			params.faas = [objid:  it.refid, tdno: it.tdno];
+			params.refid = app.objid;
+
+			//tracking no. is used becuase we cannot yet generate the appno at this time.
+			params.refno = app.trackingno;	
+			params.refdate = app.dtfiled;
+			params.reftype = "building_application";
+			params.purpose = "For Building Permit Application"
+
+			if( !it.truecopycertid ) {
+				try {
+					def cert = rptSvc.issueTrueCopy(params);
+					u.truecopycertid = cert.objid;				
+				}
+				catch(e) {
+					throw new Exception( "Error in issuing true copy. " + e?.message );
+				}
+			}
+			if( !it.taxclearanceid ) {
+				try {
+					params.faases = [params.faas];
+					def cert = rptSvc.issueTaxClearance(params);
+					u.taxclearanceid = cert.objid;				
+				}
+				catch(e) {
+					throw new Exception( "Error in issuing tax clearance. " + e?.message );					
+				}
+			}
+			if(u) {
+				rpuEm.find( [objid: it.objid ]).update( u );
+			}
+		}
+
+	}
+
+}

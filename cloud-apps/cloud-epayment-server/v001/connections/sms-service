@@ -1,0 +1,5 @@
+provider=script
+app.host=${sms_ip}
+app.cluster=osiris3
+app.context=sms
+readTimeout=60000

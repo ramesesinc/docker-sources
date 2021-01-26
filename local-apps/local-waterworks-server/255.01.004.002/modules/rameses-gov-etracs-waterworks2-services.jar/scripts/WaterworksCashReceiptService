@@ -1,0 +1,103 @@
+import com.rameses.annotations.*;
+
+class WaterworksCashReceiptService {
+
+
+    @Service('WaterworksBillService') 
+    def billSvc; 
+
+    @Service('WaterworksPaymentService') 
+    def pmtSvc; 
+
+    @Service("NumberService")
+    def numSvc;
+
+    @Service("DateService")
+    def dateSvc;
+
+    @DataContext("vw_waterworks_bill")
+    def vwBillEm;
+
+    @DataContext("vw_waterworks_account")
+    def vwAcctEm;
+
+    def getBillingItems( def o ) {
+        def bill = vwBillEm.find( [billno: o.id ] ).first();
+        def acct = null;
+        if(!bill) {
+            acct = vwAcctEm.find( [acctno: o.id ] ).first();
+        }
+        else {
+            acct = vwAcctEm.find([objid:bill.acctid]).first();
+        }
+        if(!acct) throw new Exception("Bill or account not found");
+        if( acct.state != "ACTIVE" ) throw new Exception("Account is not yet active");
+        if(!acct.billid) throw new Exception("Account does not yet have an active bill");
+
+        //replace bill with the active bill
+        bill = vwBillEm.find( [objid: acct.billid] ).first();
+        if(!bill.state.matches("OPEN|POSTED")) 
+            throw new Exception("Bill must be OPEN or POSTED state. Please contact admin");
+
+        if( bill.totalcredits > 0 && bill.totalunpaid > 0 ) {
+            //this needs to run otherwise we cannot factor in the credits
+            pmtSvc.applyCredits( [billid: bill.objid] );
+        }
+        
+        //we need to update the bill first just for surcharges. This should run everytime cash recept 
+        if( bill.period.duedate!=null && o.txndate >=  bill.period.duedate ) {
+            billSvc.updateBillFees( [objid: bill.objid, txndate: o.txndate ] );
+        }
+
+        def param = [ acctid : bill.acctid, billid: bill.objid, include_items:true ];
+        if( o.amtpaid ) param.amtpaid = o.amtpaid;
+
+        //set billdate as txndate
+        param.txndate = o.billdate;
+        def res = pmtSvc.getBillPaymentItems( param );
+        if(!res.billitems) {
+            res.items = [];
+            res.billitems = [];
+            res.amount = 0;        
+        }
+
+        def rct = [:];
+        rct.payer = acct.owner;
+        rct.paidby = acct.acctname + " (" + acct.acctno + ")";
+        rct.paidbyaddress = acct.address?.text;
+        rct.acctno = acct.acctno;
+        rct.acctid = acct.objid;
+        rct.billid = bill.objid;
+        rct.items = res.items;
+        rct.billitems = res.billitems;
+        rct.amount = res.amount;
+        rct.pmttxntype = "billing";
+        return rct;
+    }
+
+	@ProxyMethod 
+	public def getBilling( o ) {
+        def param = o.params;
+
+        def txntype = param.txntype;
+        def txndate = param.billdate;
+        if(!txndate) txndate = dateSvc.getBasicServerDate();
+
+        def pp = [:];
+        pp.id = param.id;
+        if( param.amtpaid ) pp.amtpaid = param.amtpaid;
+        if( param.payoption ) pp.payoption = param.payoption;
+        pp.txndate = txndate;
+
+        def res = null;        
+        if( txntype == "billing" ) {
+            return getBillingItems( pp ); 
+        }
+        else {
+            throw new Exception("There are no current routine for " + txntype );
+        }
+	}
+
+
+
+}

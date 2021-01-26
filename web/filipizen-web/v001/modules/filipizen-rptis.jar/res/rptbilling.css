@@ -1,0 +1,31 @@
+
+.fade.in {
+    background: #00000030;
+}
+.close {
+    line-height: .6;
+}
+#barcode {
+    float: right;
+    height:80px;
+}
+
+@media print {
+  .navbar-inverse{display:none}
+  .footer{display:none}
+  .no-print{display:none}
+  .print{margin:30px}
+  .left{float:left}
+  .right{right}
+  #blackbar{display:none}
+  #Header, #Footer { display: none ! important; }
+  @page {size: auto;margin: 0mm;}
+}
+@media screen{
+  #barcode{display:none;}
+}
+.caption-class {width:200px;}
+
+.searchtext {
+  width: 300px;
+}

@@ -1,0 +1,65 @@
+<schema>
+	<element tablename="vw_building_permit">
+		<field name="objid" primary="true"/>
+
+		
+		<complex name="applicant" ref="building_application_entity" jointype="many-to-one" required="false">
+			<key field="applicantid" target="objid" />
+		</complex>
+
+		<field name="state" />
+		<field name="appid" />
+		<field name="permitno"  searchable="true" indexed="true"/>
+		<field name="dtissued" />
+		<field name="dtfiled" />
+		<field name="expirydate" />
+
+		<field name="txnmode" />
+		<field name="issuedby_objid" />
+		<field name="issuedby_name" />
+		<field name="expirydate" />
+		<field name="remarks" />
+		<field name="appno"  searchable="true" indexed="true"/>
+		<field name="apptype" />
+		<field name="applicantid" />
+		<field name="description" />
+		<field name="title" />
+		<field name="occupancytypeid" />
+		<field name="numunits" />
+		<field name="fixedcost" />
+		<field name="projectcost" />
+		<field name="dtproposedconstruction" />
+		<field name="dtexpectedcompletion" />
+		<field name="totalfloorarea" />
+		<field name="height" />
+		<field name="numfloors" />
+		<field name="worktypes" />
+		<field name="zoneclassid" />
+		<field name="zone" />
+		<field name="location_lotno" />
+		<field name="location_blockno" />
+		<field name="location_street" />
+		<field name="location_barangay_name" />
+		<field name="location_barangay_objid" />
+		<field name="location_unitno" />
+		<field name="location_bldgno" />
+		<field name="location_bldgname" />
+		<field name="location_subdivision" />
+		<field name="occupancytype_objid" />
+		<field name="occupancytype_title" />
+		<field name="occupancytype_division_objid" />
+		<field name="occupancytype_division_title" />
+		<field name="occupancytype_group_objid" />
+		<field name="occupancytype_group_title" />
+		<field name="zoneclass_objid" />
+		<field name="zoneclass_title" />
+		<field name="location_address_text" />
+
+		<complex name="contractor" ref="vw_building_application_professional" jointype="many-to-one" required="false" includefields="profession,name,prc.*,ptr.*">
+			<key field="contractorid" target="objid" />
+		</complex> 
+	</element>
+</schema>	
+
+
+

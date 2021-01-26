@@ -1,0 +1,128 @@
+<style type="text/css">
+	.eor56{width:100%;margin-top:30px;padding: 30px;}
+	.eor56-table tr td{border-right: 1px solid #000;text-indent: 5px}
+	.eor56-table tr td:last-child{border-right: 0px solid #000}
+	p {margin: 0px}
+	label{display: contents; font-weight: normal;}
+	.form-type{text-align: center;float:left;}
+	.undeline{text-decoration: underline;}
+	h1{ line-height: 45px;padding-right:5px}
+</style>
+
+<script>
+\$put("eor56", new function() {
+	var self = this;
+	var root = \$get("eor").code; 
+
+	this.agency = root.agency;
+	this.receipt = root.receipt;
+
+	this.onload = function() {
+		if(self.receipt == null ) {
+			root.loadReceipt(function(v) {
+				if ((typeof v.reportparams) == 'object') {
+					v.treasurername = (v.reportparams.TREASURERNAME || '');
+					v.parentlguname = (v.reportparams.PARENTLGUFORMALNAME || ''); 
+					v.lguname = (v.reportparams.LGUFORMALNAME || ''); 
+				}
+
+				self.receipt = v;
+				self.receipt.lines = v._items;
+				self._controller.refresh();	
+			});
+		}
+	}
+});
+</script>
+
+
+<div class="eor56">
+
+	<div style="text-align:center;float:left">
+		<h1><b>Real Property Tax Electronic Receipt</b></h1>
+	</div>
+
+	<div style="text-align:center;float:right">
+		<h1 style="float:left"> <label r:context="eor56"><b>NO. #{receipt.receiptno}</b></label></h1>
+		<img id='qrcode' src="https://api.qrserver.com/v1/create-qr-code/?data=${PARAMS.receiptno}&amp;size=250x250" width="50" height="50" class="img-responsive" style="padding:0px"/>					
+		            <div id="output"></div>
+	</div>
+
+	<table class="eor56-table" width="100%" style="border:1px solid #000;">
+		<tr>
+			<td width="33.33%">MUNICIPALITY / PROVINCE</td>
+			<td width="33.33%">CITY</td>
+			<td width="33.33%">DATE</td>
+		</tr>
+		<tr style="border-bottom:solid 1px #000;">
+			<td width="33.33%"> <label r:context="eor56"><b>#{receipt.parentlguname}</b></label></td>
+			<td width="33.33%"><label r:context="eor56"><b>#{receipt.lguname}</b></label></td>
+			<td width="33.33%"><label r:context="eor56"><b>#{receipt.receiptdate}</b></label></td>
+		</tr>
+		<tr>
+			<td colspan="3" style="padding:20px;text-indent:40px">Received from <label class="undeline"  r:context="eor56"><b>#{receipt.paidby}</b> </label>the sum of <label class="undeline"  r:context="eor56"><b>#{ receipt.amountinwords}</b></label>  pesos (P <label class="undeline"  r:context="eor56"><b>#{ receipt.amount.formatDecimal() }</b></label>) <br>Philippine Currency, in full or installment payment of REAL PROPERTY TAX for the property described in the Assessment Rolls as follows: </td>
+		</tr>
+	</table>
+	<table  width="100%" class="eor56-table" r:context="eor56" r:items="receipt._items" r:varName="item">
+		<thead>
+			<tr style="border-bottom:solid 1px #000">
+				<td align="center" width="15%" rowspan="2">Name of Declared <br> Owner</td>
+				<td align="center" width="15%" rowspan="2">Location <br>Number and Street <br>or Barangay</td>
+				<td align="center" rowspan="2" rowspan="2">Lot <br>and Block <br>Number</td>
+				<td align="center" width="10%" rowspan="2">TD No</td>
+				<td align="center" rowspan="2" width="5%">ASSESSED VALUE</td>
+				<td align="center" rowspan="2" width="%">Period Paid</td>
+				<td align="center"  width="10%" colspan="2">Basic</td>
+				<td align="center" width="7%" colspan="2">SEF</td>
+				<td align="center"  width="10%" rowspan="2">TOTAL</td>
+			</tr>
+			<tr style="border-bottom:solid 1px #000">
+				<td align="center">Tax</td>
+				<td align="center">D/P</td>
+				<td align="center">Tax</td>
+				<td align="center">D/P</td>
+			</tr>
+		</thead>
+		<tbody>	
+			<tr style="border-bottom:solid 1px #000">
+				<td><label r:context="eor56"><b>#{ item.owner.name }</b></label></td>
+				<td><label r:context="eor56"><b>#{ item.barangay}</b></label></td>
+				<td align="center"><label r:context="eor56"><b>#{ item.cadastrallotno}</b></label></td>
+				<td><label r:context="eor56"><b>#{ item.tdno}</b></label></td>
+				<td align="right"><label r:context="eor56"><b>#{ item.totalav.formatDecimal()}</b></label></td></td>
+				<td align="center"><label r:context="eor56"><b>#{ item.period}</b></label></td>
+				<td align="right"><label r:context="eor56"><b>#{ item.basic.formatDecimal()}</b></label></td>
+				<td align="right"><label r:context="eor56"><b>#{ item.basicdp.formatDecimal()}</b></label></td>
+				<td align="right"><label r:context="eor56"><b>#{ item.sef.formatDecimal()}</b></label></td>
+				<td align="right"><label r:context="eor56"><b>#{ item.sefdp.formatDecimal()}</b></label></td>
+				<td align="right"><label r:context="eor56"><b>#{ item.amount.formatDecimal()}</b></label></td>
+			</tr>
+		</tbody>
+		<tfooter>	
+			<tr style="border-bottom:solid 1px #000">
+				<td colspan="10">Total taxes paid by Money Order, Treasury Warrant or Check No. __________ dated _____, 20 ___</td>
+				<td>.</td>
+			</tr>
+		</tfooter>	
+	</table>
+
+	<div style="float:left;margin-top:20px;">
+		<p>* Payment without penalty may be made within the periods stated below if by install:</p>
+		<div style="padding-left:30px;">
+			<p>1st Installment - January 1 to March 31, of the year</p>
+			<p>2nd Installment - April 1 to June 30, of the year</p>
+			<p>3rd Installment - July 1 to Sept. 30, of the year</p>
+			<p>4th Installment - October 1 to Dec. 31, of the year</p>
+		</div>
+	</div>
+
+	<div style="float:right;margin-top:20px;">
+		<p style="width:300px;border-bottom:1px solid #000;text-align:center">
+			<label r:context="eor56"><b>#{receipt.treasurername}</b></label>
+		</p>
+		<p style="text-align:center">Provincial or City Treasurer</p>
+		<br>
+		<p style="width:300px;border-bottom:1px solid #000;text-align:center">.</p>
+		<p style="text-align:center">Deputy</p>
+	</div>
+</div>

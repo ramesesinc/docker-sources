@@ -1,0 +1,6 @@
+<%
+	def svc = SERVICE.lookup("PaymayaWebhookService", "epayment");
+	def data = [:]
+	data.putAll(PARAMS)
+	svc.postPayment(data)
+%>

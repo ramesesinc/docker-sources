@@ -1,0 +1,65 @@
+import com.rameses.annotations.*;
+
+import com.rameses.rules.common.*;
+import waterworks.facts.*;
+import treasury.facts.*;
+import treasury.actions.*;
+import com.rameses.util.*;
+
+class WaterworksCompromiseService  {
+	
+	@DataContext("waterworks_compromise")
+	def compEm;
+
+	@DataContext("vw_waterworks_compromise")
+	def vwCompEm;
+
+	@DataContext("waterworks_compromise_fee")
+	def compFeeEm;
+
+	@Service("NumberService")
+	def numSvc;
+
+	@Service("BillingRuleService")
+	def ruleSvc;
+
+	@ProxyMethod
+	public def buildInstallment( def o ) {
+		if( !o.objid ) throw new Exception("WaterworksCompromiseService.buildInstallment requires objid param");
+		def comp = vwCompEm.find( [objid: o.objid ] ).first();
+		def startDate = comp.startduedate;
+		if( !startDate ) throw new Exception("Please specify start due date in compromise");
+		def duedate = startDate;
+		def prin = comp.amount - comp.downpayment;
+		def term = comp.term;
+		def instAmt = NumberUtil.round(prin/term);
+		def amt = prin;
+		def addMonth = { t->
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(t);
+			cal.add(Calendar.MONTH, 1);
+			return cal.getTime();
+		}
+
+		def items = [];
+		(1..term).each { i->
+			def itm = [:];
+			if(i!=term) {
+				itm.amount = instAmt;
+			}
+			else {
+				itm.amount = amt;
+			}
+			itm.parentid = comp.objid;
+			itm.item = 	[objid: "WATER_COMPROMISE_INSTALLMENT"];		
+			itm.particulars = i + " of " + term;	
+			itm.duedate = duedate;
+			itm.amtpaid = 0;
+			itm.itemtype = "installment";
+			amt -= instAmt;
+			duedate = addMonth(duedate);
+			compFeeEm.create( itm );
+		}
+	}
+
+}

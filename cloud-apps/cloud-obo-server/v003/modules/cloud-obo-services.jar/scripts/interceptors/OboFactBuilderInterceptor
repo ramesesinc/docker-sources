@@ -1,0 +1,28 @@
+import com.rameses.annotations.*; 
+import obo.facts.*;
+import treasury.utils.*;
+import treasury.facts.*;
+import enterprise.utils.*;
+
+class OboFactBuilderInterceptor { 
+
+	@After(pattern="FactBuilderService.getFacts", eval="#{ args[0].rulename == 'oboassessment' }")
+	public void buildFacts(def evt) {
+		def factBuilder = evt.result; 
+		def params = evt.args[0].params;
+
+		factBuilder.facts << new BuildingApplication( params.app );
+		factBuilder.facts << new OccupancyType( params.occupancytype );
+		factBuilder.variableInfoProvider = new DefaultVariableInfoProvider(
+			schemaName:"obo_variable",
+			createDecimalFact: { return new OboDecimalInfo() },
+			createIntegerFact: { return new OboIntegerInfo() },
+			createBooleanFact: { return new OboBooleanInfo() }
+		);
+		params.permits?.each {
+			factBuilder.facts << new AncillaryPermit( it );
+		}
+	}
+
+
+} 

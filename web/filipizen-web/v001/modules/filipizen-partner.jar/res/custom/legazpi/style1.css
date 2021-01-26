@@ -1,0 +1,52 @@
+.legazpi-lgu{
+  background:url('/res/custom/legazpi/banner.jpg') no-repeat;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover; 
+	background-size: cover; 
+	height:100%;
+	background-position:40% 0%;
+	left: 0; 
+	width: 100%;
+	display: table;
+	width: 100%;
+}
+.services h4 {
+    font-weight: bold;
+    font-size: 19px;
+    line-height: 25px;
+    margin-bottom: 0;
+    color: #ffffff;
+    text-align: center;
+    background: #06181c;
+}
+
+a.not-active{
+  color:#000000 !important;
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none !important;
+}
+ul.select li a{
+  font-size: 16px;
+  line-height: 1.6;
+  color: #094180;
+  text-decoration: underline;
+}
+.partners-container{
+  margin-bottom: 200px;
+  margin-top: 50px;
+  background: rgba(255, 255, 255, 0.63);
+  padding: 30px;
+}
+ul.select {
+    padding-left: 0px;
+    list-style: none;
+    padding-top: 10px;
+}
+ul.select li {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333 !important;
+    cursor: default;
+}

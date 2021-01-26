@@ -1,0 +1,14 @@
+<schema>
+	<element tablename="occupancy_permit">
+		<field name="objid" primary="true" prefix="BP"/>
+		<field name="state" required="true"/>		
+		<field name="appid" required="true"/>		
+		<field name="permitno" searchable="true" indexed="true"/>
+		<field name="dtissued" />
+		<field name="issuedby_objid" />
+		<field name="issuedby_name" />
+		<field name="remarks" />
+		<field name="expirydate" />
+	</element>
+</schema>
+

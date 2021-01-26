@@ -1,0 +1,54 @@
+<%
+  def info = (PARAMS.info ? PARAMS.info : [:]);
+  def menus = ANUBIS.getFolder( "/services/" ).allowedChildren.findAll{ it.menu!=null };
+  menus.each {
+    def items = ANUBIS.getFolder("/services/"+it.pagename).allowedChildren.findAll{ it.menu !=null };
+    items.each { bb->
+      if( info.excludeservices ) {
+        bb.active = (!bb.pagename.matches(info.excludeservices.toString()) );
+      }
+      else if( info.includeservices ) { 
+        bb.active = ( bb.pagename.matches(info.includeservices.toString()) );  
+      }
+      else {
+        bb.active = false;    
+      }
+      bb.active = true;
+    }
+    it.folders = items;
+  }
+
+  def paths = REQUEST.pathInfo.split('/');
+  def ctxname = (paths.length > 1 ? ('/'+ paths[1]) : ''); 
+%>
+
+<div class="${info.name}-lgu">
+  <div class="container">
+    <div class="partners-container">
+      <h1>Select Transaction</h1> 
+      <div class="row">
+        <ul class="layout-list">
+          <div class="row">
+            <%menus.each { o->  %>
+              <div class="col-md-3 col-xs-6 services">
+                <h4>${o.menu}</h4>
+                <ul class="select">
+                  <%o.folders.each { p->%>
+                    <li>
+                    <%if( p.active != false ){ %>
+                      <a href="${ctxname}/${PARAMS.name}/services/${o.pagename}/${p.pagename}${p.anchor?p.anchor:''}" class="allowed-menuitem ${p.active}-active">${p.menu}</a> 
+                    <%}%> 
+                    <%if( p.active == false ){ %>
+                      ${p.menu}
+                    <%}%>  
+                    </li>
+                  <%}%>
+                </ul> 
+              </div>
+            <%}%>
+          </div>  
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

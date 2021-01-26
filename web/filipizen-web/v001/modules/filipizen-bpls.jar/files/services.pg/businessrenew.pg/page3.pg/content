@@ -1,0 +1,48 @@
+
+<div class="btn-bldgprev">
+  <button r:context="app" r:name="backToPage1" class="btn-bldg">
+    <i class="fa fa-angle-double-left"></i> Back 
+  </button>
+</div>
+<div class="btn-bldgnext">
+  <button r:context="app" r:name="moveToPage4" class="btn-bldgnext"> 
+    Next <i class="fa fa-angle-double-right"></i>
+  </button>
+</div>
+
+<br/> 
+@businessdetails()
+
+<h4><b>Line of Business</b></h4>
+<hr>
+          
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6">
+        <table r:context="app" r:items="data.lobs" r:varName="item" class="lobs">
+        <thead>
+          <tr>
+            <th> LOB Name </th> 
+            <th> Previous Gross Income </th> 
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td> #{item.name} </td>
+            <td> #{item.gross} </td>
+          </tr>
+        </tbody>
+        </table>
+
+        <p></p>
+      </div>      
+    </div> <!-- /.row -->
+  </div> <!-- /.col-md-9 -->
+
+<br>
+
+<p><b>For request change of info click the button below.</b></p>
+<br>
+<button r:context="app" r:name="showPopup" class="btn btn-primary">Request Change Info.</button>
+
+

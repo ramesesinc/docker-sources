@@ -1,0 +1,267 @@
+<style>
+  .caption-class { width:150px; }
+  .caption-class2 { width:200px; }
+  .input-class { width:250px;}
+  .test { width:300px; border:1px solid lighjtgrey; }
+</style>
+
+
+<script>
+	\$put("initial", new function() {
+		var self = this;
+		this.mode = "initial";
+		var app = \$get("app").code;
+		var svc = Service.lookup( app.orgcode + ":RemoteOccupancyPermitService" );
+		
+		this.orgname = app.orgname;
+		this.appno;
+		this.error;
+		this.permitno;
+		this.permit;
+		this.contact = {};
+		this.occupancy = {apptype: 'FULL'};
+		this.menuOption = 'new';
+
+		this.selectOption = function() {
+			if(this.menuOption == "new" ) {
+				self.appno = null;
+				self.mode = "new-application";
+				self._controller.refresh();
+			}
+			else {
+				WindowUtil.load( "occupancypermit", {appid: self.appno } );
+			}
+		}
+
+		this.putAll = function(target, source) {
+			if (!target) target = {}
+			Object.keys(source).forEach(function(key) {
+				target[key] = source[key];
+			});
+		}
+
+		this.findPermit = function() {
+
+			function initOccupancyInfo(occupancy, permit) {
+				occupancy.contact = {};
+				occupancy.orgcode = app.orgcode;
+				occupancy.bldgpermitid = permit.objid;
+				occupancy.contact = permit.contact;
+				occupancy.dtactualstarted = permit.dtproposedconstruction
+				occupancy.dtactualcompleted = permit.dtexpectedcompletion
+				occupancy.bldgpermit = permit
+				occupancy.permittype = "OCCUPANCY_PERMIT";
+				occupancy.totalmaterialcost = 0.0;
+				occupancy.totaldirectlaborcost = 0.0;
+				occupancy.totalequipmentcost = 0.0;
+				occupancy.totalothercost = 0.0;
+				occupancy.firealarmcost = 0.0;
+				occupancy.sprinklercost = 0.0;
+				occupancy.lpgpipingcost = 0.0;
+				occupancy.firesuppcost = 0.0;
+
+				//set actual values from permit as default
+				var fields = [
+					'dtproposedconstruction',
+					'dtexpectedcompletion',
+					'totalfloorarea',
+					'numfloors',
+					'numunits',
+					'professionals',
+					'entities',
+					'profarchitectid',
+					'profcivilid',
+					'profelectricalid',
+					'profmechanicalid',
+					'profsanitaryid',
+					'profplumbingid',
+					'profelectronicid',
+					'profinteriorid',
+				];
+
+				fields.forEach(function(key) {
+					self.occupancy[key] = self.permit[key];
+				});
+			}
+
+			var p = {permitno: self.permitno}
+			svc.findPermitNo( p, function(s, o) {
+				if( s.status == "ERROR" ) {
+					self.error = s.msg;
+				}
+				else {
+					self.mode = "view-bldg-permit";
+					self.permit = o;
+					initOccupancyInfo(self.occupancy, self.permit);
+					self.error = null;
+				}
+				self._controller.refresh();
+			});
+		}
+
+		this.editContact = function() {
+			self.mode = 'edit-contact';
+			self.contact = {};
+			this.putAll(self.contact, self.occupancy.contact);
+			self._controller.refresh();
+		}
+
+		this.cancelEditContact = function() {
+			self.mode = 'view-bldg-permit';
+			self.contact = {};
+			self._controller.refresh();	
+		}
+
+		this.updateContact = function() {
+			self.mode = 'view-bldg-permit';
+			this.putAll(self.occupancy.contact, self.contact);
+			self.contact = {};
+			self._controller.refresh();	
+		}
+
+		this.showConfirm = function() {
+			self.error = null;
+			self.mode = "confirm";
+		}
+
+		this.agreed = false;
+		this.confirm = function() {
+			if(!this.agreed) {
+				alert("Read first the terms and check 'I agree' ");
+				return;
+			}
+			var a = app.service.create(self.occupancy);
+			this.appid = a.objid;
+			self.mode = "success";
+		}
+
+		this.cancelApp = function() {
+			WindowUtil.load( "/partners/${PARAMS.name}/services");
+		}		
+
+		this.proceed = function() {
+			app.reload( { appid: this.appid }, "costing" );
+		}
+	});
+</script>
+
+
+<div r:context="initial" r:visibleWhen="#{error != null }" style='display:none'>
+	<label r:context="initial" style="color:red;">#{error}</label>
+</div>
+
+<div r:context="initial" r:visibleWhen="#{mode=='initial'}" style='display:none'>
+	<div class="subtitle">Select an action</div>
+	<div class="form">
+		<input type="radio" r:context="initial" r:name="menuOption" value="new"> Create New Application</input><br>	
+		<input type="radio" r:context="initial" r:name="menuOption" value="resume"> Resume Pending Application</input><br>	
+		<div r:context="initial" r:depends="menuOption" r:visibleWhen="#{menuOption== 'resume'}" style="padding-left:10px">
+			<div style="padding-bottom: 5px"></div>
+			@wx:text( caption:'App Tracking No', context:'initial', name:'appno', required:true )
+		</div>
+	</div>
+	@wx:button( context:'initial', name:'selectOption', caption: 'Next' )
+</div>
+
+
+<div r:context="initial" r:visibleWhen="#{mode=='new-application'}" style='display:none'>
+	<div class="form">
+		<div>Enter Building Permit No.</div>
+		@wx:text( context:'initial', name:'permitno')
+		<br />
+		<div>Select Occupancy Application Type</div>
+		<div style="padding-left:20px">
+			<input type="radio" r:context="initial" r:name="occupancy.apptype" value="FULL"> Full</input><br>	
+			<input type="radio" r:context="initial" r:name="occupancy.apptype" value="PARTIAL"> Partial</input><br>	
+		</div>
+	</div>
+    @wx:button( context:'initial', name:'findPermit', caption: 'Next' )
+</div>
+
+
+<div r:context="initial" r:visibleWhen="#{mode=='view-bldg-permit'}" style='display:none'>
+	<div style="padding-bottom:20px;font-size:1.5rem">Please check building permit and applicaton info if correct. Click next to continue</div>
+	<h4>Building Permit Information</h4>
+	<div class="form">
+	  @wx:label(caption:'Permit Type', context:'initial', expr:'#{permit.permittype}', captionClass:'caption-class2')  
+	  @wx:label(caption:'Permit No.', context:'initial', expr:'#{permit.permitno}', captionClass:'caption-class2')  
+	  @wx:label(caption:'Date Issued', context:'initial', expr:'#{permit.dtissued}', captionClass:'caption-class2')  
+	  @wx:label(caption:'Name of Owner', context:'initial', expr:'#{permit.applicant.name}', captionClass:'caption-class2')  	
+	  @wx:label(caption:'Address of Owner', context:'initial', expr:'#{permit.applicant.address.text}', captionClass:'caption-class2')  	
+
+	  <br />
+	  <h4>Application Information</h4>
+
+		@wx:label(caption:'Application Type', context:'initial', expr:'#{occupancy.apptype}', captionClass:'caption-class2')  		  
+
+	  @wx:label(caption:'Name of Owner/Applicant', context:'initial', expr:'#{occupancy.contact.name}', captionClass:'caption-class2')  	
+	  @wx:label(caption:'Address of Owner/Applicant', context:'initial', expr:'#{occupancy.contact.address}', captionClass:'caption-class2')  	
+	  @wx:label(caption:'Email Address', context:'initial', expr:'#{occupancy.contact.email}', captionClass:'caption-class2')  	
+	  @wx:label(caption:'Mobile No.', context:'initial', expr:'#{occupancy.contact.mobileno}', captionClass:'caption-class2')  	
+  </div>
+
+	@wx:button(context:'initial', caption:'Edit Contact', name:'editContact')
+  	@wx:button( context:'initial', caption: 'Next', name:'showConfirm')
+</div>
+
+
+<div r:context="initial" r:visibleWhen="#{mode=='edit-contact'}" style='display:none'>
+	<div style="padding-bottom:20px;">Edit Contact Information</div>
+	<h4>Building Permit Information</h4>
+	<div class="form">
+	  @wx:label(caption:'Permit No', context:'initial', expr:'#{permit.permitno}', captionClass:'caption-class2')  
+	  @wx:label(caption:'Date Issued', context:'initial', expr:'#{permit.dtissued}', captionClass:'caption-class2')  
+	  @wx:label(caption:'Name of Owner', context:'initial', expr:'#{permit.applicant.name}', captionClass:'caption-class2')  	
+	  @wx:label(caption:'Address of Owner', context:'initial', expr:'#{permit.applicant.address.text}', captionClass:'caption-class2')  	
+
+	  <br />
+	  <h4>Application Information</h4>
+
+		@wx:label(caption:'Application Type', context:'initial', expr:'#{occupancy.apptype}', captionClass:'caption-class2')  		  
+		@wx:text(caption:'Name of Owner/Applicant', context:'initial', name:'contact.name', captionClass:'caption-class2')  	
+		@wx:text(caption:'Address of Owner/Applicant', context:'initial', name:'contact.address', captionClass:'caption-class2')  	
+		@wx:email(context:'initial', name:'contact.email')
+		@wx:mobile(context:'initial', name:'contact.mobileno' )
+  </div>
+
+	@wx:button(context:'initial', caption:'Cancel', name:'cancelEditContact' )
+  @wx:button( context:'initial', caption:'Update', name:'updateContact')
+</div>
+
+
+<div r:context="initial" r:visibleWhen="#{mode=='confirm'}" style='display:none'>
+	<div class="subtitle">Please read throughly before proceeding</div>
+	<div class="form">
+		<p style="padding-bottom:10px;">
+			<label r:context="initial" style="font-weight:normal;">
+				This online service will require personal information from the applicant, lot owner(s) 
+				and professionals involved in this transaction. In compliance with the Data Privacy Act, we are
+				securing your consent that you have been authorized by the aforementioned parties to act on their behalf.   
+				The data collected will be stored, processed and used for effectively carrying out legitimate transactions 
+				with the local government of #{orgname}. If you do not agree to these terms, you can cancel out by clicking the Cancel button. 
+				If you agree to these terms, tick on the checkbox and click Continue.
+	    	</label>
+    	</p>
+    	<input type="checkbox" r:context="initial" r:name="agreed"> Yes I have read and agree to the terms and conditions 
+	</div>	
+	<div>
+		@wx:button( context:'initial', name:'cancelApp', caption: 'Cancel' )
+		@wx:button( context:'initial', name:'confirm', caption: 'Continue' )
+  	</div>
+</div>
+
+<div r:context="initial" r:visibleWhen="#{mode=='success'}" style='display:none'>
+	<div class="subtitle">Application created</div>
+	<div class="form">
+		<p>Please take note of 
+	        the tracking number for this application. This will be your tracking reference for completing
+	        and follow up for this application.
+		</p>
+		<h2>
+        	<label r:context="initial">#{appid}</label> 
+        </h2> 
+	</div>
+	@wx:button( context:'initial', name:'proceed', caption: 'Continue' )
+</div>
+
+

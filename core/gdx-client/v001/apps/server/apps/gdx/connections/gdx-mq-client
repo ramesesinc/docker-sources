@@ -1,0 +1,9 @@
+provider=rabbitmq
+host=18.214.40.20
+user=ramesesinc
+pwd=!ramesesinc#
+exchange=gdx
+queue=${channel}
+type=direct
+heartbeat=10
+poolSize=1

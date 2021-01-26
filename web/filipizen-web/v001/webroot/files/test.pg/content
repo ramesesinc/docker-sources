@@ -1,0 +1,14 @@
+${PAGE}
+
+<br>
+<br>
+<br>
+<br>
+
+<ul>
+<%
+ANUBIS.getFolder("/test").allowedChildren.each{
+	println '<li>'+ it +'</li>'
+}
+%>
+</ul>

@@ -1,0 +1,25 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class RemoteOccupancyPermitService  {
+
+    @Service(value="BuildingPermitService", connection="local-obo")
+    def permitSvc;
+
+    @Service(value="obo/OnlineBuildingPermitService", connection="cloud-server")
+    def cloudOboSvc;
+
+    @ProxyMethod
+    public def findPermitNo( def params ) {
+        def res = permitSvc.findByPermitNo( [permitno: params.permitno ] );
+        println "result is " + res;
+        /*
+        if(res==null)
+            throw new Exception("Permit no " + params.permitno + " not found");
+        */    
+        return res;
+    }
+     
+}

@@ -1,0 +1,65 @@
+Cloud Jasper Report Specs
+-------------------------------------
+project name: cloud-node-jasper-server
+
+LOCAL-URL: https://filipizen.com/partners/<lgu_name>/<modulename>/reports/<reportid>/<jaspername>.<ext>?queryParameters
+REMOTE-URL: https://filipizen.com/partners/<lgu_name>/<modulename>/remotereports/<reportid>/<jaspername>.<ext>?queryParameters
+
+local : http://192.168.254.114:5001/partners/albay_legazpi/partner/reports/partnerlist/sample1.pdf?appid=137-90KYWL
+remote: http://192.168.254.114:5001/partners/albay_legazpi/waterworks/remotereports/waterworks_sample_report/sample1.pdf?appid=23222
+
+Node code:
+
+    1. Extract lgu_name and get the code where to send the remote request. 
+       Maybe we can use nginx to do this i.e. parse the url and pass all as parameters 
+       to the node-server so we dont have to parse in the node server.
+
+    2. Extract modulename and reportid and jaspername and parameters as key value pairs from the url 
+   
+    3. Call ReportDataService.getReportData( [reportid: reportid, module:modulename, parameters: parameters ] ) 
+       to the lgu remote channel. See code below to what happens in the gdx-client. 
+     
+    4. After getting the result, pass to jasper server and call JasperReportService.generateReport 
+       and pass the ff in json format below. post  to the osiris server 
+       url localhost:port/osiris3/json/enterprise/JasperReportService.generateReport 
+       which will return Base64  
+
+     parameters: result.parameters   = REPORT PARAMETERS
+     data:       result.data         = REPORT DATA
+     modulename: modulename  = location where report templates are stored
+     template:     jaspername        = name of jasper file  
+     partnername:  lgu_name  = partner group and partner name will determine foldering of the assets like icons, etc.
+     partnergroup: lgu_group
+     extension:    extension  = default is pdf. This will generate report based on this format.
+
+     The partnergroup , partner
+     |_ albay
+      |_ legazpi
+        |_ images
+
+    5. return value is in base 64 becuase I cannot return bytes because osiris server will convert it to json. This is still something we have to look into. Maybe we can test simple return of jasper output and try to see if node can render it.    
+
+gdx-client:
+===========
+
+remote/ReportDataService
+
+class ReportDataService {
+
+@DataContext(dynamic=true)
+    def db;
+
+@ProxyMethod
+public def getReportData( def o ) {
+def modulename = o.modulename;
+
+def svc = db.lookup( module +"/FormReportService" );
+def p = [reportid: o.reportid, parameters: o.parameters ];
+def reportParams = svc.getParameters( p );
+def reportData = svc.getData( p );
+
+return [ parameters: reportParams, data: reportData ];
+
+}
+
+}

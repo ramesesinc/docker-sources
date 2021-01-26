@@ -1,0 +1,34 @@
+import com.rameses.annotations.*
+import com.rameses.util.*
+import com.rameses.common.*
+import com.rameses.services.extended.*
+
+class EPaymentMessagingService  {
+
+	@Service(value="EPaymentService", connection="epayment")
+    def localSvc;
+
+	@Service(value="epayment/CloudPaymentService", connection="cloud-server")
+    def cloudSvc;
+
+    @OnMessage(value="gdx-mq-client", eval="#{data.action == 'epayment:post-payment'}")
+    public void onReceivePayment( p ) {
+        def r = localSvc.postPayment( p );
+
+        if ( r ) {
+            def retval = [:];
+            retval.receiptno = r.receiptno;
+            retval.receiptid = r.objid;
+            retval.receiptdate = r.receiptdate; 
+            retval.paymentrefid = r.paymentrefid;        
+            cloudSvc.updatePaymentReceipt( retval );
+        }    
+
+    } 
+
+    @OnMessage(value="gdx-mq-client", eval="#{data.action == 'epayment:cancel-payment-order'}")
+    public void onCancelPayment( p ) {
+        localSvc.cancelPaymentOrder( [refno: p.refno ]);
+    }
+}
+

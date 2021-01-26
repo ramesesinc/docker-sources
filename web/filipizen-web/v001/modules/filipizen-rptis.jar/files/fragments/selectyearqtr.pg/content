@@ -1,0 +1,52 @@
+<script>
+\$put("selectyearqtr", new function() {
+
+	this.year;
+	this.qtr = 4;
+	this.handler;	
+
+	this.years;
+	this.fromqtr;
+	this.fromyear;
+	this.toyear;
+
+	var looper = function( f, t, lst ) {
+		for( var i=f; i<=t; i++  ) {
+			lst.push(i);
+		}	
+	}
+
+	this.onload = function() {
+		this.years = [];
+		looper( this.fromyear, this.toyear + 3, this.years );
+	}
+
+	this.getQtrs = function() {
+		var qtrs = [];
+		if(this.year == this.fromyear ) {
+			looper( this.fromqtr, 4, qtrs );
+		}
+		else {
+			looper( 1, 4, qtrs );
+		}
+		return qtrs;
+	}
+
+	this.doOk = function() {
+		this.handler( {qtr: this.qtr, year: this.year } );
+		return "_close";
+	}
+
+
+});
+</script>
+
+<div>
+	<div class="caption">Enter Year</div>
+	<div><select type="text" r:context="selectyearqtr" r:name="year" r:items="years"></select></div>
+	<div class="caption">Select Qtr</div>
+	<div><select type="text" r:context="selectyearqtr" r:name="qtr" r:items="getQtrs()" r:depends="year"></select></div>
+	<div style="padding-top:20px;"></div>
+    <button r:context="selectyearqtr" r:name="_close" class="submit">Close</button> 
+    <button r:context="selectyearqtr" r:name="doOk" class="submit">OK</button> 
+</div>

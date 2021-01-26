@@ -1,0 +1,14 @@
+# ignore .git and .cache folders
+.git
+.cache
+.vscode
+zzz-*
+
+#node files
+package-lock.json
+node_modules
+client/node_modules
+client/package-lock.json
+credentials/credentials.json
+credentials/token.json
+

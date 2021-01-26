@@ -1,0 +1,43 @@
+import com.rameses.annotations.*;
+import java.rmi.server.*;
+import com.rameses.util.*;
+import com.rameses.functions.*;
+import java.text.*;
+
+class WaterworksMobileSupporService {
+
+	@Service("RuleMgmtService")
+	def ruleMgmtSvc;
+
+	@ProxyMethod
+	public def getBatch( def o ) {
+		//returns batch
+	}
+
+	@ProxyMethod
+	public def getBatchItems( def o ) {
+		//returns batch
+	}
+
+	@ProxyMethod
+	public def uploadBatchItems( def o ) {
+		//returns batch
+	}
+
+
+	@ProxyMethod
+	public def getComputationFeeRules() {
+		def p = [ruleset:'waterworkscomputation', rulegroup:'initial', state:'DEPLOYED'];
+		def list = ruleMgmt.getList( p);
+		def result = [];
+		for( o in list ) {
+			def r = ruleMgmt.open( [objid: o.objid] );
+			def m = buildRuleText(r);
+			result << m;
+		}
+		return result;
+
+
+	}
+
+}

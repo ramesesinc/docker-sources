@@ -1,0 +1,62 @@
+<%
+def app = [:];
+try { 
+	def svc = SERVICE.lookup("OnlineBuildingPermitService", "obo");
+ 	app = svc.getApplication([ appid: PARAMS.appid ]);
+ 	app.org = [ name:'Legazpi City', formalname: 'City of Legazpi', province: 'Province of Albay'];
+	app.lotowner  = app.location.owner;
+	app.applicant.middleinitial = (app.applicant.middlename ? app.applicant.middlename.charAt(0) : '');
+
+	def worktypeinfo = [:];
+	app.worktypes.each{ worktypeinfo[it] = it } 
+	app.worktypeinfo = worktypeinfo;
+
+	if ( app.applicant?.address ) {
+		def addr = app.applicant.address; 
+		app.applicant.streetaddress = [addr.bldgno, addr.bldgname, addr.street].findAll{( it )}.join(' ');
+	}
+
+} 
+catch(Throwable e) {
+	app = [:];
+
+	e.printStackTrace(); 
+}
+
+if ( app.worktypeinfo == null ) app.worktypeinfo = [:]; 
+
+PARAMS.app = app;
+%>
+<!DOCTYPE html>
+<html lang="en"> 
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<link href="/themes/default/css/obo-ancillary.css?ver=1" type="text/css" rel="stylesheet" />
+
+		<style type="text/css">
+			.header div{
+				display: inline-block;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="dl">
+		    <div class="container">
+		        <button onclick="window.print();return false;" class="btn btn-print"><i class="fa fa-print"></i>Print</button>
+		    </div>
+		</div>
+		<div class="page">
+			<table align="center" width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td>
+						${_content}
+					</td>	
+				</tr>
+			</table>
+			<br><br>		
+		</div>
+		<div class="page" style="padding: 10px 20px 0px 20px;">
+			${_page2}
+		</div>
+	</body>
+</html>

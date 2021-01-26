@@ -1,0 +1,25 @@
+<script>
+\$put("selectqtr", new function() {
+
+	this.qtr = 4;
+	this.handler;	
+
+	this.doOk = function() {
+		this.handler( {qtr: this.qtr} );
+		return "_close";
+	}
+
+
+});
+</script>
+
+<div>
+	<h2>Select Qtr</h2>
+	<div><input type="radio" value="4" r:context="selectqtr" r:name="qtr"> 4 </div> 
+	<div><input type="radio" value="3" r:context="selectqtr" r:name="qtr"> 3 </div> 
+	<div><input type="radio" value="2" r:context="selectqtr" r:name="qtr"> 2 </div> 
+	<div><input type="radio" value="1" r:context="selectqtr" r:name="qtr"> 1 </div> 
+	<div style="padding-top:20px;"></div>
+    <button r:context="selectqtr" r:name="_close" class="submit">Close</button> 
+    <button r:context="selectqtr" r:name="doOk" class="submit">OK</button> 
+</div>

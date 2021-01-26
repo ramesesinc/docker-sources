@@ -1,0 +1,90 @@
+LIST DATA {
+  IsTruncated: false,
+  Marker: '',
+  Contents: [
+    {
+      Key: 'SSS/bp-01.png',
+      LastModified: 2020-12-22T05:16:33.000Z,
+      ETag: '"93efe6c0f21613e33c1ab2cc4ad16939"',
+      Size: 66757,
+      StorageClass: 'STANDARD',
+      Owner: [Object]
+    },
+    {
+      Key: 'SSS/bp-02.png',
+      LastModified: 2020-12-22T01:57:29.000Z,
+      ETag: '"f449d3af49eedb848d46f5f6f995b183"',
+      Size: 70391,
+      StorageClass: 'STANDARD',
+      Owner: [Object]
+    },
+    {
+      Key: 'SSS/bp-03.png',
+      LastModified: 2020-12-22T05:18:18.000Z,
+      ETag: '"e79d11fdf82cfeec373fa259f689ffe3"',
+      Size: 62300,
+      StorageClass: 'STANDARD',
+      Owner: [Object]
+    },
+    {
+      Key: 'SSS/bp-04.png',
+      LastModified: 2020-12-22T05:13:02.000Z,
+      ETag: '"0e2d83d36902a7cce1338d4b3dd4de9d"',
+      Size: 69504,
+      StorageClass: 'STANDARD',
+      Owner: [Object]
+    },
+    {
+      Key: 'SSS/bp-05.png',
+      LastModified: 2020-12-22T02:49:54.000Z,
+      ETag: '"76bac94506e17e1c2e11ba94cb473266"',
+      Size: 120848,
+      StorageClass: 'STANDARD',
+      Owner: [Object]
+    },
+    {
+      Key: 'SSS/bp-06.png',
+      LastModified: 2020-12-22T02:20:19.000Z,
+      ETag: '"d2f9aa4ea1fc89f8e3f9a9020d993f62"',
+      Size: 77465,
+      StorageClass: 'STANDARD',
+      Owner: [Object]
+    },
+    {
+      Key: 'SSS/bp-08.png',
+      LastModified: 2020-12-22T01:59:04.000Z,
+      ETag: '"9f706526d301affd867702eae7ccb864"',
+      Size: 77507,
+      StorageClass: 'STANDARD',
+      Owner: [Object]
+    },
+    {
+      Key: 'SSS/bp-09.png',
+      LastModified: 2020-12-22T05:02:48.000Z,
+      ETag: '"0a9f1407be10529a17606edf9c629124"',
+      Size: 83953,
+      StorageClass: 'STANDARD',
+      Owner: [Object]
+    },
+    {
+      Key: 'SSS/bp-10.png',
+      LastModified: 2020-12-22T01:50:31.000Z,
+      ETag: '"cd653016b6fd683d26b18d1b0e245c88"',
+      Size: 80352,
+      StorageClass: 'STANDARD',
+      Owner: [Object]
+    },
+    {
+      Key: 'SSS/bp-16.png',
+      LastModified: 2020-12-22T02:15:09.000Z,
+      ETag: '"16ca556e982568a6d9795459f77405fb"',
+      Size: 84303,
+      StorageClass: 'STANDARD',
+      Owner: [Object]
+    }
+  ],
+  Name: 'uploads-89aec797-f5e4-4778-b4a0-3a324906ef50',
+  Prefix: 'SSS',
+  MaxKeys: 1000,
+  CommonPrefixes: []
+}

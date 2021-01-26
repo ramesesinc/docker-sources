@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  redis:
+    image: redis:5.0.6
+    container_name: cache
+    volumes:
+      - /home/rameses/redis-cache:/data
+    expose: 
+      - 6379
+
+  node-gdx:
+    image: "ramesesinc/cloud-gdx-node:1.0.0"
+    container_name: cloud-gdx-node
+    ports: 
+      - "3000:3000"
+    links:
+      - redis
+    environment:
+      - REDIS_URL=redis://cache
+    volumes:
+      - .:/mnt/server
+

@@ -1,0 +1,19 @@
+import com.rameses.annotations.*;
+import treasury.facts.*;
+
+class WaterworksBillingReportInterceptor {
+	
+	@Service("WaterworksBillingService")
+	def billingSvc;
+
+	@After(pattern="FormReportService.getData", eval="#{ args[0].reportid == 'waterworks_billing' }")
+	public void getBillingReport( def evt ) {
+		def t = evt.args[0];
+		def result = evt.result;
+		def acctid = t.parameters.objid;
+
+		def res = billingSvc.getBilling( [acctid: acctid ] );
+		result.data = res;
+	}
+
+} 

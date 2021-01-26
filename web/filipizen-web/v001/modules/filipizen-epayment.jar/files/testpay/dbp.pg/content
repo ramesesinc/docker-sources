@@ -1,0 +1,35 @@
+
+<h1><b>Test Payment Only</b></h1>
+
+<table cellpadding="2" cellspacing="0" border="0">
+<% PARAMS.each { k,v-> %> 
+<tr>
+	<td><b>${k}</b></td>
+	<td>${v}</td>
+</tr>
+<% } %> 
+</table>
+
+<% if ( PARAMS.error.toString() == '1' ) { %>
+	<form id="postform" method="POST" action="/payoptions/dbperror">
+		<input type="hidden" name="referenceCode" value="${PARAMS.referenceCode}"/> 
+		<input type="hidden" name="responseCode" value="${PARAMS.error}"/> 
+		<input type="hidden" name="message" value="${PARAMS.error}"/> 
+		<input type="submit" value="Submit"/> 
+	</form> 
+<% } else { %> 
+<%
+def transactionkey = "11111111111111111111111111111111"; 
+def requestToken = PARAMS.securityToken.toString(); 
+def responseToken = com.rameses.util.Encoder.SHA1.encode(requestToken + '{' + transactionkey + '}'); 
+def retrievalReferenceCode = 'DBP'+ com.rameses.util.Encoder.MD5.encode( responseToken ).hashCode(); 
+%>
+	<form id="postform" method="POST" action="/payoptions/dbpsuccess">
+		<input type="hidden" name="referenceCode" value="${PARAMS.referenceCode}"/> 
+		<input type="hidden" name="amount" value="${PARAMS.amount}"/> 
+		<input type="hidden" name="retrievalReferenceCode" value="${retrievalReferenceCode}"/> 
+		<input type="hidden" name="securityToken" value="${responseToken}"/> 
+		<input type="submit" value="Submit"/> 
+	</form> 
+<% } %> 
+

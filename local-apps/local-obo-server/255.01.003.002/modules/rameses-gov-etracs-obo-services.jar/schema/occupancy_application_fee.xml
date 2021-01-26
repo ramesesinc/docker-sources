@@ -1,0 +1,14 @@
+<schema>
+	<element tablename="occupancy_application_fee">
+		<field name="objid" primary="true" prefix="OCCPMTF"/>
+		<field name="appid" required="true" />
+		<field name="sectionid" />
+		<field name="remarks" />
+		<field name="amount" required="true" />
+		<field name="amtpaid" required="true" />
+		<field name="balance"  expr="amount-amtpaid"/>
+		<complex name="item" ref="obo_itemaccount" jointype="many-to-one" required="true">
+			<key field="itemid" target="objid" />
+		</complex>	
+	</element>
+</schema>	

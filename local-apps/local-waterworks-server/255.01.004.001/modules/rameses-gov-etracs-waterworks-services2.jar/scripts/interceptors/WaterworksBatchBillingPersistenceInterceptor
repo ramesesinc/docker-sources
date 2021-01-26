@@ -1,0 +1,21 @@
+import com.rameses.annotations.*;
+import treasury.facts.*;
+
+class WaterworksBatchBillingPersistenceInterceptor {
+	
+	@DataContext("waterworks_batch_billing")
+	def batchEm;
+
+	@DataContext("waterworks_batch_billing_task")
+	def taskEm;
+
+	//when removing a batch, reverse all transactions to its previous state
+	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'waterworks_batch_billing'}")
+	void beforeRemoveEntity( evt ) {
+		def p = evt.args[0]; 
+		batchEm.find([ objid: p.objid ]).update([ taskid: '{NULL}' ]); 
+		taskEm.find([ refid: p.objid ]).delete();
+	}
+
+	
+} 
