@@ -22,12 +22,12 @@ class UserRoleService {
 			strWhere = " org.objid IS NULL ";
 		}
 		else {
-			strWhere = " org.objid IS :orgid ";
+			strWhere = " org.objid = :orgid ";
 			parm.orgid = orgid;
 		}
 
 		def roles = [:];
-
+		//userRoleEm.debug = true;
 		def userRoles =  userRoleEm.find( [userid: userid] ).where( strWhere, parm ).list();
 		userRoles.each {
 			roles.put( it.role, ((!it.exclude)?null:it.exclude)  );
@@ -37,12 +37,13 @@ class UserRoleService {
 
 	@ProxyMethod
 	public def getRolesString(def o) {
+		if( !o.containsKey("orgid") ) {
+			o.orgid = (env.ORGROOT==1) ? null: env.ORGID;			
+		}
 		def z = getUserRoles( o );
 		def userRoles = z*.key;
 		return "'" + userRoles.join("','") + "'";
 	}
-
-
 
 
 }
