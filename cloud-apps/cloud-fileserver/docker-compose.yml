@@ -2,7 +2,7 @@ version: "3"
 
 services:
   cloud-fileserver:
-    image: ramesesinc/cloud-fileserver:beta
+    image: ramesesinc/cloud-fileserver:0.2.0
     container_name: cloud-fileserver
     restart: always
     logging:
@@ -12,6 +12,8 @@ services:
         max-size: 10m
     ports:
       - "7000:7000"
+    env_file:
+      - ./_custom/env.conf
     environment:
       TZ: "Asia/Manila"
     

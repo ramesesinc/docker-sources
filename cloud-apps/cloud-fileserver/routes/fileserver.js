@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const aws = require("../lib/aws");
 
-
 router.post('/upload', async (req, res) => {
   const key = req.body.key;
   if (!key) {
@@ -16,6 +15,7 @@ router.post('/upload', async (req, res) => {
     .then(data => {
       res.send({key: data.key, etag: data.ETag, location: data.Location});
     }).catch(err => {
+      console.log("UPLOAD [error] ", err)
       res.status(500).send({status: "ERROR", err});
     });
 })
@@ -56,6 +56,7 @@ router.get('/list', (req, res) => {
     .then(data => {
       res.status(200).send(data.Contents);
     }).catch(err => {
+      console.log("get [ERROR]", err)
       res.status(500).send({status: "ERROR", err});
     });
 })
