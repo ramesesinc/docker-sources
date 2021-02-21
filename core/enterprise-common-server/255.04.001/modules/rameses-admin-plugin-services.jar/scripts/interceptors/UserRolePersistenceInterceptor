@@ -31,9 +31,12 @@ class UserRolePersistenceInterceptor {
 	public def afterRemoveRole(def evt) {
 		def a = evt.args[0];
 		def r = evt.result;
+		//do not delete the user because there might be links in the documents
+		/*
 		if(!roleEm.find( [userid: a.userid] ).exists()) {
 			userEm.find([objid: a.userid]).delete();
 		}
+		*/
 	}
 
 

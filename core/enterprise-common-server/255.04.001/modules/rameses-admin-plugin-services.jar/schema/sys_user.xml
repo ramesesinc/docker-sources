@@ -1,12 +1,12 @@
 <schema>
 	<element tablename="sys_user">
 		<field name="objid" primary="true"/>
-		<field name="username" />
-		<field name="firstname" />
-		<field name="lastname" />
-		<field name="middlename" />
-		<field name="name" />
-		<field name="jobtitle" />
+		<field name="username" caption="User Name"/>
+		<field name="firstname" caption="First Name"/>
+		<field name="lastname" caption="Last Name"/>
+		<field name="middlename" caption="Middle Name"/>
+		<field name="name" caption="Name"/>
+		<field name="jobtitle" caption="Job Title"/>
 		<field name="txncode" />
 	</element>	
 </schema>	
