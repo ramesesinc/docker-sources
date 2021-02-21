@@ -6,5 +6,4 @@ _custom
 _res
 push.sh
 public/files/**
-config.json
 .prettierrc

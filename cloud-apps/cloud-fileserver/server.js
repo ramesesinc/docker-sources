@@ -21,5 +21,6 @@ http.listen(port, (err) => {
     console.log(err);
   } else {
     console.log(`Server listening on port ${port}`);
+    console.log("===================================");
   }
 });
