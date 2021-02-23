@@ -1,6 +1,9 @@
 FROM ramesesinc/alpine-java:jdk7
 
 COPY /apps /apps
+COPY /tz/zoneinfo /usr/share/zoneinfo
+COPY /tz/zoneinfo/Asia/Manila /etc/localtime
+COPY /tz/timezone /etc/timezone
 
 WORKDIR /apps/server/bin
 RUN tar -xf sh.tar.gz
