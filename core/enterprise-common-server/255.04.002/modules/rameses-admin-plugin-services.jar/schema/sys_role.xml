@@ -1,0 +1,11 @@
+<schema>
+	<element tablename="sys_role">
+		<field name="name" primary="true" visible="true"/>
+		<field name="title" required="true"/>
+
+		<complex name="permissions" ref="sys_role_permission" jointype="one-to-many">
+			<key field="name" target="role" />
+		</complex>	
+
+	</element>	
+</schema>	
