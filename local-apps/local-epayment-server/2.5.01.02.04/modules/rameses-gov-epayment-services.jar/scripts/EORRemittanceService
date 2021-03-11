@@ -8,6 +8,9 @@ class EORRemittanceService {
     @Service(value="PersistenceService", connection="etracs")
     def etracsPersistenceSvc;
 
+    @Service('EORPostingService')
+    def postingSvc; 
+
     @DataContext("eor_remittance")
     def remEm;
 
@@ -126,6 +129,9 @@ class EORRemittanceService {
         u.controlno = numSvc.getNextRemittanceNumber( [:] ); 
         remEm.find( findby ).update( u ); 
         u.objid = o.objid; 
+
+        postingSvc.post( u ); 
+
         return u; 
     } 
 

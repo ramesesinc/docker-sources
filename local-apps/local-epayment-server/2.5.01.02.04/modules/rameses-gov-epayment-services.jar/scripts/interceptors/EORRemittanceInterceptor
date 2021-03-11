@@ -17,7 +17,7 @@ class EORRemittanceInterceptor {
     @DataContext('paymentpartner') 
     def paymentpartner; 
 
-
+    
     @Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'eor_remittance' }")
     public void beforeRemove( evt ) {
         def o = evt.args[0];
@@ -70,5 +70,4 @@ class EORRemittanceInterceptor {
             res.partner = paymentpartner.find([ objid: res.partnerid ]).select('objid,code,name').first(); 
         } 
     } 
-
 }

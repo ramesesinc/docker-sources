@@ -1,13 +1,13 @@
 [insertRemittanceFund]
 INSERT INTO eor_remittance_fund (
-    objid, remittanceid, fundid, amount
+	objid, remittanceid, fundid, amount
 )
 SELECT 
-    CONCAT( eor.remittanceid, ':', eoi.item_fund_objid ) as objid, 
-    eor.remittanceid, eoi.item_fund_objid as fundid,
-    SUM(eoi.amount) as amount 
+	(eor.remittanceid +':'+ eoi.item_fund_objid) as objid, 
+	eor.remittanceid, eoi.item_fund_objid as fundid, 
+	SUM(eoi.amount) as amount 
 FROM eor_item eoi 
-    INNER JOIN eor eor ON eoi.parentid = eor.objid 
+	INNER JOIN eor eor ON eoi.parentid = eor.objid 
 WHERE eor.remittanceid = $P{remittanceid}
 GROUP BY eor.remittanceid, eoi.item_fund_objid
 
