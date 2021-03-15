@@ -7,6 +7,7 @@ import PartnerServiceScreen from "./app/PartnerServiceScreen";
 import PaymentSuccess from "./app/PaymentSuccess";
 import PaymentError from "./app/PaymentError";
 import NotFoundScreen from "./app/NotFoundScreen";
+import { Monitor } from "filipizen-monitoring";
 
 // const HomeScreen = loadable(() => import("./app/HomeScreen"))
 // const PartnerListScreen = loadable(() => import("./app/PartnerListScreen"))
@@ -16,17 +17,18 @@ import NotFoundScreen from "./app/NotFoundScreen";
 // const PaymentError = loadable(() => import("./app/PaymentError"))
 // const NotFoundScreen = loadable(() => import("./app/NotFoundScreen"))
 
-
 export default [
-  { 
-    name: "home", 
-    exact: true, 
-    path: "/", 
-    component: HomeScreen },
-  { 
-    name: "partners", 
-    path: "/partners", 
-    component: PartnerListScreen },
+  {
+    name: "home",
+    exact: true,
+    path: "/",
+    component: HomeScreen,
+  },
+  {
+    name: "partners",
+    path: "/partners",
+    component: PartnerListScreen,
+  },
   {
     name: "services",
     path: "/partner/:partnerId/services",
@@ -48,14 +50,20 @@ export default [
     component: PaymentError,
   },
   {
+    name: "systools",
+    exact: true,
+    path: "/admin/systool",
+    component: HomeScreen,
+  },
+  {
+    name: "epayment-monitoring",
+    exact: true,
+    path: "/admin/monitor/epayment",
+    component: Monitor,
+  },
+  {
     name: "404",
     path: "*",
     component: NotFoundScreen,
-  },
-  { 
-    name: "systools", 
-    exact: true, 
-    path: "/admin/systool", 
-    component: HomeScreen 
   },
 ];
