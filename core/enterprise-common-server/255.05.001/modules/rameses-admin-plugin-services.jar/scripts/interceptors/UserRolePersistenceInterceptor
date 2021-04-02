@@ -1,0 +1,50 @@
+import com.rameses.annotations.*;
+
+class UserRolePersistenceInterceptor {
+	
+	@DataContext("sys_user")
+	def userEm;
+
+	@DataContext("sys_user_role")
+	def roleEm;
+
+	@Before(pattern="PersistenceService.create", eval="#{ args[0]._schemaname == 'sys_user_role' }")
+	public def beforeCreateRole(def evt) {
+		def a = evt.args[0];
+		if(a.user) {
+			if(!userEm.find( [objid: a.user.objid ] ).exists()) {
+				userEm.create( a.user );
+			}
+		}
+		a.uid = a.user.objid + '-' + a.role + ( a.org?.objid !=null ? '-' + a.org.objid : '' );
+	}
+
+	@Before(pattern="PersistenceService.update", eval="#{ args[0]._schemaname == 'sys_user_role' }")
+	public def beforeUpdateRole(def evt) {
+		def a = evt.args[0];
+		a.uid = a.user.objid + '-' + a.role + ( a.org?.objid !=null ? '-' + a.org.objid : '' );
+	}
+
+	@Before(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'sys_user_role' }")
+	public def beforeRemoveRole(def evt) {
+		def a = evt.args[0];
+		if(!a.userid) {
+			def r = roleEm.find( [objid: a.objid] ).first(); 
+			a.putAll( r ); 
+		}
+	}
+
+	@After(pattern="PersistenceService.removeEntity", eval="#{ args[0]._schemaname == 'sys_user_role' }")
+	public def afterRemoveRole(def evt) {
+		def a = evt.args[0];
+		def r = evt.result;
+		//do not delete the user because there might be links in the documents
+		/*
+		if(!roleEm.find( [userid: a.userid] ).exists()) {
+			userEm.find([objid: a.userid]).delete();
+		}
+		*/
+	}
+
+
+}

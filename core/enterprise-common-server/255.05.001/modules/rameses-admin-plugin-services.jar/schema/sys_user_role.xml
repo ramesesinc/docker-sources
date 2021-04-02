@@ -1,0 +1,16 @@
+<schema>
+	<element tablename="sys_user_role">
+		<field name="objid" primary="true" prefix="USRROL"/>
+		<field name="role" required="true" searchable="true"/>
+		<field name="userid"  required="true"/>
+		<field name="username"  required="true" searchable="true"/>		
+		<field name="org_objid" />
+		<field name="org_name" />
+		<field name="securitygroup_objid" />
+		<field name="exclude" />
+		<field name="uid" />
+		<complex name="user" ref="sys_user" jointype="many-to-one" required="true">
+			<key field="userid" target="objid" /> 
+		</complex>	
+	</element>	
+</schema>	
