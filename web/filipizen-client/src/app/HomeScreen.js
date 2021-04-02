@@ -20,9 +20,9 @@ const HomeScreen = (props) => {
             </label>
           </div>
           <button className="HomeScreen__button" onClick={startHandler}>Start Here</button>
+          <div className="Spacer" />
         </div>
       </div>
-      <Footer />
     </div>
   )
 };

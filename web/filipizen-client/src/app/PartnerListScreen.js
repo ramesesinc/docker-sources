@@ -76,7 +76,7 @@ const PartnerListScreen = (props) => {
 const PartnerLgu = ({ partners }) => {
   const partnerGroup = partners[0].group;
   return (
-    <div>
+    <div className="PartnerGroup">
       <Subtitle>{partnerGroup.title}</Subtitle>
       <List items={partners}>
         {({ item: partner }) => (
