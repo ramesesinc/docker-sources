@@ -1,0 +1,17 @@
+import com.rameses.annotations.*;
+
+class UserRoleLookupInterceptor {
+	
+	@DataContext("sys_user")
+	def userEm;
+
+	@After(pattern="QueryService.getList", eval="#{ args[0]._schemaname == 'sys_user_role' && args[0].tag == 'user_by_role' }")
+	public def getUserRoleLookup(def evt) {
+		def result = evt.result;
+		result.each {
+			def u = userEm.find( [objid: it.userid] ).first();
+			it.putAll( u );
+		}
+	}
+
+}
