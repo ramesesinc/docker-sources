@@ -112,7 +112,7 @@ router.post("/payoptions/:statusid", async (req, res) => {
   }
 });
 
-router.post("/webhooks/:paypartnerid", async (req, res) => {
+router.post("/webhooks/:paypartnerid/paytype?", async (req, res) => {
   console.log("WEBHOOK POST===============================");
 
   const params = {
