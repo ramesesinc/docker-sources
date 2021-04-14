@@ -115,7 +115,7 @@ const styles = {
     alignItems: "flex-start",
   },
   moduleContainer: {
-    width: 250, 
+    width: 300, 
   },
   maintenanceContainer: {
     display: "flex",

@@ -3,13 +3,12 @@ import loadable from "@loadable/component";
 import "rsi-react-web-components/dist/index.css";
 import "filipizen-bpls/dist/index.css";
 import "filipizen-monitoring/dist/index.css";
-// import "filipizen-skillsregistry/dist/index.css";
 
 // Module and Server registration
 const modules = [
   {
     name: "bpls",
-    module: "filipizen-bpls",
+    lib: "filipizen-bpls",
     title: "Business",
     services: [
       {
@@ -28,7 +27,7 @@ const modules = [
   },
   {
     name: "rptis",
-    module: "filipizen-rptis",
+    lib: "filipizen-rptis",
     title: "Real Property",
     services: [
       {
@@ -47,7 +46,7 @@ const modules = [
   },
   {
     name: "waterworks",
-    module: "filipizen-waterworks",
+    lib: "filipizen-waterworks",
     title: "Waterworks",
     services: [
       {
@@ -60,7 +59,7 @@ const modules = [
   },
   {
     name: "obo",
-    module: "filipizen-obo",
+    lib: "filipizen-obo",
     title: "Building and Construction",
     services: [
       {
@@ -96,7 +95,7 @@ const modules = [
       {
         module: "obo",
         name: "obobilling",
-        title: "Building Online Billing",
+        title: "Building Permit Online Billing",
         component: "OboBillingWebController",
       },
       // { module: "obo", name: 'ptrbilling', title: "Professional Tax Online Billing", component: "PtrBillingWebController", },
@@ -104,7 +103,7 @@ const modules = [
   },
   // {
   //   name: "skills",
-  //   module: "filipizen-skillsregistry",
+  //   lib: "filipizen-skillsregistry",
   //   title: "Skills Registry",
   //   services: [
   //     { module: "skills", name: 'searchskills', title: "Search Skills", component: "SearchSkillsWebController", },
@@ -155,9 +154,9 @@ export const getServiceModule = (service) => {
     } else if (service.module === "obo") {
       ServiceModule = loadable.lib(() => import("filipizen-obo"));
     }
-    // else if (service.module === "skills") {
-    //   ServiceModule = loadable.lib(() => import("filipizen-skillsregistry"));
-    // }
+    else if (service.module === "skills") {
+      ServiceModule = loadable.lib(() => import("filipizen-skillsregistry"));
+    }
     serviceModules[service.module] = ServiceModule;
   }
   return ServiceModule;
