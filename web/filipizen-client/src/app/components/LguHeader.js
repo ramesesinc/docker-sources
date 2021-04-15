@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Panel, AppBar } from "rsi-react-web-components";
+import { Panel } from "rsi-react-web-components";
 
 const styles = {
   container: {
+    background: "#2c3e50",
     padding: "4px 50px",
   },
   title: {
@@ -14,7 +15,6 @@ const styles = {
 
 const LguHeader = ({partner, Logo}) => {
   return (
-    <AppBar>
         <Panel style={styles.container}>
           <Link to={{
             pathname: `/partner/${partner.name}/services`, 
@@ -22,13 +22,9 @@ const LguHeader = ({partner, Logo}) => {
           }}>
             <Panel row>
               <div>{Logo}</div>
-              {/**
-                <span style={styles.title}>{partner.title}</span>
-               */}
             </Panel>
           </Link>
         </Panel>
-    </AppBar>
   );
 };
 

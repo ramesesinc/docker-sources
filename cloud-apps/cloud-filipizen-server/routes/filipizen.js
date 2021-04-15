@@ -47,7 +47,10 @@ router.post("/service/invoke", async (req, res) => {
 const postPartnerPayment = async (params) => {
   const svc = Service.lookup("CloudPaymentService", "epayment");
   const pmt = await svc.invoke("postPartnerPayment", params);
-
+  console.log("postPartnerPayment.postPartnerPayment===========================");
+  console.log(pmt);
+  console.log("postPartnerPayment.postPartnerPayment===========================");
+  
   const remoteSvc = Service.lookup(
     `${pmt.orgcode}:EPaymentService`,
     "epayment"

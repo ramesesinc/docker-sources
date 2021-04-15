@@ -82,6 +82,7 @@ const PartnerScreen = ({
             <Title>Select Transaction</Title>
             <Spacer height={20} />
             <PartnerServiceList modules={modules} onSelect={onSelectService} />
+            <Spacer height={50}/>
           </React.Fragment>
         }
         {modules.length === 0 && 

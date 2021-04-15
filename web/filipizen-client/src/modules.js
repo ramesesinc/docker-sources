@@ -98,7 +98,12 @@ const modules = [
         title: "Building Permit Online Billing",
         component: "OboBillingWebController",
       },
-      // { module: "obo", name: 'ptrbilling', title: "Professional Tax Online Billing", component: "PtrBillingWebController", },
+      {
+        module: "obo",
+        name: "ptrbilling",
+        title: "Pay PTR (Professional Tax Receipt)",
+        component: "PtrBillingWebController",
+      },
     ],
   },
   // {
