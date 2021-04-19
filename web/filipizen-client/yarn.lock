@@ -1724,9 +1724,9 @@
   integrity sha512-1z8k4wzFnNjVK/tlxvrWuK5WMt6mydWWP7+zvH5eFep4oj+UkrfiJTRtjCeBXNpwaA/FYqqtb4/QS4ianFpIRA==
 
 "@types/node@*":
-  version "14.14.37"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.37.tgz#a3dd8da4eb84a996c36e331df98d82abd76b516e"
-  integrity sha512-XYmBiy+ohOR4Lh5jE379fV2IU+6Jn4g5qASinhitfyO71b/sCo6MKsMLF5tc7Zf2CE8hViVQyYSobJNke8OvUw==
+  version "14.14.39"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.39.tgz#9ef394d4eb52953d2890e4839393c309aa25d2d1"
+  integrity sha512-Qipn7rfTxGEDqZiezH+wxqWYR8vcXq5LRpZrETD19Gs4o8LbklbmqotSUsMU+s5G3PJwMRDfNEYoxrcBwIxOuw==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -3835,9 +3835,9 @@ data-urls@^1.0.0, data-urls@^1.1.0:
     whatwg-url "^7.0.0"
 
 date-fns@^2.15.0:
-  version "2.20.2"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.20.2.tgz#7f05d1275e1e43c3bdde5998201920098e19c6a1"
-  integrity sha512-QS0Z8SD/ALhKFvhtU4Fhz+1crsI7fPzBquXmdWay33KJPEU7btro2hnmmErpQRmt2D624B1lbjXQKDUMLnQTmQ==
+  version "2.21.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.21.0.tgz#4672b8e926d1b37d5353dc14da44b883481ac927"
+  integrity sha512-lbAFpaKz7QuVxm6m1rmioh4BB2gmLx1r1JMYXU2A/ufT5ly4zEG7HYH4fvS/QfbdyC5rkYyiS30mYz4Q7XCO+w==
 
 dayjs@^1.9.6:
   version "1.10.4"
@@ -4178,9 +4178,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.712:
-  version "1.3.713"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.713.tgz#4583efb17f2d1e9ec07a44c8004ea73c013ad146"
-  integrity sha512-HWgkyX4xTHmxcWWlvv7a87RHSINEcpKYZmDMxkUlHcY+CJcfx7xEfBHuXVsO1rzyYs1WQJ7EgDp2CoErakBIow==
+  version "1.3.717"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.717.tgz#78d4c857070755fb58ab64bcc173db1d51cbc25f"
+  integrity sha512-OfzVPIqD1MkJ7fX+yTl2nKyOE4FReeVfMCzzxQS+Kp43hZYwHwThlGP+EGIZRXJsxCM7dqo8Y65NOX/HP12iXQ==
 
 elliptic@^6.5.3:
   version "6.5.4"
@@ -4859,20 +4859,12 @@ filesize@6.0.1:
   resolved "https://registry.yarnpkg.com/filesize/-/filesize-6.0.1.tgz#f850b509909c7c86f7e450ea19006c31c2ed3d2f"
   integrity sha512-u4AYWPgbI5GBhs6id1KdImZWn5yfyFrrQ8OWZdN7ZMfA8Bf4HcO0BGo9bmUIEV8yrp8I1xVfJ/dn90GtFNNJcg==
 
-filipizen-aklan@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/filipizen-aklan/-/filipizen-aklan-0.1.0.tgz#75684f4964ff3a975df98b057cc5f2a5bf42248f"
-  integrity sha512-OxvLR+eeHUKWI5s3uwJCWexpACLbQ8JQG6ueRNCMtG8ajBk+nkVgF9mD3K+D6VtQWc1QB0d0ZnwCXVnqJ6hDQw==
-  dependencies:
-    immer "^7.0.9"
-    store "^2.0.12"
-
-filipizen-bpls@^0.2.2:
+filipizen-bpls@^0.2.9:
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/filipizen-bpls/-/filipizen-bpls-0.2.9.tgz#44d7b2d042f258dcd25f6b7cb41442845e8c1a1c"
   integrity sha512-ojURdsjwXiScf8sfphAL5wqnDnnWI7IKoP9KM5ptWTsL9RNH5ypZzlEykUqVlfdV2bDdfOUmO3IWm8p/rfQijQ==
 
-filipizen-monitoring@^0.1.8:
+filipizen-monitoring@^0.1.11:
   version "0.1.11"
   resolved "https://registry.yarnpkg.com/filipizen-monitoring/-/filipizen-monitoring-0.1.11.tgz#870b3571b0ab152f9d37584682b55ee3848f7015"
   integrity sha512-ajlatfgDeVrk8uxHviDxgHlhbcPVLWC4XyThNFvFXHY9B3liiVIUXzV+UvuPOG/XR12LbcsTCgJzlmoRog99Xg==
@@ -4880,15 +4872,15 @@ filipizen-monitoring@^0.1.8:
     highcharts "^9.0.1"
     highcharts-react-official "^3.0.0"
 
-filipizen-obo@^0.2.38:
-  version "0.2.42"
-  resolved "https://registry.yarnpkg.com/filipizen-obo/-/filipizen-obo-0.2.42.tgz#3782d5da8b1d9687d31cfdea3e4e22b872e47be8"
-  integrity sha512-/kD/8aCnYa2tgPINsodLih28VNWYS+QyDvwNyAK0hSExL7Zj4golqloGiEop61T5H3J6xTPNahz9t0LcNJ0gCQ==
+filipizen-obo@^0.2.43:
+  version "0.2.43"
+  resolved "https://registry.yarnpkg.com/filipizen-obo/-/filipizen-obo-0.2.43.tgz#ec022cdc96618733d77b8323867415c8a032c179"
+  integrity sha512-OjEdJcSp+yvk73YndpeUkJhpEZDVDAB//Bbz0KQsClqz8jLr+7CoGIkFjAN1jJqieiBxP7HBTcHbSvQup5Hc8w==
   dependencies:
     rsi-react-filipizen-components "^0.2.28"
     rsi-react-web-components "^0.2.26"
 
-filipizen-rptis@^0.2.5:
+filipizen-rptis@^0.2.8:
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/filipizen-rptis/-/filipizen-rptis-0.2.8.tgz#0b51f89840dfb6bf77c14e471f2d9abb0c92fe24"
   integrity sha512-ihULlA9gIugpQBiWaQfy1rVWfVgNFgaOk1f+AvW2uaj11qvZnGRVdw0sybKGgcIY9jaZLPAKGSUzc/FOyqdAAg==
@@ -4896,12 +4888,7 @@ filipizen-rptis@^0.2.5:
     rsi-react-filipizen-components "^0.2.28"
     rsi-react-web-components "^0.2.26"
 
-filipizen-skillsregistry@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/filipizen-skillsregistry/-/filipizen-skillsregistry-0.2.0.tgz#f9a5efeea0b89bd7f1e6538287a4d064b50a6756"
-  integrity sha512-ijno99qHgwJPvaB4SJ5hP6+owVWAQdHkmH8aZ9yeu1uPl1x32Y+md861YyWY9aBDjpheb6YX1/rNmradLd/xwg==
-
-filipizen-waterworks@^0.2.1:
+filipizen-waterworks@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/filipizen-waterworks/-/filipizen-waterworks-0.2.2.tgz#8ab75343d43d1f1aa017831e290f7ffa7a66ea0d"
   integrity sha512-gKD2WdnerYURIoGDXlcByI0BSkzhsgEV6XBeT28M+VPPnTnNIStLq9NTG4V92eRE0ZlMmY34q7wyPhONjNCxJQ==
@@ -5699,7 +5686,7 @@ immer@1.10.0:
   resolved "https://registry.yarnpkg.com/immer/-/immer-1.10.0.tgz#bad67605ba9c810275d91e1c2a47d4582e98286d"
   integrity sha512-O3sR1/opvCDGLEVcvrGTMtLac8GJ5IwZC4puPrLuRj3l7ICKvkmA0vGuU9OW8mV9WIBRnaxp5GJh9IEAaNOoYg==
 
-immer@^7.0.7, immer@^7.0.9:
+immer@^7.0.7:
   version "7.0.15"
   resolved "https://registry.yarnpkg.com/immer/-/immer-7.0.15.tgz#dc3bc6db87401659d2e737c67a21b227c484a4ad"
   integrity sha512-yM7jo9+hvYgvdCQdqvhCNRRio0SCXc8xDPzA25SvKWa7b1WVPjLwQs1VYU5JPXjcJPTqAa5NP5dqpORGYBQ2AA==
@@ -7130,7 +7117,7 @@ lodash.sortby@^4.7.0:
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
   integrity sha1-7dFMgk4sycHgsKG0K7UhBRakJDg=
 
-lodash.template@^4.4.0, lodash.template@^4.5.0:
+lodash.template@^4.4.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.template/-/lodash.template-4.5.0.tgz#f976195cf3f347d0d5f52483569fe8031ccce8ab"
   integrity sha512-84vYFxIkmidUiFxidA/KjjH9pAycqW+h980j7Fuz5qxRtO9pgB7MDFTdys1N7A5mcucRiDyEq4fusljItR1T/A==
@@ -8528,11 +8515,10 @@ postcss-image-set-function@^3.0.1:
     postcss-values-parser "^2.0.0"
 
 postcss-initial@^3.0.0:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/postcss-initial/-/postcss-initial-3.0.2.tgz#f018563694b3c16ae8eaabe3c585ac6319637b2d"
-  integrity sha512-ugA2wKonC0xeNHgirR4D3VWHs2JcU08WAi1KFLVcnb7IN89phID6Qtg2RIctWbnvp1TM2BOmDtX8GGLCKdR8YA==
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/postcss-initial/-/postcss-initial-3.0.4.tgz#9d32069a10531fe2ecafa0b6ac750ee0bc7efc53"
+  integrity sha512-3RLn6DIpMsK1l5UUy9jxQvoDeUN4gP939tDcKUHD/kM8SGSKbFAnvkpFpj3Bhtz3HGk1jWY5ZNWX6mPta5M9fg==
   dependencies:
-    lodash.template "^4.5.0"
     postcss "^7.0.2"
 
 postcss-lab-function@^2.0.1:
@@ -9300,9 +9286,9 @@ react-lifecycles-compat@^3.0.0:
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
 react-modal@^3.11.2:
-  version "3.12.1"
-  resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.12.1.tgz#38c33f70d81c33d02ff1ed115530443a3dc2afd3"
-  integrity sha512-WGuXn7Fq31PbFJwtWmOk+jFtGC7E9tJVbFX0lts8ZoS5EPi9+WWylUJWLKKVm3H4GlQ7ZxY7R6tLlbSIBQ5oZA==
+  version "3.13.1"
+  resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.13.1.tgz#a02dce63bbfee7582936f1e9835d518ef8f56453"
+  integrity sha512-m6yXK7I4YKssQnsjHK7xITSXy2O81BSOHOsg0/uWAsdKtuT9HF2tdoYhRuxNNQg2V+LgepsoHUPJKS8m6no+eg==
   dependencies:
     exenv "^1.2.0"
     prop-types "^15.5.10"
@@ -9835,7 +9821,7 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-rsi-react-filipizen-components@^0.2.24, rsi-react-filipizen-components@^0.2.28:
+rsi-react-filipizen-components@^0.2.28:
   version "0.2.28"
   resolved "https://registry.yarnpkg.com/rsi-react-filipizen-components/-/rsi-react-filipizen-components-0.2.28.tgz#d97d4297aa0940c9779b7edf92932696cc70e8b8"
   integrity sha512-ZhvOVq6XD2PBand6LVN4gWiVYzQJRpYEGeZ4cN0SOnATeKIG6GuJT2FHeVoSCfrK4ub8bwn1C0gn+VEEj7eWuA==

@@ -159,9 +159,6 @@ export const getServiceModule = (service) => {
     } else if (service.module === "obo") {
       ServiceModule = loadable.lib(() => import("filipizen-obo"));
     }
-    else if (service.module === "skills") {
-      ServiceModule = loadable.lib(() => import("filipizen-skillsregistry"));
-    }
     serviceModules[service.module] = ServiceModule;
   }
   return ServiceModule;

@@ -127,7 +127,11 @@ router.post("/webhooks/:paypartnerid/paytype?", async (req, res) => {
   try {
     const svc = Service.lookup("CloudPaymentService", "epayment");
     const retval = await svc.invoke("postPartnerWebhook", params);
-    res.sendStatus(retval.status);
+    if (retval.response) {
+      res.json(retval.response);
+    } else {
+      res.sendStatus(retval.status);
+    }
   } catch (err) {
     console.log("WEBHOOK [ERROR] ", err);
     res.sendStatus(503);
