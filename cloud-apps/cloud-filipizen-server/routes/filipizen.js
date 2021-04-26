@@ -4,72 +4,23 @@ const errorHandlers = require("../modules/epayment/error-handlers");
 
 const express = require("express");
 const router = express.Router();
-const aws = require("../lib/aws");
 
 router.post("/attachment/upload", async (req, res) => {
-  const key = req.body.key;
-  if (!key) {
-    return res.status(500).send({ msg: "key must be specified" });
-  }
-  if (!req.files || !req.files.file) {
-    return res.status(500).send({ msg: "file is not found" });
-  }
-
-  aws
-    .uploadObject(`${key}`, req.files.file.data)
-    .then((data) => {
-      res.send({ key: data.key, etag: data.ETag, location: data.Location });
-    })
-    .catch((err) => {
-      res.status(500).send({ status: "ERROR", err });
-    });
+  res.send({ key: key, etag: key, location: key });
 });
 
 router.get("/attachment/download", (req, res) => {
-  console.log("body", req.body);
-  const key = req.query.key;
-  if (!key) {
-    return res.status(500).send({ msg: "key must be specified" });
-  }
-  aws
-    .getObject(key)
-    .then((data) => {
-      res.send(data.Body);
-    })
-    .catch((err) => {
-      res.status(500).send({ status: "ERROR", err });
-    });
+    res.send({data: {}});
 });
 
 router.delete("/attachment/delete", (req, res) => {
-  const key = req.query.key;
-  if (!key) {
-    return res.status(500).send({ msg: "key must be specified" });
-  }
-  aws
-    .deleteObject(key)
-    .then((data) => {
-      res.status(200).send("ok");
-    })
-    .catch((err) => {
-      res.status(500).send({ status: "ERROR", err });
-    });
+    res.status(200).send("ok");
 });
 
 router.get("/attachment/list", (req, res) => {
-  const prefix = req.query.prefix;
-  if (!prefix) {
-    return res.status(500).send({ msg: "prefix must be specified" });
-  }
-  aws
-    .listObjects(prefix)
-    .then((data) => {
-      res.status(200).send(data.Contents);
-    })
-    .catch((err) => {
-      res.status(500).send({ status: "ERROR", err });
-    });
+  res.status(200).send([]);
 });
+
 
 router.get("/service/metainfo", async (req, res) => {
   try {
@@ -108,10 +59,6 @@ const postPartnerPayment = async (params) => {
 
   return pmt;
 };
-
-let partnerError = "Our partner was not able to process your payment.";
-partnerError +=
-  "Kindly verify that your credentials are correct upon submitting your payment.";
 
 router.get("/payoptions/:statusid", async (req, res) => {
   console.log("GET===============================");
@@ -165,13 +112,25 @@ router.post("/payoptions/:statusid", async (req, res) => {
   }
 });
 
-router.post("/paymaya/:statusid", async (req, res) => {
-  console.log("PAYMAYA POST===============================");
-  console.log("PARAMS: ", req.params);
-  console.log("QUERY: ", req.query);
-  console.log("BODY: ", req.body);
-  res.sendStatus(200);
+router.post("/webhooks/:paypartnerid/paytype?", async (req, res) => {
+  console.log("WEBHOOK POST===============================");
+
+  const params = {
+    ...req.params,
+    ...req.query,
+    data: req.body
+  }
+
+  try {
+    const svc = Service.lookup("CloudPaymentService", "epayment");
+    const retval = await svc.invoke("postPartnerWebhook", params);
+    res.sendStatus(retval.status);
+  } catch (err) {
+    console.log("WEBHOOK [ERROR] ", err);
+    res.sendStatus(503);
+  }
 });
+
 
 const buildArgs = (pmt) => {
   const data = {
