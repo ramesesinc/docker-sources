@@ -44,7 +44,7 @@ class WorkflowTaskCountService  {
         def taskCount = activeDb.lookup( "main", "wf_taskcount");
 
         def orgid = (env.ORGROOT == 1) ? null : env.ORGID;
-        def m = [processname: o.processname, roles:  roleSvc.getRolesString( [orgid: orgid]  ) ];
+        def m = [processname: o.processname, roles:  roleSvc.getRolesString( [orgid: orgid]  ), userid: env.USERID ];
         //taskCount.debug = true;
         def nodeList = taskCount.getNodeListTaskCount( m );
         return nodeList;
@@ -56,5 +56,13 @@ class WorkflowTaskCountService  {
         if(!nodeList) return [ count: 0 ];
         return [count: nodeList.sum{ it.count }];
     }
+
+    @ProxyMethod
+    public def getMyTaskCount( def o ) {
+        def m = [processname:o.processname, userid: env.USERID];
+        def taskCount = activeDb.lookup( "main", "wf_taskcount");
+        return taskCount.getMyTaskCount( m );
+    }
+
 
 }

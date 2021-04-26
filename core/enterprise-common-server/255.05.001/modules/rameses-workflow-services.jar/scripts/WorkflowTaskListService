@@ -40,13 +40,8 @@ class WorkflowTaskListService  {
         def nodeListCount = taskCountSvc.getNodeListTaskCount( o );
         nodeListCount.each { v->
             def vr = nodes.find{ it.name ==  v.state };
-            if( vr ) vr.title =  vr.title + " ("+ v.count + ")";
+            if( vr && v.count ) vr.title =  vr.title + " ("+ v.count + ")";
         }
-
-        //get my tasks.
-        def appEm = db.lookup( schemaName );
-        def tcount = appEm.select("c:{COUNT(*)}").where("task.assignee.objid = :uid AND NOT(task.state = 'end') ", [uid: env.USERID]).val();
-        nodes.find{ it.name == 'mytask' }.count = tcount;
 
         return nodes;
     }
@@ -62,8 +57,14 @@ class WorkflowTaskListService  {
                 case 'all':
                     break;
 
-                case 'search':    
-                    s = "task.enddate IS NULL";
+                case 'search':  
+                    //if there is no where specified then dont display anything.
+                    if(!o.where && !o.orWhereList) {
+                        s = " 1=0 ";
+                    }  
+                    else {
+                        s = "task.enddate IS NULL";
+                    }
                     break;
 
                 case 'mytask': 
