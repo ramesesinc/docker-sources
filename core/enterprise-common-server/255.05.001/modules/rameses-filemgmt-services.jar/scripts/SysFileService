@@ -17,6 +17,10 @@ class SysFileService {
 	@Env
 	def env; 
 
+	@XConnection( dynamic=true )
+	def dynamicConn;
+
+
 	@ProxyMethod 
 	public def create( param ) { 
 		def fhead = null; 
@@ -36,6 +40,10 @@ class SysFileService {
 			o.parentid = fhead.objid; 
 			o.dtcreated = fhead.dtcreated;
 			o.createdby = fhead.createdby;
+			if ( !o.filetype ) {
+				o.filetype = fhead.filetype; 
+			}
+
 			def fi = fileitem_db.create( o ); 
 			if ( fi ) o.putAll( fi );   
 		} 
@@ -64,9 +72,20 @@ class SysFileService {
 			if ( !item ) return [status: 'not-found']; 
 
 			item.fileloc = fileloc_db.find([ objid: item.filelocid ]).first(); 
+			
+			if ( !item.fileloc ) {
+				def connMap = getConnection( item.filelocid ); 
+				connMap.user = [ name: connMap.username, pwd: connMap.password ]; 
+				connMap.loctype = connMap.type; 
+				connMap.defaultloc = 0; 
 
-			def head = file_db.find([ objid: item.parentid ]).select('objid,filetype').first(); 
-			item.filetype = head.filetype; 
+				item.fileloc = connMap;
+			}
+
+			if ( !item.filetype ) {
+				def head = file_db.find([ objid: item.parentid ]).select('objid,filetype').first(); 
+				item.filetype = head.filetype; 				
+			}
 
 			fileitem_db.find([ objid: item.objid ]).delete();
 
@@ -81,7 +100,10 @@ class SysFileService {
 			def res = [ objid: o.objid, items: []]; 
 			fileitem_db.find([ parentid: fileid ]).select('objid,filelocid').list().each{
 				it.fileloc = fileloc_db.find([ objid: it.filelocid ]).first(); 
-				it.filetype = o.filetype; 
+				if ( !it.filetype ) {
+					it.filetype = o.filetype; 	
+				}
+				
 				res.items << it; 
 			}
 
@@ -91,5 +113,13 @@ class SysFileService {
 			return res; 
 		}
 		return [status: 'not-found'];
+	}
+
+
+
+	@ProxyMethod
+	public def getConnection( String name ) {
+		def conn = dynamicConn.lookup( name ); 
+		return (conn == null ? null : conn.getConf()); 
 	}
 }
