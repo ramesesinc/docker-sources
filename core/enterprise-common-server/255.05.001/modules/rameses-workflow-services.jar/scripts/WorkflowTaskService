@@ -236,15 +236,16 @@ class WorkflowTaskService  {
         //force signal the next step.
         def nt = [:];
         nt.processname = req.processname;
+        nt.taskstate = req.name;
         nt.taskid = ti.taskid;
         nt.refid = req.refid;
         nt.action = ntrans.action;
         nt.info = req.info;
-        return self.signal( nt );
+        return self.fireTransition( nt );
     }
 
- 	@ProxyMethod
- 	public def signal( def t ) {
+    private def doTransitionAction(def t) {
+
         if(!t.processname) throw new Exception("processname is required for signal");
 
         def em = db.lookup( t.processname +"_task" );
@@ -296,12 +297,27 @@ class WorkflowTaskService  {
             def ti = createTaskInstance( m );
             def ntask = findTask( [taskid: ti.taskid, processname: t.processname ] );
 
+            //record the previous state and action
+            ntask.fromstate = tsk.state;
+            ntask.fromaction = t.action;
+
             //update the reference before returning
             def em2 = db.lookup( t.processname );
             em2.find([objid: tsk.refid]).update([taskid: ntask.taskid]);
             return ntask;
         }
  	}
+
+    @ProxyMethod
+    public def fireTransition( def t ) {
+        return doTransitionAction( t );
+    }
+
+    @ProxyMethod
+    public def signal( def t ) {
+        return doTransitionAction( t );
+    }
+
 
     @ProxyMethod
     public def assignToMe( def t ) {
@@ -334,14 +350,14 @@ class WorkflowTaskService  {
         if(!t.refid) throw new Exception("refid is required for getTransactionHistory");
         if(!t.processname) throw new Exception("processname is required for signal");
         def em = db.lookup( t.processname +"_task" );
-        return em.where(" NOT(state = 'start') ").find([refid: t.refid]).orderBy('dtcreated').list();
+        return em.where(" NOT(state = 'start') ").find([refid: t.refid]).orderBy('dtcreated DESC').list();
     }
 
     /*********************************************
     * gets the log data.
     **********************************************/
     @ProxyMethod
-    public void changeAssignee(def t) {
+    public def changeAssignee(def t) {
         if(!t.taskid) throw new Exception("taskid is required for changeAssignee");
         if(!t.processname) throw new Exception("processname is required for changeAssignee");
         if(!t.assignee?.objid) throw new Exception("assignee is required for changeAssignee");
@@ -365,6 +381,7 @@ class WorkflowTaskService  {
 
         def parentEm = db.lookup( t.processname );
         parentEm.find( [objid: newtsk.refid] ).update( [taskid: newtsk.taskid ]);
+        return newtsk;
     }
 
     
