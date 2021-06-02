@@ -71,7 +71,7 @@ const modules = [
       {
         module: "obo",
         name: "occupancypermit",
-        title: "Occupancy Permit Application",
+        title: "Certificate of Occupancy Application",
         component: "OccupancyPermitWebController",
       },
       {
@@ -95,7 +95,7 @@ const modules = [
       {
         module: "obo",
         name: "obobilling",
-        title: "Building Permit Online Billing",
+        title: "OSCP Online Billing and Payment",
         component: "OboBillingWebController",
       },
       {
