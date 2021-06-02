@@ -12,7 +12,8 @@ class SysFileServiceInterceptor {
 
 		res.items.each{ o-> 
 
-			def remote_fileid = [ o.objid, o.filetype ].findAll{( it )}.join('.');
+			def remote_fileid = [ o.fileloc.rootdir, o.objid ].findAll{( it )}.join('/'); 
+			remote_fileid = [ remote_fileid, o.filetype ].findAll{( it )}.join('.');
 
 			def filelocid = o.fileloc.objid; 
 			if ( !filelocid ) filelocid = o.filelocid; 
