@@ -1,6 +1,5 @@
 const serviceMgr = require("../lib/service-manager");
 const Service = require("../lib/remote-server-proxy");
-const errorHandlers = require("../modules/epayment/error-handlers");
 
 const express = require("express");
 const router = express.Router();
@@ -63,15 +62,25 @@ const postPartnerPayment = async (params) => {
   return pmt;
 };
 
+const postPartnerPaymentError = async (params) => {
+  const svc = Service.lookup("CloudPaymentService", "epayment");
+  const error = await svc.invoke("postPartnerPaymentError", params);
+  console.log("postPartnerPayment.postPartnerPaymentError===========================");
+  console.log(error);
+  console.log("postPartnerPayment.postPartnerPaymentError===========================");
+  return error;
+};
+
 router.get("/payoptions/:statusid", async (req, res) => {
-  console.log("GET===============================");
+  console.log("payoptions: GET===============================");
   console.log("PARAMS: ", req.params);
   console.log("QUERY: ", req.query);
+  console.log("BODY: ", req.body);
 
   const statusid = req.params.statusid;
   if (/error/i.test(statusid)) {
-    const handler = errorHandlers[statusid];
-    const error = typeof handler === "function" ? await handler(req, res) : {};
+    const params = { statusid, ...req.body, ...req.query };
+    const error = await postPartnerPaymentError(params);
     const errorArgs = encodeArgs(error);
     res.redirect(`/payment/error?${errorArgs}`);
   } else {
@@ -90,16 +99,24 @@ router.get("/payoptions/:statusid", async (req, res) => {
 });
 
 router.post("/payoptions/:statusid", async (req, res) => {
-  console.log("POST===============================");
+  console.log("payoptions: POST===============================");
   console.log("PARAMS: ", req.params);
   console.log("QUERY: ", req.query);
+  console.log("BODY: ", req.body);
 
   const statusid = req.params.statusid;
   if (/error/i.test(statusid)) {
-    const handler = errorHandlers[statusid];
-    const error = typeof handler === "function" ? await handler(req, res) : {};
-    const errorArgs = encodeArgs(error);
-    res.redirect(`/payment/error?${errorArgs}`);
+    try {
+      const params = { statusid, ...req.body, ...req.query };
+      const error = await postPartnerPaymentError(params);
+      const errorArgs = encodeArgs(error);
+      res.redirect(`/payment/error?${errorArgs}`);
+    } catch (err) {
+      console.log("payoptions [ERROR]", err);
+      res.redirect(
+        "/payment/error?message=Your payment was not successfully credited to your bill. Kindly contact payment partner for assistance"
+      );
+    }
   } else {
     try {
       const params = { statusid, ...req.body, ...req.query };
@@ -109,7 +126,7 @@ router.post("/payoptions/:statusid", async (req, res) => {
     } catch (err) {
       console.log("payoptions [ERROR]", err);
       res.redirect(
-        "/payment/error?message=Your payment was not successfully credited to your bill. Kindly contact the Treasurer's Office for assistance"
+        "/payment/error?message=Your payment was not successfully credited to your bill. Kindly contact payment partner for assistance"
       );
     }
   }
@@ -117,6 +134,7 @@ router.post("/payoptions/:statusid", async (req, res) => {
 
 router.post("/webhooks/:paypartnerid", async (req, res) => {
   console.log("WEBHOOK POST===============================");
+  console.log("REQUEST => ", req);
 
   const params = {
     ...req.params,
