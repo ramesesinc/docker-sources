@@ -6,7 +6,7 @@
     "@loadable/component": "^5.14.1",
     "filipizen-bpls": "^0.2.9",
     "filipizen-monitoring": "^0.1.11",
-    "filipizen-obo": "^0.2.47",
+    "filipizen-obo": "^0.2.49",
     "filipizen-rptis": "^0.2.8",
     "filipizen-waterworks": "^0.2.2",
     "react": "^16.13.1",
