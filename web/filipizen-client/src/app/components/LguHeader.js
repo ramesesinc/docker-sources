@@ -10,6 +10,8 @@ const styles = {
   title: {
     color: "#ddd",
     paddingLeft: 5,
+    fontSize: '16pt',
+    fontWeight: "bold"
   }
 };
 
@@ -22,6 +24,7 @@ const LguHeader = ({partner, Logo}) => {
           }}>
             <Panel row>
               <div>{Logo}</div>
+              <div style={styles.title}>{partner.title}</div>
             </Panel>
           </Link>
         </Panel>

@@ -7,7 +7,7 @@ import "rsi-react-web-components/dist/index.css";
 
 const getLguLogo = (partner) => {
   return (
-      <Image style={{height: "40px"}} src={`/assets/${partner.name}.png`} height="30px" />
+      <Image style={{height: "40px"}} src={`/assets/${partner.id}.png`} height="30px" />
   );
 };
 
