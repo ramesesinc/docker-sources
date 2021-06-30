@@ -6,12 +6,16 @@ const styles = {
   container: {
     background: "#2c3e50",
     padding: "4px 50px",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
   title: {
     color: "#ddd",
     paddingLeft: 5,
     fontSize: '16pt',
-    fontWeight: "bold"
+    fontWeight: "bold",
+    textDecoration: "none",
   }
 };
 
@@ -22,11 +26,9 @@ const LguHeader = ({partner, Logo}) => {
             pathname: `/partner/${partner.name}/services`, 
             state: {partner: partner}
           }}>
-            <Panel row>
-              <div>{Logo}</div>
-              <div style={styles.title}>{partner.title}</div>
-            </Panel>
+            <div>{Logo}</div>
           </Link>
+          <div style={styles.title}>{partner.title.toUpperCase()}</div>
         </Panel>
   );
 };
